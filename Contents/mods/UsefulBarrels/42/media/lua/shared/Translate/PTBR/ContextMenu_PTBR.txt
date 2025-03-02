@@ -1,0 +1,10 @@
+ContextMenu_PTBR = {
+    ContextMenu_UB_UncapBarrel = "Destampar %1",
+    ContextMenu_UB_TakeGas = "Pegar Gás",
+    ContextMenu_UB_PourToAll = "Preencher tudo",
+    ContextMenu_UB_AddGas = "Adicionar Gás",
+    ContextMenu_UB_AddFromAll = "Esvaziar Todos",
+    ContextMenu_UB_NoFuelInInventory = "Sem Gás para adicionar",
+    ContextMenu_UB_GasAmount = "Quantidade de Gás: ",
+    ContextMenu_UB_NoContainers = "Sem Recipientes de Gás"
+}

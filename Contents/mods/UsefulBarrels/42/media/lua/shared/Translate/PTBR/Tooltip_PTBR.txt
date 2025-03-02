@@ -1,0 +1,5 @@
+Tooltip_PTBR = {
+    Tooltip_UB_WrenchMissing = "%1 necessário para destampar.",
+    Tooltip_UB_NoFuelInInventory = "Sem combustível no inventário.",
+    Tooltip_UB_NoFuelInBarrel = "Sem combustível no barril.",
+}
