@@ -1,0 +1,5 @@
+Tooltip_EN = {
+    Tooltip_UB_WrenchMissing = "%1 required to uncap."
+    Tooltip_UB_NoFuelInInventory = "No Gas in inventory."
+    Tooltip_UB_NoFuelInBarrel = "No Gas in barrel."
+}

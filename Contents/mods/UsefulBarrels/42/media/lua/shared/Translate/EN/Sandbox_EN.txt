@@ -1,0 +1,13 @@
+Sandbox_EN = {
+    Sandbox_UsefulBarrels = "Useful Barrels"
+    Sandbox_UsefulBarrelsBarrelCapacity = "Barrel Capacity"
+    Sandbox_UsefulBarrelsBarrelCapacity_tooltip = "Maximum barrel capacity.<br>Applied only for new barrels, previously used is unaffected."
+    Sandbox_UsefulBarrelsRequirePipeWrench = "Require Pipe Wrench"
+    Sandbox_UsefulBarrelsRequirePipeWrench_tooltip = "A Pipe Wrench is required for barrel uncapping."
+    Sandbox_UsefulBarrelsRequireHose = "WIP: Require Rubber Hose"
+    Sandbox_UsefulBarrelsRequireHose_tooltip = "A Rubber Hose is required to take Gas from barrel."
+    Sandbox_UsefulBarrelsRequireFunnelForFill = "WIP: Require Funnel"
+    Sandbox_UsefulBarrelsRequireFunnelForFill_tooltip = "A Funnel is required to add Gas to barrel."
+    Sandbox_UsefulBarrelsFunnelSpeedUpFillPercentage = "WIP: Speed up by a Funnel"
+    Sandbox_UsefulBarrelsFunnelSpeedUpFillPercentage_tooltip = "Speed up canisters filling by percentage amount if there is a Funnel nearby.<br> Not work if 'Require Funnel' is disabled."
+}
