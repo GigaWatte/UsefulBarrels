@@ -1,0 +1,10 @@
+ContextMenu_RU = {
+    ContextMenu_UB_UncapBarrel = "Открутить %1"
+    ContextMenu_UB_TakeGas = "Забрать топливо"
+    ContextMenu_UB_PourToAll = "Забрать всё топливо"
+    ContextMenu_UB_AddGas = "Добавить топливо"
+    ContextMenu_UB_AddFromAll = "Добавить всё топливо"
+    ContextMenu_UB_NoFuelInInventory = "Нет топлива в инвентаре"
+    ContextMenu_UB_GasAmount = "Количество топлива: "
+    ContextMenu_UB_NoContainers = "Нету ёмкостей с топливом"
+}

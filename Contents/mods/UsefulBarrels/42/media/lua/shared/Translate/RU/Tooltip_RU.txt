@@ -1,0 +1,5 @@
+Tooltip_RU = {
+    Tooltip_UB_WrenchMissing = "%1 нужен для открытия бочки."
+    Tooltip_UB_NoFuelInInventory = "Нет топлива в инвентаре."
+    Tooltip_UB_NoFuelInBarrel = "Нет топлива в бочке."
+}
