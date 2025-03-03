@@ -4,10 +4,10 @@ Sandbox_PTBR = {
     Sandbox_UsefulBarrelsBarrelCapacity_tooltip = "Capacidade máxima do barril.<br>Aplicado apenas para novos barris, os já utilizados não são afetados.",
     Sandbox_UsefulBarrelsRequirePipeWrench = "Exigir Chave de Tubo",
     Sandbox_UsefulBarrelsRequirePipeWrench_tooltip = "Uma Chave de Tubo é necessária para destampar o barril.",
-    Sandbox_UsefulBarrelsRequireHose = "WIP: Exigir Mangueira de Borracha",
+    Sandbox_UsefulBarrelsRequireHose = "Exigir Mangueira de Borracha",
     Sandbox_UsefulBarrelsRequireHose_tooltip = "Uma Mangueira de Borracha é necessária para retirar combustível do barril.",
-    Sandbox_UsefulBarrelsRequireFunnelForFill = "WIP: Exigir Funil",
+    Sandbox_UsefulBarrelsRequireFunnelForFill = "Exigir Funil",
     Sandbox_UsefulBarrelsRequireFunnelForFill_tooltip = "Um Funil é necessário para adicionar combustível ao barril.",
-    Sandbox_UsefulBarrelsFunnelSpeedUpFillModifier = "WIP: Acelerar com Funil",
+    Sandbox_UsefulBarrelsFunnelSpeedUpFillModifier = "Acelerar com Funil",
     Sandbox_UsefulBarrelsFunnelSpeedUpFillModifier_tooltip = "Acelera o enchimento de recipientes por uma porcentagem caso haja um Funil próximo.<br> Não funciona se 'Exigir Funil' estiver desativado."
 }
