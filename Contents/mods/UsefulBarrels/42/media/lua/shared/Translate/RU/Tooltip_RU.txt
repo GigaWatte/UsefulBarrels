@@ -2,4 +2,6 @@ Tooltip_RU = {
     Tooltip_UB_WrenchMissing = "%1 нужен для открытия бочки."
     Tooltip_UB_NoFuelInInventory = "Нет топлива в инвентаре."
     Tooltip_UB_NoFuelInBarrel = "Нет топлива в бочке."
+    Tooltip_UB_HoseMissing = "%1 is required to take Gas.<br>Place it within arm's reach or put it in your inventory."
+    Tooltip_UB_FunnelMissing = "%1 is required to add Gas.<br>Place it within arm's reach or put it in your inventory."
 }
