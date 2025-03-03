@@ -1,0 +1,4 @@
+Fluids_RU = {
+    Fluid_UB_Show_Info = "Информация о жидкости"
+    Fluid_Container_UB_Fuel_Barrel = "Бочка",
+}

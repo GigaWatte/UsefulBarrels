@@ -1,0 +1,13 @@
+Sandbox_RU = {
+    Sandbox_UsefulBarrels = "Полезные бочки"
+    Sandbox_UsefulBarrelsBarrelCapacity = "Вместимость бочки"
+    Sandbox_UsefulBarrelsBarrelCapacity_tooltip = "Максимальная вместимость бочки.<br> Касается только новых бочек, ранее использованные не обновляются."
+    Sandbox_UsefulBarrelsRequirePipeWrench = "Нужен газовый ключ"
+    Sandbox_UsefulBarrelsRequirePipeWrench_tooltip = "Если включено, для открытия бочки потребуется газовый ключ."
+    Sandbox_UsefulBarrelsRequireHose = "Нужен резиновый шланг"
+    Sandbox_UsefulBarrelsRequireHose_tooltip = "Если включено, для того чтобы вылить топливо из бочки потребуется резиновый шланг."
+    Sandbox_UsefulBarrelsRequireFunnelForFill = "Нужна воронка"
+    Sandbox_UsefulBarrelsRequireFunnelForFill_tooltip = "Если включено, для добавления топлива в бочку потребуется воронка."
+    Sandbox_UsefulBarrelsFunnelSpeedUpFillModifier = "Ускорение с воронкой"
+    Sandbox_UsefulBarrelsFunnelSpeedUpFillModifier_tooltip = "Насколько воронка ускоряет наполнение бочки бензином. (1.25 = ускорение в 25%, 2 = 100% итд.)<br>Значение 1 отключит ускорение.<br> Работает вне зависимости от 'Нужна воронка'."
+}
