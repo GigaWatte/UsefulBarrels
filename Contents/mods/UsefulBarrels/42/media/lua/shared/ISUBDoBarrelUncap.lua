@@ -63,7 +63,6 @@ function ISUBDoBarrelUncap:complete()
 		if not modData["UB_Uncapped"] then
 			modData["UB_Uncapped"] = true
 			self.barrelObj:setModData(modData)
-			print("set at uncap")
 		end
 
 		buildUtil.setHaveConstruction(self.barrelObj:getSquare(), true)

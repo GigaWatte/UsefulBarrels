@@ -31,30 +31,6 @@ function ISUBTakeFuel:update()
 			--print("update - remove from source " .. amountToTransfer)
 			self.fuelDestination:getFluidContainer():addFluid(Fluid.Petrol, amountToTransfer);
 			--print("update - add to destination " ..  amountToTransfer)
-
-			-- 400 is maximum weight that can be set...
-			--self.barrelObj:getProperties():Set("PickUpWeight", "400")
-		end
-		
-		-- TODO bugged property
-		-- it uses all my objects...
-		if self.barrelObj:getFluidContainer():isEmpty() then
-			--self.barrelObj:getSprite():getProperties():Set("IsMoveAble", "")
-			--print(self.barrelObj)
-			--print("setted to movable")
-		else
-			--self.barrelObj:getSprite():getProperties():UnSet("IsMoveAble")
-			--print(self.barrelObj)
-			--print("set mot movable")
-			--local loot = getPlayerLoot(self.player);
-			--local inv = getPlayerInventory(self.player);
-			--object:isLockedToCharacter(playerObj)
-			--local fc = ItemContainer()
-			--local sc = ItemContainer()
-			--print(fc)
-			--print(sc)
-			--self.barrelObj:setContainer()
-			--self.barrelObj:addSecondaryContainer()
 		end
 	end
     self.character:setMetabolicTarget(Metabolics.LightWork);
@@ -117,14 +93,19 @@ function ISUBTakeFuel:getDuration()
 		return 1;
 	end
 
-	return self.amount * 50
+	local basePerLiter = 50
+	local speedModifier = 1
+	if self.speedModifierApply then
+		speedModifier = SandboxVars.UsefulBarrels.FunnelSpeedUpFillModifier
+	end
+	return (basePerLiter * self.amount) / speedModifier
 end
 
 function ISUBTakeFuel:init()
 
 end
 
-function ISUBTakeFuel:new(character, fuelSource, fuelDestination, lookAt, itemToOperate, barrelObj)
+function ISUBTakeFuel:new(character, fuelSource, fuelDestination, lookAt, itemToOperate, barrelObj, speedModifierApply)
 	local o = ISBaseTimedAction.new(self, character)
 	o.fuelSource = fuelSource
 	o.square = lookAt
@@ -137,7 +118,7 @@ function ISUBTakeFuel:new(character, fuelSource, fuelDestination, lookAt, itemTo
 	--print("source amount fuel " .. sourceCurrent)
 	o.amount = math.min(sourceCurrent, freeCapacity)
 	--print("amount to transfer " .. o.amount)
-
+	if speedModifierApply ~= nil then o.speedModifierApply = true else o.speedModifierApply = false end
 	o.maxTime = o:getDuration()
 	return o;
 end
