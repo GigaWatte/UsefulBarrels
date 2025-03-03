@@ -1,0 +1,10 @@
+ContextMenu_CN = {
+    ContextMenu_UB_UncapBarrel = "打开盖子 %1"
+    ContextMenu_UB_TakeGas = "抽出汽油"
+    ContextMenu_UB_PourToAll = "加满所有容器"
+    ContextMenu_UB_AddGas = "灌入汽油"
+    ContextMenu_UB_AddFromAll = "灌入所有汽油"
+    ContextMenu_UB_NoFuelInInventory = "没汽油了"
+    ContextMenu_UB_GasAmount = "总量: "
+    ContextMenu_UB_NoContainers = "没有容量"
+}

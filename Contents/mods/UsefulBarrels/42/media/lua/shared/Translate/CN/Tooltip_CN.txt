@@ -1,0 +1,5 @@
+Tooltip_EN = {
+    Tooltip_UB_WrenchMissing = "缺少 %1 无法打开桶盖。"
+    Tooltip_UB_NoFuelInInventory = "库存中没有汽油。"
+    Tooltip_UB_NoFuelInBarrel = "。汽油桶内没有汽油。"
+}
