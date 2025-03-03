@@ -295,31 +295,33 @@ Events.OnFillWorldObjectContextMenu.Add(UBContextMenu)
 local ISMoveableSpriteProps_canPickUpMoveable = ISMoveableSpriteProps.canPickUpMoveable
 function ISMoveableSpriteProps:canPickUpMoveable( _character, _square, _object )
     -- modify weight params to include fluid container weight also
-    local modData = _object:getModData()
-    if _object:getFluidContainer() and not _object:getFluidContainer():isEmpty() and modData["UB_Uncapped"] ~= nil then
-        local sprite = _object:getSprite()
-        local props = sprite:getProperties()
-        local itemWeight = _object:getFluidContainer():getAmount()
-
-        if props and props:Is("CustomItem")  then
-            local customItem = props:Val("CustomItem")
-            local itemInstance = nil;
-            if not ISMoveableSpriteProps.itemInstances[customItem] then
-                itemInstance = instanceItem(customItem);
-                if itemInstance then
-                    ISMoveableSpriteProps.itemInstances[customItem] = itemInstance;
+    if _object and _object:getFluidContainer() and not _object:getFluidContainer():isEmpty() then
+        local modData = _object:getModData()
+        if modData["UB_Uncapped"] ~= nil then
+            local sprite = _object:getSprite()
+            local props = sprite:getProperties()
+            local itemWeight = _object:getFluidContainer():getAmount()
+    
+            if props and props:Is("CustomItem")  then
+                local customItem = props:Val("CustomItem")
+                local itemInstance = nil;
+                if not ISMoveableSpriteProps.itemInstances[customItem] then
+                    itemInstance = instanceItem(customItem);
+                    if itemInstance then
+                        ISMoveableSpriteProps.itemInstances[customItem] = itemInstance;
+                    end
+                else
+                    itemInstance = ISMoveableSpriteProps.itemInstances[customItem];
                 end
-            else
-                itemInstance = ISMoveableSpriteProps.itemInstances[customItem];
+    
+                if itemInstance then
+                    itemWeight = itemWeight + itemInstance:getActualWeight()
+                end
             end
-
-            if itemInstance then
-                itemWeight = itemWeight + itemInstance:getActualWeight()
-            end
+    
+            self.weight = itemWeight
+            self.rawWeight = self.weight * 10
         end
-
-        self.weight = itemWeight
-        self.rawWeight = self.weight * 10
     end
 
     return ISMoveableSpriteProps_canPickUpMoveable(self, _character, _square, _object)
