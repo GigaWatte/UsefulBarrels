@@ -1,6 +1,3 @@
-TODO Require Rubber Hose to take Gas from barrel
-TODO A Funnel for pouring Gas into the barrel (funnel:optional)
-TODO Funnel speedups pouring action (if nearby or in inventory)
 TODO Refueling generator from a barrel by Rubber Hose (hose:optional)
 TODO Check barrel disassembly with fluid inside
 TODO Add storage feature to Base.MetalDrum

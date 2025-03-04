@@ -18,7 +18,7 @@ local function UBTestContext(player, context, worldobjects, test)
 
     --local componentFromScript = ComponentType.FluidContainer:CreateComponentFromScript(componentScript)
  
-    abe()
+    --abe()
 end
 
 Events.OnFillWorldObjectContextMenu.Add(UBTestContext)

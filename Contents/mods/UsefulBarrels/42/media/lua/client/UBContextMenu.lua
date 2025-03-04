@@ -1,94 +1,14 @@
--- << functions from vanilla pz
-local function predicatePetrol(item)
-	return item:getFluidContainer() and item:getFluidContainer():contains(Fluid.Petrol) and (item:getFluidContainer():getAmount() >= 0.5)
-end
 
-local function predicateStoreFuel(item)
-	local fluidContainer = item:getFluidContainer()
-	if not fluidContainer then return false end
-	-- our item can store fluids and is empty
-	if fluidContainer:isEmpty() then --and not item:isBroken()
-		return true
-	end
-	-- or our item is already storing fuel but is not full
-	if fluidContainer:contains(Fluid.Petrol) and (fluidContainer:getAmount() < fluidContainer:getCapacity()) and not item:isBroken() then
-		return true
-	end
-	return false
-end
+local UBUtils = require "UBUtils"
 
-local function getMoveableDisplayName(obj)
-	if not obj then return nil end
-	if not obj:getSprite() then return nil end
-	local props = obj:getSprite():getProperties()
-	if props:Is("CustomName") then
-		local name = props:Val("CustomName")
-		if props:Is("GroupName") then
-			name = props:Val("GroupName") .. " " .. name
-		end
-		return Translator.getMoveableDisplayName(name)
-	end
-	return nil
-end
-
-local function predicateNotBroken(item)
-	return not item:isBroken()
-end
-
--- >> end functions from vanilla pz
+local UBContextMenu = {}
 
 local function playerHasItem(playerInv, itemName) return playerInv:containsTypeEvalRecurse(itemName, predicateNotBroken) or playerInv:containsTagEvalRecurse(itemName, predicateNotBroken) end
 
 local function playerGetItem(playerInv, itemName) return playerInv:getFirstTypeEvalRecurse(itemName, predicateNotBroken) or playerInv:getFirstTagEvalRecurse(itemName, predicateNotBroken) end
 
-local function UBGetValidBarrel(worldobjects)
-    local valid_sprite_names = {
-        "industry_01_22", 
-        "industry_01_23", 
-        "location_military_generic_01_14", 
-        "location_military_generic_01_15", 
-        "location_military_generic_01_6", 
-        "location_military_generic_01_7",
-    }
-
-    for i,isoobject in ipairs(worldobjects) do
-		if not isoobject or not isoobject:getSquare() then return end
-        if not isoobject:getSprite() then return end
-        if not isoobject:getSpriteName() then return end
-        for i = 1, #valid_sprite_names do
-            if isoobject:getSpriteName() == valid_sprite_names[i] then return isoobject end
-        end
-    end
-end
-
-local function IBDoBarrelUncap(player, drumObject)
-    local playerObj = getSpecificPlayer(player)
-    local wrench = playerGetItem(playerObj:getInventory(), "PipeWrench")
-
-    if luautils.walkAdj(playerObj, drumObject:getSquare(), true) then
-        if SandboxVars.UsefulBarrels.RequirePipeWrench then
-            if wrench then
-                ISWorldObjectContextMenu.equip(playerObj, playerObj:getPrimaryHandItem(), wrench, true)
-                ISTimedActionQueue.add(ISUBDoBarrelUncap:new(playerObj, drumObject, wrench))
-            else
-                -- pipewrench is missing
-            end
-        else
-            ISTimedActionQueue.add(ISUBDoBarrelUncap:new(playerObj, drumObject, wrench))
-        end
-    end
-end
-
-local function UBFormatFluidAmount(setX, amount, max, fluidName)
-	if max >= 9999 then
-		return string.format("%s: <SETX:%d> %s", getText(fluidName), setX, getText("Tooltip_WaterUnlimited"))
-	end
-	return string.format("%s: <SETX:%d> %s / %s", getText(fluidName), setX, luautils.round(amount, 2) .. "L", max .. "L")
-end
-
 -- << recreated vanilla functions to work with Petrol filled FluidContainers
-
-local function UBOnTransferFuel(squareToApproach, fuelContainer, fuelContainerList, player, reverse, hasFunnelNearby)
+function UBContextMenu:OnTransferFuel(squareToApproach, fuelContainer, fuelContainerList, player, reverse, hasFunnelNearby)
     if not reverse then reverse = false end
     if not hasFunnelNearby then hasFunnelNearby = false end
     local playerObj = getSpecificPlayer(player)
@@ -119,23 +39,115 @@ local function UBOnTransferFuel(squareToApproach, fuelContainer, fuelContainerLi
 end
 
 
-local function UBDoFuelMenu(fuelStorage, playerNum, context)
-    local playerObj = getSpecificPlayer(playerNum)
-    local playerInv = playerObj:getInventory()
-    local squareToApproach = fuelStorage:getSquare()
-	
+function UBContextMenu:DoFluidMenu(context)
+    local squareToApproach = self.barrelObj:getSquare()
+    local barrelFluidContainer = self.barrelObj:getFluidContainer()
+    local barrelFluidInside = barrelFluidContainer:getPrimaryFluid()
+    local barrelContainsMixture = barrelFluidContainer:isMixture()
+    --barrelFluidContainer:canAddFluid(fluid)
+
     -- thats from vanilla method. it seems to verify target square room and current player room
-    if squareToApproach:getBuilding() ~= playerObj:getBuilding() then
+    if squareToApproach:getBuilding() ~= self.playerObj:getBuilding() then
         return 
+    end
+    --if the player can reach the tile, populate the submenu, otherwise don't bother
+    if not squareToApproach or not AdjacentFreeTileFinder.Find(squareToApproach, self.playerObj) then
+        return;
+    end
+
+    function DoTakeFluidMenu()
+        -- need to check exactly after all movements!
+        local hasHoseNearby = playerHasItem(self.loot.inventory, "RubberHose") or playerHasItem(self.playerInv, "RubberHose")
+        local takeOption = context:addOption(getText("ContextMenu_UB_TakeGas"))
+
+        if not (self.barrelObj:getFluidContainer():getAmount() > 0) or pourInto:isEmpty() then
+            takeOption.notAvailable = true
+            takeOption.toolTip = ISWorldObjectContextMenu.addToolTip()
+            takeOption.toolTip.description = getText("Tooltip_UB_NoFuelInBarrel")
+        end
+
+        if SandboxVars.UsefulBarrels.RequireHoseForTake and not hasHoseNearby then 
+            takeOption.notAvailable = true
+            takeOption.toolTip = ISWorldObjectContextMenu.addToolTip()
+            takeOption.toolTip.description = getText("Tooltip_UB_HoseMissing", getItemName("Base.RubberHose"))
+        else
+            local takeMenu = ISContextMenu:getNew(context)
+            context:addSubMenu(takeOption, takeMenu)
+    
+            if pourInto:size() > 1 then
+                local containerOption = takeMenu:addGetUpOption(getText("ContextMenu_UB_PourToAll"), squareToApproach, OnTransferFuel, self.barrelObj, allContainers, playerNum);
+            end
+    
+            for _, destContainer in pairs(allContainers) do
+                local fuelContainerList = {}
+                table.insert(fuelContainerList, destContainer)
+                local containerOption = takeMenu:addGetUpOption(destContainer:getName(), squareToApproach, OnTransferFuel, self.barrelObj, fuelContainerList, playerNum);
+                containerOption.toolTip = ISWorldObjectContextMenu.addToolTip()
+                containerOption.toolTip.maxLineWidth = 512
+                containerOption.toolTip.description = getText("ContextMenu_UB_GasAmount") .. string.format("%d / %d", destContainer:getFluidContainer():getAmount(), destContainer:getFluidContainer():getCapacity())
+            end
+        end
+    end
+
+    function DoAddFluidMenu()
+        local hasFunnelNearby = playerHasItem(self.loot.inventory, "Funnel") or playerHasItem(playerInv, "Funnel")
+        local addOption = context:addOption(getText("ContextMenu_UB_AddGas"))
+        if allContainersWithFuel:isEmpty() then
+            addOption.notAvailable = true
+            addOption.toolTip = ISWorldObjectContextMenu.addToolTip()
+            addOption.toolTip.description = getText("Tooltip_UB_NoFuelInInventory")
+        end
+        if SandboxVars.UsefulBarrels.RequireFunnelForFill and not hasFunnelNearby then
+            addOption.notAvailable = true
+            addOption.toolTip = ISWorldObjectContextMenu.addToolTip()
+            addOption.toolTip.description = getText("Tooltip_UB_FunnelMissing", getItemName("Base.Funnel"))
+        else
+            local addMenu = ISContextMenu:getNew(context)
+            context:addSubMenu(addOption, addMenu)
+
+            if allContainersWithFuel:size() > 1 then
+                local fuelContainerTable = {}
+                for i=0, allContainersWithFuel:size() - 1 do
+                    local container = allContainersWithFuel:get(i)
+                    table.insert(fuelContainerTable, container)
+                end
+                local containerOption = addMenu:addGetUpOption(getText("ContextMenu_UB_AddFromAll"), squareToApproach, OnTransferFuel, self.barrelObj, fuelContainerTable, playerNum, true, hasFunnelNearby);
+            end
+            for i=0, allContainersWithFuel:size()-1 do
+                local fuelContainerTable = {}
+                destContainer = allContainersWithFuel:get(i)
+                table.insert(fuelContainerTable, destContainer)
+                local containerOption = addMenu:addGetUpOption(destContainer:getName(), squareToApproach, OnTransferFuel, self.barrelObj, fuelContainerTable, playerNum, true, hasFunnelNearby);
+                containerOption.toolTip = ISWorldObjectContextMenu.addToolTip()
+                containerOption.toolTip.maxLineWidth = 512
+                containerOption.toolTip.description = getText("ContextMenu_UB_GasAmount") .. string.format("%d / %d", destContainer:getFluidContainer():getAmount(), destContainer:getFluidContainer():getCapacity())
+            end
+        end
+    end
+
+    function GetAllPlayerFluidContainers()
+        -- return all containers empty or not? is this need
+    end
+
+    function GetPlayerFluidContainers() 
+        --return all items with fluids inside
+    end
+
+    function GetPlayerEmptyContainers() 
+        -- return only empty fluid containers
+    end
+
+    function GetPlayerFluidContainersForBarrel(fluidInBarrel)
+        -- return only items with fluidcontainers and fluid in them are already in barrel
     end
 
     local allContainers = {}
     local allContainerTypes = {}
     local allContainersOfType = {}
 
-    local allContainersWithFuel = playerInv:getAllEvalRecurse(predicatePetrol)
+    local allContainersWithFuel = self.playerInv:getAllEvalRecurse(function (item) return UBUtils.predicateFluid(item, Fluid.Petrol) end)
 
-    local pourInto = playerInv:getAllEvalRecurse(predicateStoreFuel)
+    local pourInto = self.playerInv:getAllEvalRecurse(function (item) return  UBUtils.predicateStoreFluid(item, Fluid.Petrol) end)
 
     local hasContainerWithFuel = false
 
@@ -144,11 +156,6 @@ local function UBDoFuelMenu(fuelStorage, playerNum, context)
         local missionOption = context:addOption(getText("ContextMenu_UB_NoContainers"))
         missionOption.notAvailable = true
         return
-    end
-
-    if not squareToApproach or not AdjacentFreeTileFinder.Find(squareToApproach, playerObj) then
-        --if the player can reach the tile, populate the submenu, otherwise don't bother
-        return;
     end
 
     --make a table of all containers
@@ -173,92 +180,54 @@ local function UBDoFuelMenu(fuelStorage, playerNum, context)
     end
     table.insert(allContainerTypes, allContainersOfType)
 
-    local loot = getPlayerLoot(playerNum)
-
     -- take fuel from barrel section
-    local hasHoseNearby = playerHasItem(loot.inventory, "RubberHose") or playerHasItem(playerInv, "RubberHose")
-    local takeOption = context:addOption(getText("ContextMenu_UB_TakeGas"), worldobjects, nil)
-    if not (fuelStorage:getFluidContainer():getAmount() > 0) or pourInto:isEmpty() then
-        takeOption.notAvailable = true
-        takeOption.toolTip = ISWorldObjectContextMenu.addToolTip()
-        takeOption.toolTip.description = getText("Tooltip_UB_NoFuelInBarrel")
-    end
-    if SandboxVars.UsefulBarrels.RequireHoseForTake and not hasHoseNearby then 
-        takeOption.notAvailable = true
-        takeOption.toolTip = ISWorldObjectContextMenu.addToolTip()
-        takeOption.toolTip.description = getText("Tooltip_UB_HoseMissing", getItemName("Base.RubberHose"))
-    else
-        local takeMenu = ISContextMenu:getNew(context)
-        context:addSubMenu(takeOption, takeMenu)
-
-        if pourInto:size() > 1 then
-            local containerOption = takeMenu:addGetUpOption(getText("ContextMenu_UB_PourToAll"), squareToApproach, UBOnTransferFuel, fuelStorage, allContainers, playerNum);
-        end
-
-        for _, destContainer in pairs(allContainers) do
-            local fuelContainerList = {}
-            table.insert(fuelContainerList, destContainer)
-            local containerOption = takeMenu:addGetUpOption(destContainer:getName(), squareToApproach, UBOnTransferFuel, fuelStorage, fuelContainerList, playerNum);
-            containerOption.toolTip = ISWorldObjectContextMenu.addToolTip()
-            containerOption.toolTip.maxLineWidth = 512
-            containerOption.toolTip.description = getText("ContextMenu_UB_GasAmount") .. string.format("%d / %d", destContainer:getFluidContainer():getAmount(), destContainer:getFluidContainer():getCapacity())
-        end
-    end
+    DoTakeFluidMenu()
 
     -- pour fuel to barrel section
-    local hasFunnelNearby = playerHasItem(loot.inventory, "Funnel") or playerHasItem(playerInv, "Funnel")
-    local addOption = context:addOption(getText("ContextMenu_UB_AddGas"), worldobjects, nil)
-    if allContainersWithFuel:isEmpty() then
-        addOption.notAvailable = true
-        addOption.toolTip = ISWorldObjectContextMenu.addToolTip()
-        addOption.toolTip.description = getText("Tooltip_UB_NoFuelInInventory")
-    end
-    if SandboxVars.UsefulBarrels.RequireFunnelForFill and not hasFunnelNearby then
-        addOption.notAvailable = true
-        addOption.toolTip = ISWorldObjectContextMenu.addToolTip()
-        addOption.toolTip.description = getText("Tooltip_UB_FunnelMissing", getItemName("Base.Funnel"))
-    else
-        local addMenu = ISContextMenu:getNew(context)
-        context:addSubMenu(addOption, addMenu)
+    DoAddFluidMenu()
+end
+-- >> end recreated functions from vanilla pz
 
-        if allContainersWithFuel:size() > 1 then
-            local fuelContainerTable = {}
-            for i=0, allContainersWithFuel:size() - 1 do
-                local container = allContainersWithFuel:get(i)
-                table.insert(fuelContainerTable, container)
-            end
-            local containerOption = addMenu:addGetUpOption(getText("ContextMenu_UB_AddFromAll"), squareToApproach, UBOnTransferFuel, fuelStorage, fuelContainerTable, playerNum, true, hasFunnelNearby);
+function UBContextMenu:DoBarrelUncap()
+    if luautils.walkAdj(self.playerObj, self.barrelObj:getSquare(), true) then
+        local allowUncap = true
+
+        if SandboxVars.UsefulBarrels.RequirePipeWrench and self.wrench then
+            ISWorldObjectContextMenu.equip(self.playerObj, self.playerObj:getPrimaryHandItem(), self.wrench, true)
+        else
+            allowUncap = false
         end
-        for i=0, allContainersWithFuel:size()-1 do
-            local fuelContainerTable = {}
-            destContainer = allContainersWithFuel:get(i)
-            table.insert(fuelContainerTable, destContainer)
-            local containerOption = addMenu:addGetUpOption(destContainer:getName(), squareToApproach, UBOnTransferFuel, fuelStorage, fuelContainerTable, playerNum, true, hasFunnelNearby);
-            containerOption.toolTip = ISWorldObjectContextMenu.addToolTip()
-            containerOption.toolTip.maxLineWidth = 512
-            containerOption.toolTip.description = getText("ContextMenu_UB_GasAmount") .. string.format("%d / %d", destContainer:getFluidContainer():getAmount(), destContainer:getFluidContainer():getCapacity())
-        end
+
+        if allowUncap then ISTimedActionQueue.add(ISUBDoBarrelUncap:new(self.playerObj, self.barrelObj, self.wrench)) end
     end
 end
 
--- >> end recreated functions from vanilla pz
+function UBContextMenu:AddInfoOption(context)
+    local infoOption = context:addOption(getText("Fluid_UB_Show_Info"))
+    local tooltip = ISWorldObjectContextMenu.addToolTip()
+    local fluidAmount = self.barrelObj:getFluidContainer():getAmount()
+    local fluidMax = self.barrelObj:getFluidContainer():getCapacity()
+    local fluidName = self.barrelObj:getFluidContainer():getPrimaryFluid():getTranslatedName()
+    local tx = getTextManager():MeasureStringX(tooltip.font, fluidName .. ":") + 20
+    tooltip.description = tooltip.description .. UBUtils.FormatFluidAmount(tx, fluidAmount, fluidMax, fluidName);
+    infoOption.toolTip = tooltip
+end
 
-local function UBContextMenu(player, context, worldobjects, test)
+function UBContextMenu:RemoveVanillaOptions(context, subcontext)
+    if context:getOptionFromName(getText("ContextMenu_AddWaterFromItem")) then context:removeOptionByName(getText("ContextMenu_AddWaterFromItem")) end
+    if subcontext:getOptionFromName(getText("Fluid_Show_Info")) then subcontext:removeOptionByName(getText("Fluid_Show_Info")) end
+    if subcontext:getOptionFromName(getText("Fluid_Transfer_Fluids")) then subcontext:removeOptionByName(getText("Fluid_Transfer_Fluids")) end
+    if subcontext:getOptionFromName(getText("ContextMenu_Drink")) then subcontext:removeOptionByName(getText("ContextMenu_Drink")) end
+    if subcontext:getOptionFromName(getText("ContextMenu_Fill")) then subcontext:removeOptionByName(getText("ContextMenu_Fill")) end
+    if subcontext:getOptionFromName(getText("ContextMenu_Wash")) then subcontext:removeOptionByName(getText("ContextMenu_Wash")) end
+end
+
+function UBContextMenu:MainMenu(player, context, worldobjects, test)
     local fetch = ISWorldObjectContextMenu.fetchVars or {}
-	local playerInv = getSpecificPlayer(player):getInventory()
-	local playerHasPipeWrench = playerHasItem(playerInv, "PipeWrench")
-    local barrelObj = UBGetValidBarrel(worldobjects)
 
-    if not barrelObj then return end
-
-    local hasFluidContainer = barrelObj:hasComponent(ComponentType.FluidContainer)
-    local objectName = barrelObj:getSprite():getProperties():Val("CustomName")
-    local objectLabel = getMoveableDisplayName(barrelObj)
-
-    if not hasFluidContainer then
-        local openBarrelOption = context:addOptionOnTop(getText("ContextMenu_UB_UncapBarrel", objectLabel), player, IBDoBarrelUncap, barrelObj);
-        --local openBarrelOption = context:addOptionOnTop(string.format("%s %s", getText("ContextMenu_UB_UncapBarrel"), objectLabel), player, doBarrelUncap, drumStorageObj);
-        if not playerHasPipeWrench and SandboxVars.UsefulBarrels.RequirePipeWrench then
+    if not self.barrelHasFluidContainer then
+        local openBarrelOption = context:addOptionOnTop(getText("ContextMenu_UB_UncapBarrel", self.objectLabel), nil, function() return UBContextMenu:DoBarrelUncap() end);
+        if not self.playerHasPipeWrench and SandboxVars.UsefulBarrels.RequirePipeWrench then
             openBarrelOption.notAvailable = true;
             local tooltip = ISWorldObjectContextMenu.addToolTip()
             openBarrelOption.toolTip = tooltip
@@ -266,39 +235,41 @@ local function UBContextMenu(player, context, worldobjects, test)
         end
     end
 
-    if hasFluidContainer then
+    if self.hasFluidContainer then
         -- get vanilla FluidContainer object option
-        local barrelOption = context:getOptionFromName(objectLabel)
+        local barrelOption = context:getOptionFromName(self.objectLabel)
         if not barrelOption then
-            barrelOption = context:getOptionFromName(objectName)
+            barrelOption = context:getOptionFromName(self.objectName)
         end
 
         if barrelOption then
             local barrelMenu = context:getSubMenu(barrelOption.subOption)
-
-            -- remove all vanilla options
-            if context:getOptionFromName(getText("ContextMenu_AddWaterFromItem")) then context:removeOptionByName(getText("ContextMenu_AddWaterFromItem")) end
-            if barrelMenu:getOptionFromName(getText("Fluid_Show_Info")) then barrelMenu:removeOptionByName(getText("Fluid_Show_Info")) end
-            if barrelMenu:getOptionFromName(getText("Fluid_Transfer_Fluids")) then barrelMenu:removeOptionByName(getText("Fluid_Transfer_Fluids")) end
-            if barrelMenu:getOptionFromName(getText("ContextMenu_Drink")) then barrelMenu:removeOptionByName(getText("ContextMenu_Drink")) end
-            if barrelMenu:getOptionFromName(getText("ContextMenu_Fill")) then barrelMenu:removeOptionByName(getText("ContextMenu_Fill")) end
-            if barrelMenu:getOptionFromName(getText("ContextMenu_Wash")) then barrelMenu:removeOptionByName(getText("ContextMenu_Wash")) end
-
-            local infoOption = barrelMenu:addOption(getText("Fluid_UB_Show_Info"))
-            local tooltip = ISWorldObjectContextMenu.addToolTip()
-            local tx = getTextManager():MeasureStringX(tooltip.font, getText("Fluid_Name_Petrol") .. ":") + 20
-            local fluidAmount = barrelObj:getFluidContainer():getAmount();
-            local fluidMax = barrelObj:getFluidContainer():getCapacity();
-            tooltip.description = tooltip.description .. UBFormatFluidAmount(tx, fluidAmount, fluidMax, "Fluid_Name_Petrol");
-            infoOption.toolTip = tooltip
-            -- add our own menu
-            UBDoFuelMenu(barrelObj, player, barrelMenu)
+            self:RemoveVanillaOptions(context, barrelMenu)
+            self:AddInfoOption(barrelMenu) -- info option instead of a whole UI window
+            UBContextMenu:DoFluidMenu(player, barrelMenu) -- add our own menu
         end
     end
-
 end
 
-Events.OnFillWorldObjectContextMenu.Add(UBContextMenu)
+function UBContextMenu:Bootstrap(player, context, worldobjects, test)
+    local o = self
+    o.playerObj = getSpecificPlayer(player)
+    o.loot = getPlayerLoot(player)
+    o.playerInv = o.playerObj:getInventory()
+    o.wrench = playerGetItem(o.playerInv, "PipeWrench") -- FIXME check for broken
+    o.playerHasPipeWrench = playerHasItem(o.playerInv, "PipeWrench")
+    o.barrelObj = UBUtils:GetValidBarrelObject(worldobjects)
+    
+    if not o.barrelObj then return end
+
+    o.barrelHasFluidContainer = o.barrelObj:hasComponent(ComponentType.FluidContainer)
+    o.objectName = o.barrelObj:getSprite():getProperties():Val("CustomName")
+    o.objectLabel = UBUtils:getMoveableDisplayName(o.barrelObj)
+    -- do I actually need all that shit? try the vanilla one
+    return self:MainMenu(player, context, worldobjects, test)
+end
+
+Events.OnFillWorldObjectContextMenu.Add(function (player, context, worldobjects, test) return UBContextMenu:Bootstrap(player, context, worldobjects, test) end)
 
 local ISMoveableSpriteProps_canPickUpMoveable = ISMoveableSpriteProps.canPickUpMoveable
 function ISMoveableSpriteProps:canPickUpMoveable( _character, _square, _object )
