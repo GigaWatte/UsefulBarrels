@@ -10,3 +10,5 @@ FIXME Forbid store non fuel liquids (possibly by whitelist filter)
 FIXME Forbid barrel being plumbable
 FIXME Barrel can be fueled being in hand! need to close input
 TODO Refueling car from barrel by Rubber Hose (hose:optional)
+
+TODO fuel trailers
