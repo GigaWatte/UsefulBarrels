@@ -3,6 +3,13 @@ id=3436537035
 title=[B42] Useful Barrels
 description=Barrels can actually be more than just a sprite!
 description=
+description=!!! Important:
+description=For now Barrel technically can store other liquids than Gas that can be added via various context options but using mod context option pouring out is always the Gas. 
+description=I want to rewrite this logic so that the barrel can store and properly work with any type of fluid. 
+description=The main problem is that in Lua I can add an amount of specific fluid but I can not remove an amount of specific fluid due to no appropriate method available.
+description=This is the reason of current restrictions for gas-only operations. 
+description=I'm still trying to find a workaround.
+description=
 description=Features:
 description=- Use your Pipe Wrench to open the lid of the barrel
 description=- Uses new FluidContainer system of b42
@@ -10,33 +17,34 @@ description=- The amount of liquid inside the barrel affects the encumberance
 description=- Rubber Hose to take Gas from barrel
 description=- Funnel for pouring Gas into the barrel
 description=- Funnel may speedup pouring action
-description=- Sandbox variables to control mod behaviour as you want (capacity, tools requirement and bonus modifiers)
+description=- Sandbox variables to control mod behaviour as you want (capacity, tools requirement and bonus modifiers)
 description=
 description=Notes:
-description=- Is safe to add in existing saves as well as removing, FuidContainer will remain.
+description=- Is safe to add in existing saves as well as removing, FuidContainer will remain.
 description=- Barrels will be empty initially.
 description=- Currently there is no options to refuel generator or vehicle directly. I'll try to add that in the future.
+description=- Barrel can be plumbed when placed under Rain Collector Barrel/Crate. I'm still thinking about what to do with it. I'll leave it as is for now.
 description=
 description=WIP:
+description=- Storing any type of fluid
 description=- Refueling generator from Barrel
 description=- Add Base.MetalDrum as Barrel for storing Gas
-description=- More translations
-description=
-description=Future plans:
-description=- Randomized initial fluid and amount in new Barrel with sandbox vars control
+description=- More translations
+description=
+description=Future plans:
+description=- Randomized initial fluid and amount in new Barrel with sandbox vars control
 description=
 description=Known bugs:
 description=- Barrel can be filled while equipped in hand slot. Unequip it to be able to place on ground.
-description=- Barrel can be plumbed when placed under Rain Collector Barrel/Crate.
-description=- Barrel can store other fluids then Gas via various context options. I wish to limit this option to store only Industrial related fluids.
 description=- Got reports that Barrel is not persisting the Gas if placed in locations located far away from vanilla (x:20000+) but I can not reproduce this issue. Still needs to be checked.
-description=- Got reports about infinite Gas when pumped out all Gas. Also can not reproduce and waiting for more information.
+description=- Got reports about infinite Gas when pumped out all Gas. Trying to figure out it.
 description=
-description=Credits:
-description=Thanks to [url=https://steamcommunity.com/profiles/76561198022328017]????2346134[/url] for CN translation.
-description=Thanks to [url=https://steamcommunity.com/id/NopOYes]NopOYes[/url] for PTBR translation.
-description=Thanks to [url=https://steamcommunity.com/id/mainfish]MainFish[/url] for RU translation.
-description=
+description=Credits:
+description=Thanks to [url=https://steamcommunity.com/profiles/76561198022328017]????2346134[/url] for CN translation.
+description=Thanks to [url=https://steamcommunity.com/id/NopOYes]NopOYes[/url] for PTBR translation.
+description=Thanks to [url=https://steamcommunity.com/id/mainfish]MainFish[/url] for RU translation.
+description=Thanks to [url=https://steamcommunity.com/profiles/76561198062695591]Hx[/url] for KO translation.
+description=
 description=This is my first experience making a mod, so it may not be perfect.
 description=Feel free to report bugs and suggestions for improvement!
 tags=Build 42;Misc;Realistic;QoL;WIP
