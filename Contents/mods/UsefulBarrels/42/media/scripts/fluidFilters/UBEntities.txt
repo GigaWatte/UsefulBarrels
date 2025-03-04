@@ -1,0 +1,20 @@
+module UB
+{
+    entity Barrel
+    {
+        component FluidContainer
+        {
+            ContainerName   = Barrel,
+            capacity        = 800,
+            InitialPercentMin      = 0.05,
+            InitialPercentMax      = 0.15,
+
+            fluids
+            {
+                fluid           = Petrol:1.0,
+            }
+
+            whitelist = BarrelFilter,
+        }
+    }
+}

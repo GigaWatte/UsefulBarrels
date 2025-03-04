@@ -1,0 +1,15 @@
+module UB
+{
+    fluidFilter BarrelFilter
+    {
+        whitelist = true,
+        fluids
+        {
+            Petrol,
+        }
+        categories
+        {
+            Industrial,
+        }
+    }
+}
