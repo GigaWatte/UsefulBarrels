@@ -8,4 +8,6 @@ Sandbox_CN = {
     Sandbox_UsefulBarrelsRequireHose_tooltip = "若勾选，则需要需要一根橡胶软管从汽油桶中取出汽油。"
     Sandbox_UsefulBarrelsRequireFunnelForFill = "是否需要漏斗"
     Sandbox_UsefulBarrelsRequireFunnelForFill_tooltip = "若勾选，则需要一个漏斗将汽油灌入汽油桶。"
+    Sandbox_UsefulBarrelsFunnelSpeedUpFillModifier = "使用漏斗来加速"
+    Sandbox_UsefulBarrelsFunnelSpeedUpFillModifier_tooltip = "如果你的身边或者身上有漏斗，将加速抽取汽油的过程<br>例如: 1.25 意味着速度将提升为原先的1.25倍<br>设置为 1 则取消加速 <br> 无论是否启用了'是否需要漏斗' 这一选项"
 }
