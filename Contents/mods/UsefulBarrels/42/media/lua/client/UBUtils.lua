@@ -7,6 +7,10 @@ function UBUtils.predicateFluid(item, fluid)
 	return item:getFluidContainer() and item:getFluidContainer():contains(fluid) and (item:getFluidContainer():getAmount() >= 0.5)
 end
 
+function UBUtils.predicateAnyFluid(item)
+	return item:getFluidContainer() and (item:getFluidContainer():getAmount() >= 0.5)
+end
+
 function UBUtils.predicateStoreFluid(item, fluid)
 	local fluidContainer = item:getFluidContainer()
 	if not fluidContainer then return false end
@@ -49,27 +53,11 @@ end
 -- >> end functions from vanilla pz
 
 function UBUtils.GetValidBarrelObject(worldobjects)
-    local valid_sprite_names = {
-        "industry_01_22", 
-        "industry_01_23", 
-        "location_military_generic_01_14", 
-        "location_military_generic_01_15", 
-        "location_military_generic_01_6", 
-        "location_military_generic_01_7",
-    }
-
-    for i,isoobject in ipairs(worldobjects) do
-		if not isoobject or not isoobject:getSquare() then return end
-        if not isoobject:getSprite() then return end
-        if not isoobject:getSpriteName() then return end
-        for i = 1, #valid_sprite_names do
-            if isoobject:getSpriteName() == valid_sprite_names[i] then return isoobject end
-        end
-    end
-
-
     local valid_barrel_moveable_names = {
-        ""
+        "Base.MetalDrum",
+		"Base.Mov_LightGreenBarrel",
+		"Base.Mov_OrangeBarrel",
+		"Base.Mov_DarkGreenBarrel",
     }
 
     for i,isoobject in ipairs(worldobjects) do
@@ -77,9 +65,14 @@ function UBUtils.GetValidBarrelObject(worldobjects)
         if not isoobject:getSprite() then return end
         if not isoobject:getSpriteName() then return end
         for i = 1, #valid_barrel_moveable_names do
-            if isoobject:getSprite():getProperties():Val("CustomName") == valid_sprite_names[i] then return isoobject end
+            if isoobject:getSprite():getProperties():Val("CustomItem") == valid_barrel_moveable_names[i] then return isoobject end
         end
     end
 end
+
+function UBUtils.playerHasItem(playerInv, itemName) return playerInv:containsTypeEvalRecurse(itemName, UBUtils.predicateNotBroken) or playerInv:containsTagEvalRecurse(itemName, UBUtils.predicateNotBroken) end
+
+function UBUtils.playerGetItem(playerInv, itemName) return playerInv:getFirstTypeEvalRecurse(itemName, UBUtils.predicateNotBroken) or playerInv:getFirstTagEvalRecurse(itemName, UBUtils.predicateNotBroken) end
+
 
 return UBUtils
