@@ -1,0 +1,13 @@
+Sandbox_ES = {
+    Sandbox_UsefulBarrels = "Barriles Útiles",
+    Sandbox_UsefulBarrelsBarrelCapacity = "Capacidad del Barril",
+    Sandbox_UsefulBarrelsBarrelCapacity_tooltip = "Es la capacidad máxima del barril.<br>Solo se aplica a barriles nuevos y no afecta a barriles usados previamente.",
+    Sandbox_UsefulBarrelsRequirePipeWrench = "Llave de Tubo Requerida",
+    Sandbox_UsefulBarrelsRequirePipeWrench_tooltip = "Se requiere una llave de tubo para abrir la tapa del barril.",
+    Sandbox_UsefulBarrelsRequireHose = "Manguera de Goma Requerida",
+    Sandbox_UsefulBarrelsRequireHose_tooltip = "Se requiere una manguera de goma para extraer gasolina del barril.",
+    Sandbox_UsefulBarrelsRequireFunnelForFill = "Embudo Requerido",
+    Sandbox_UsefulBarrelsRequireFunnelForFill_tooltip = "Se requiere un embudo para agregar gasolina al barril.",
+    Sandbox_UsefulBarrelsFunnelSpeedUpFillModifier = "Modificador de Velocidad con Embudo",
+    Sandbox_UsefulBarrelsFunnelSpeedUpFillModifier_tooltip = "Si el embudo está cerca, aumenta la velocidad de llenado del barril según el modificador.<br>Ejemplo: Un valor de 1.25 significa un 25% de bonificación o 1.25 veces más rápido.<br>Establece en 1 para desactivar la bonificación de velocidad.<br>Funciona independientemente de la opción 'Embudo Requerido'.",
+}

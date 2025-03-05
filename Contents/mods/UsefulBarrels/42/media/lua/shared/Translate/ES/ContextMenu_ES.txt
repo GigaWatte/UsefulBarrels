@@ -1,0 +1,10 @@
+ContextMenu_ES = {
+    ContextMenu_UB_UncapBarrel = "%1 Abrir",
+    ContextMenu_UB_TakeGas = "Tomar combustible",
+    ContextMenu_UB_PourToAll = "Llenar todo",
+    ContextMenu_UB_AddGas = "Agregar combustible",
+    ContextMenu_UB_AddFromAll = "Vaciar todo",
+    ContextMenu_UB_NoFuelInInventory = "No hay combustible para agregar",
+    ContextMenu_UB_GasAmount = "Cantidad de combustible: ",
+    ContextMenu_UB_NoContainers = "No hay contenedores de combustible",
+} 

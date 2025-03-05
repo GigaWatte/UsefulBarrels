@@ -1,0 +1,4 @@
+Fluids_ES = {
+    Fluid_UB_Show_Info = "Información del combustible",
+    Fluid_Container_UB_Fuel_Barrel = "Barril",
+} 
