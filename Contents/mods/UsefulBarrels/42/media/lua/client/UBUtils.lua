@@ -59,7 +59,6 @@ function UBUtils.GetValidBarrelObject(worldobjects)
 		"Base.Mov_OrangeBarrel",
 		"Base.Mov_DarkGreenBarrel",
     }
-
     for i,isoobject in ipairs(worldobjects) do
 		if not isoobject or not isoobject:getSquare() then return end
         if not isoobject:getSprite() then return end
@@ -212,8 +211,36 @@ function UBUtils.CleanItemContainersFromBarrels(containerList, container)
             end
         end
     end
-
 	return filteredContainerList
+end
+
+function UBUtils.CalculateTooltipWeight(_object)
+	local weight = 0
+	if _object then
+		local itemWeight
+		if _object:hasComponent(ComponentType.FluidContainer) then
+			itemWeight = _object:getFluidContainer():getAmount()
+		end
+		local sprite = _object:getSprite()
+		local props = sprite:getProperties()
+		if props and props:Is("CustomItem")  then
+			local customItem = props:Val("CustomItem")
+			local itemInstance = nil;
+			if not ISMoveableSpriteProps.itemInstances[customItem] then
+				itemInstance = instanceItem(customItem);
+				if itemInstance then
+					ISMoveableSpriteProps.itemInstances[customItem] = itemInstance;
+				end
+			else
+				itemInstance = ISMoveableSpriteProps.itemInstances[customItem];
+			end
+			if itemInstance then
+				itemWeight = itemWeight + itemInstance:getActualWeight()
+			end
+		end
+		weight = itemWeight
+    end
+	return weight
 end
 
 return UBUtils

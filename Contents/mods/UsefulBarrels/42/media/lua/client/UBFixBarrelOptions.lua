@@ -1,38 +1,26 @@
 
 local UBUtils = require "UBUtils"
--- modify weight params to include fluid container weight also
-local ISMoveableSpriteProps_canPickUpMoveable = ISMoveableSpriteProps.canPickUpMoveable
-function ISMoveableSpriteProps:canPickUpMoveable( _character, _square, _object )
-    if _object and _object:getFluidContainer() and not _object:getFluidContainer():isEmpty() then
+local ISMoveableSpriteProps_canPickUpMoveableInternal = ISMoveableSpriteProps.canPickUpMoveableInternal
+function ISMoveableSpriteProps:canPickUpMoveableInternal( _character, _square, _object, _isMulti)
+    local canPickUp = ISMoveableSpriteProps_canPickUpMoveableInternal(self, _character, _square, _object, _isMulti)
+    if _object then
         local modData = _object:getModData()
-        if modData["UB_Uncapped"] ~= nil then
-            local sprite = _object:getSprite()
-            local props = sprite:getProperties()
-            local itemWeight = _object:getFluidContainer():getAmount()
-    
-            if props and props:Is("CustomItem")  then
-                local customItem = props:Val("CustomItem")
-                local itemInstance = nil;
-                if not ISMoveableSpriteProps.itemInstances[customItem] then
-                    itemInstance = instanceItem(customItem);
-                    if itemInstance then
-                        ISMoveableSpriteProps.itemInstances[customItem] = itemInstance;
-                    end
-                else
-                    itemInstance = ISMoveableSpriteProps.itemInstances[customItem];
-                end
-    
-                if itemInstance then
-                    itemWeight = itemWeight + itemInstance:getActualWeight()
-                end
-            end
-
-            self.weight = itemWeight
-            self.rawWeight = self.weight * 10
+        if modData and modData["UB_Uncapped"] ~= nil then
+            canPickUp = _character:getInventory():hasRoomFor(_character, UBUtils.CalculateTooltipWeight(_object))
         end
     end
-
-    return ISMoveableSpriteProps_canPickUpMoveable(self, _character, _square, _object)
+    return canPickUp
+end
+local ISMoveableSpriteProps_getInfoPanelFlagsGeneral = ISMoveableSpriteProps.getInfoPanelFlagsGeneral
+function ISMoveableSpriteProps:getInfoPanelFlagsGeneral( _square, _object, _player, _mode )
+    ISMoveableSpriteProps_getInfoPanelFlagsGeneral(self, _square, _object, _player, _mode )
+    if _object then
+        local modData = _object:getModData()
+        if modData and modData["UB_Uncapped"] ~= nil then
+            InfoPanelFlags.weight = tostring(round(UBUtils.CalculateTooltipWeight(_object), 3))
+            InfoPanelFlags.tooHeavy = not _player:getInventory():hasRoomFor(_player, UBUtils.CalculateTooltipWeight(_object))
+        end
+    end
 end
 -- patch fuel menu to remove my barrels from it
 local ISWorldObjectContextMenu_doFillFuelMenu = ISWorldObjectContextMenu.doFillFuelMenu
