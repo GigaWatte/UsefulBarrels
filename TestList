@@ -1,0 +1,19 @@
+- test barrel uncap for all 4 barrel types
+- test uncap wwith disabled Wrench requirements
+- test character can reach tile and show menu
+- test take fluid
+- test take fluid without hose requirements
+- test add fluid
+- test add fluid with funnel requirements
+- test add fluid with speed modifier
+- test with gas and water above
+- try to mix fluid
+- try without fluid containers
+- try instruments in inventory or on ground
+- test fluid categories
+- test pickup
+- test fill from other fluidcontainers and gas pump
+- take any liquid must not work whike barrel in inventory
+- test with fluid not disassebable
+
+double encumberance
