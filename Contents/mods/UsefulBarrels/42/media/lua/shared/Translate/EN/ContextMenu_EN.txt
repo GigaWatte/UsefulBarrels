@@ -1,10 +1,5 @@
 ContextMenu_EN = {
     ContextMenu_UB_UncapBarrel = "Uncap %1"
-    ContextMenu_UB_TakeGas = "Take Gas"
-    ContextMenu_UB_PourToAll = "Fill all"
-    ContextMenu_UB_AddGas = "Add Gas"
-    ContextMenu_UB_AddFromAll = "Empty All"
-    ContextMenu_UB_NoFuelInInventory = "No Gas to add"
-    ContextMenu_UB_GasAmount = "Gas amount: "
-    ContextMenu_UB_NoContainers = "No Gas Containers"
+    ContextMenu_UB_AddFluid = "Add"
+    ContextMenu_UB_RefuelFromBarrel = "TBD: Refuel From Barrel"
 }
