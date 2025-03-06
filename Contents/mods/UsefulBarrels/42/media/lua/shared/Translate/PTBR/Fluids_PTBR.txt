@@ -1,4 +1,5 @@
 Fluids_PTBR = {
     Fluid_UB_Show_Info = "Informações do Combustível",
-    Fluid_Container_UB_Fuel_Barrel = "Barril",
+    Fluid_Container_UB_Barrel = "Barril",
+    Fluid_Container_UB_MetalDrum = "Metal Drum",
 }
