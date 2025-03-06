@@ -1,8 +1,16 @@
+TODO Add more translations
 TODO store any fluids -- done
 TODO add categories -- done
 TODO Refueling generator from a barrel by Rubber Hose (hose:optional)
 TODO Refueling car from barrel by Rubber Hose (hose:optional)
 FIXME Check barrel disassembly with fluid inside -- fixed
-TODO Add more translations
 FIXME Barrel can be fueled being in hand! need to close input -- fixed
-TODO fuel trailers
+TODO random initial fluid
+FIXME barrel very fragile
+
+TODO IDEA - integration with fuel trailers
+TODO SUGGESTED - tarp or trash bags to store clean  fluids?
+TODO SUGGESTED - plump from rain collector to push water down
+TODO make barrel with fluid moveable somehow
+TODO IDEA - Add mod changelog integration
+TODO IDEA - easter egg - Jeebus barrel!!! Water into fuel - very rare
