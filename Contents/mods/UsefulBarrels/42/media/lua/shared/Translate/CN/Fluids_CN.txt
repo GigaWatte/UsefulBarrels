@@ -1,4 +1,5 @@
 Fluids_CN = {
     Fluid_UB_Show_Info = "剩余汽油"
-    Fluid_Container_UB_Fuel_Barrel = "汽油桶"
+    Fluid_Container_UB_Barrel = "汽油桶"
+    Fluid_Container_UB_MetalDrum = "Metal Drum"
 }
