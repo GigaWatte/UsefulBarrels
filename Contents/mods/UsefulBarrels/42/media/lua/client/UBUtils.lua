@@ -93,8 +93,30 @@ end
 --	end
 --	return fluidContainers
 --end
+function UBUtils.ValidateFluidCategoty(fluidContainer)
+	local allowList = {
+		[FluidCategory.Industrial] = SandboxVars.UsefulBarrels.AllowIndustrial,
+		[FluidCategory.Fuel]       = SandboxVars.UsefulBarrels.AllowFuel,
+		[FluidCategory.Hazardous]  = SandboxVars.UsefulBarrels.AllowHazardous,
+		[FluidCategory.Alcoholic]  = SandboxVars.UsefulBarrels.AllowAlcoholic,
+		[FluidCategory.Beverage]   = SandboxVars.UsefulBarrels.AllowBeverage,
+		[FluidCategory.Medical]    = SandboxVars.UsefulBarrels.AllowMedical,
+		[FluidCategory.Colors]     = SandboxVars.UsefulBarrels.AllowColors,
+		[FluidCategory.Dyes]       = SandboxVars.UsefulBarrels.AllowDyes,
+		[FluidCategory.HairDyes]   = SandboxVars.UsefulBarrels.AllowHairDyes,
+		[FluidCategory.Poisons]    = SandboxVars.UsefulBarrels.AllowPoisons,
+		[FluidCategory.Water]      = SandboxVars.UsefulBarrels.AllowWater,
+	}
+	local fluid = fluidContainer:getPrimaryFluid()
+	if not fluid then return true end
+	for category, allowed in pairs(allowList) do
+		if fluid:isCategory(category) and allowed then return true end
+	end
+	return false
+end
 
 function UBUtils.CanTransferFluid(sourceContainers, targetFluidContainer, transferToSource)
+
 	local toSource = transferToSource ~= nil
 	local allContainers = {}
 	-- TODO validate on categories also!!
@@ -102,7 +124,10 @@ function UBUtils.CanTransferFluid(sourceContainers, targetFluidContainer, transf
 	for _,container in pairs(sourceContainers) do
 		local fluidContainer = container:getComponent(ComponentType.FluidContainer)
 		if not toSource and FluidContainer.CanTransfer(fluidContainer, targetFluidContainer) then
-			table.insert(allContainers, container)
+			-- verify is that fluid caregory is allowed
+			if UBUtils.ValidateFluidCategoty(fluidContainer) then
+				table.insert(allContainers, container)
+			end
 		elseif toSource and FluidContainer.CanTransfer(targetFluidContainer, fluidContainer) then
 			table.insert(allContainers, container)
 		end
