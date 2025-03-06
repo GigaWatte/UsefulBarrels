@@ -1,10 +1,5 @@
 ContextMenu_TR = {
     ContextMenu_UB_UncapBarrel = "%1 Aç",
-    ContextMenu_UB_TakeGas = "Yakıt al",
-    ContextMenu_UB_PourToAll = "Hepsini doldur",
-    ContextMenu_UB_AddGas = "Yakıt ekle",
-    ContextMenu_UB_AddFromAll = "Hepsini boşalt",
-    ContextMenu_UB_NoFuelInInventory = "Eklenecek yakıt yok",
-    ContextMenu_UB_GasAmount = "Yakıt miktarı: ",
-    ContextMenu_UB_NoContainers = "Yakıt kabı yok",
+    ContextMenu_UB_AddFluid = "Add",
+    ContextMenu_UB_RefuelFromBarrel = "TBD: Refuel From Barrel",
 }

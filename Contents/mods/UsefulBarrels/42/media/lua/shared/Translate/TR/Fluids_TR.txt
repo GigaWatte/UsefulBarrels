@@ -1,4 +1,5 @@
 Fluids_TR = {
-    "Fluid_UB_Show_Info": "Yakıt bilgisi",
-    "Fluid_Container_UB_Fuel_Barrel": "Varil",
+    Fluid_UB_Show_Info = "Yakıt bilgisi",
+    Fluid_Container_UB_Barrel = "Varil",
+    Fluid_Container_UB_MetalDrum = "Metal Drum",
 }
