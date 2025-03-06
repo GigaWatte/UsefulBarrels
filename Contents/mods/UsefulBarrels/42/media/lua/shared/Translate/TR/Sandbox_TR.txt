@@ -1,0 +1,13 @@
+Sandbox_TR = {
+    "Sandbox_UsefulBarrels": "Yararlı Variller",
+    "Sandbox_UsefulBarrelsBarrelCapacity": "Varil Kapasitesi",
+    "Sandbox_UsefulBarrelsBarrelCapacity_tooltip": "Bu, varilin maksimum kapasitesidir.<br>Yalnızca yeni variller için geçerlidir ve daha önce kullanılan varillere etki etmez.",
+    "Sandbox_UsefulBarrelsRequirePipeWrench": "Boru Anahtarı Gereklidir",
+    "Sandbox_UsefulBarrelsRequirePipeWrench_tooltip": "Varilin kapağını açmak için bir boru anahtarı gereklidir.",
+    "Sandbox_UsefulBarrelsRequireHose": "Lastik Hortum Gereklidir",
+    "Sandbox_UsefulBarrelsRequireHose_tooltip": "Varilden benzin çekmek için bir lastik hortum gereklidir.",
+    "Sandbox_UsefulBarrelsRequireFunnelForFill": "Huni Gereklidir",
+    "Sandbox_UsefulBarrelsRequireFunnelForFill_tooltip": "Varile benzin eklemek için bir huni gereklidir.",
+    "Sandbox_UsefulBarrelsFunnelSpeedUpFillModifier": "Huni ile Doldurma Hızlandırıcı Modifikatörü",
+    "Sandbox_UsefulBarrelsFunnelSpeedUpFillModifier_tooltip": "Eğer huni yakınsa, varilin doldurma hızını modifikatöre göre artırır.<br>Örnek: 1.25'lik bir değer, %25'lik bir bonus veya 1.25 kat daha hızlı demektir.<br>Hız bonusunu devre dışı bırakmak için 1 olarak ayarlayın.<br>'Huni Gereklidir' seçeneğinden bağımsız olarak çalışır.",
+}
