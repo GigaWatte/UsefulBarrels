@@ -1,7 +1,7 @@
 Tooltip_ES = {
     Tooltip_UB_WrenchMissing = "Se requiere %1 para abrir.",
-    Tooltip_UB_NoFuelInInventory = "No hay combustible en el inventario.",
-    Tooltip_UB_NoFuelInBarrel = "No hay combustible en el barril.",
+    Tooltip_UB_NoProperFluidInInventory = "No hay combustible en el inventario.",
+    Tooltip_UB_NoProperFluidInBarrel = "No hay combustible en el barril.",
     Tooltip_UB_HoseMissing = "Se requiere %1 para transferir gasolina.<br>Colócalo cerca o en tu inventario.",
     Tooltip_UB_FunnelMissing = "Se requiere %1 para agregar gasolina.<br>Colócalo cerca o en tu inventario.",
 }
