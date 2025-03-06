@@ -157,6 +157,25 @@ function UBUtils.GetTranslatedFluidNameOrEmpty(fluidObject)
 	end
 end
 
+function UBUtils.FilterMyBarrels(allContainers)
+	local containers = {}
+	local namesToSearch = {
+		Translator.getItemNameFromFullType("Base.MetalDrum"),
+		Translator.getItemNameFromFullType("Base.Mov_LightGreenBarrel"),
+		Translator.getItemNameFromFullType("Base.Mov_OrangeBarrel"),
+		Translator.getItemNameFromFullType("Base.Mov_DarkGreenBarrel"),
+	}
+	-- remove barrel options from sub menu
+	for _,container in pairs(allContainers) do
+		local foundMatch = false
+		for i = 1, #namesToSearch do
+			if container:getName() == namesToSearch[i] then foundMatch = true end
+		end
+		if not foundMatch then table.insert(containers, container) end
+	end
+	return containers
+end
+
 function UBUtils.CleanMenuFromBarrels(context, optionName)
 	local option = context:getOptionFromName(optionName)
 	if option then

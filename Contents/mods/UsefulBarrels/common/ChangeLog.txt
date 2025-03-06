@@ -1,0 +1,15 @@
+[ 07/03/2025 ]
+2.0.0:
+- Storing any fluids in Barrel (configurable via Sandbox vars)
+- Reworked almost all code base. Should be more stable now
+- Reworked PickUp tooltip and canMickUp validations code
+- Added Metal Drum as new possible fluid container
+- Barrel detection now relies on customName instead of sprite names
+- Fixed Barrel can be disassembled with fluid inside
+- Fixed Barrel can be filled from Gas pump or other fluid sources by being equipped in hands
+- Added more Sandbox options for future updates
+- Added TR translation, Thanks to @RedSystem
+- Added ES translation, Thanks to @Dust Runner
+- Added KO translation, Thanks to @Hx
+- Added Chuckleberry Finn's Mod Update and Alert System integration
+[ ------ ]

@@ -43,25 +43,6 @@ function UBContextMenu:DoFluidMenu(context)
         return;
     end
 
-    function FilterMyBarrels(allContainers)
-        local containers = {}
-        local namesToSearch = {
-            Translator.getItemNameFromFullType("Base.MetalDrum"),
-            Translator.getItemNameFromFullType("Base.Mov_LightGreenBarrel"),
-            Translator.getItemNameFromFullType("Base.Mov_OrangeBarrel"),
-            Translator.getItemNameFromFullType("Base.Mov_DarkGreenBarrel"),
-        }
-        -- remove barrel options from sub menu
-        for _,container in pairs(allContainers) do
-            local foundMatch = false
-            for i = 1, #namesToSearch do
-                if container:getName() == namesToSearch[i] then foundMatch = true end
-            end
-            if not foundMatch then table.insert(containers, container) end
-        end
-        return containers
-    end
-    
     function DoTakeFluidMenu()
         local hasHoseNearby = UBUtils.playerHasItem(self.loot.inventory, "RubberHose") or UBUtils.playerHasItem(self.playerInv, "RubberHose")
         -- find all items that contain fluid from barrel or empty
@@ -69,7 +50,7 @@ function UBContextMenu:DoFluidMenu(context)
         -- convert to table
         local fluidContainerItemsTable = UBUtils.ConvertToTable(fluidContainerItems)
         -- get only items that can be filled
-        local filteredFromBarrels = FilterMyBarrels(fluidContainerItemsTable)
+        local filteredFromBarrels = UBUtils.FilterMyBarrels(fluidContainerItemsTable)
         local allContainers = UBUtils.CanTransferFluid(filteredFromBarrels, self.barrelFluidContainer, true)
         local allContainerTypes = UBUtils.SortContainers(allContainers)
         local takeOption = context:insertOptionAfter(getText("Fluid_UB_Show_Info", self.fluidName), getText("ContextMenu_Fill"))
@@ -124,7 +105,7 @@ function UBContextMenu:DoFluidMenu(context)
         local fluidContainerItems = self.playerInv:getAllEvalRecurse(function (item) return UBUtils.predicateAnyFluid(item) end)
         -- convert to table
         local fluidContainerItemsTable = UBUtils.ConvertToTable(fluidContainerItems)
-        local filteredFromBarrels = FilterMyBarrels(fluidContainerItemsTable)
+        local filteredFromBarrels = UBUtils.FilterMyBarrels(fluidContainerItemsTable)
         -- get only items that can be poured into target
         local allContainers = UBUtils.CanTransferFluid(filteredFromBarrels, self.barrelFluidContainer)
         local allContainerTypes = UBUtils.SortContainers(allContainers)
@@ -245,7 +226,7 @@ function UBContextMenu:MainMenu(player, context, worldobjects, test)
     end
 end
 
-function UBContextMenu:Bootstrap(player, context, worldobjects, test)
+function UBContextMenu:new(player, context, worldobjects, test)
     local o = self
     o.playerObj = getSpecificPlayer(player)
     o.loot = getPlayerLoot(player)
@@ -264,4 +245,4 @@ function UBContextMenu:Bootstrap(player, context, worldobjects, test)
     return self:MainMenu(player, context, worldobjects, test)
 end
 
-Events.OnFillWorldObjectContextMenu.Add(function (player, context, worldobjects, test) return UBContextMenu:Bootstrap(player, context, worldobjects, test) end)
+Events.OnFillWorldObjectContextMenu.Add(function (player, context, worldobjects, test) return UBContextMenu:new(player, context, worldobjects, test) end)
