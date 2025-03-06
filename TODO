@@ -1,11 +1,6 @@
 TODO Refueling generator from a barrel by Rubber Hose (hose:optional)
-TODO Check barrel disassembly with fluid inside
-TODO Add storage feature to Base.MetalDrum
-TODO Rework barrel detection to rely on customName instead of sprites
-TODO Add more translations
-FIXME Forbid store non fuel liquids (possibly by whitelist filter)
-FIXME Forbid barrel being plumbable
-FIXME Barrel can be fueled being in hand! need to close input
 TODO Refueling car from barrel by Rubber Hose (hose:optional)
-
+TODO Check barrel disassembly with fluid inside
+TODO Add more translations
+FIXME Barrel can be fueled being in hand! need to close input -- fixed
 TODO fuel trailers

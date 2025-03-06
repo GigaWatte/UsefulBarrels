@@ -1,10 +1,12 @@
 
 local UBUtils = {}
 
--- << functions from vanilla pz
-
 function UBUtils.predicateFluid(item, fluid)
 	return item:getFluidContainer() and item:getFluidContainer():contains(fluid) and (item:getFluidContainer():getAmount() >= 0.5)
+end
+
+function UBUtils.predicateHasEmptyFluidContainer(item)
+	return item:hasComponent(ComponentType.FluidContainer) and item:getComponent(ComponentType.FluidContainer):isEmpty()
 end
 
 function UBUtils.predicateAnyFluid(item)
@@ -50,8 +52,6 @@ function UBUtils.FormatFluidAmount(setX, amount, max, fluidName)
 	return string.format("%s: <SETX:%d> %s / %s", getText(fluidName), setX, luautils.round(amount, 2) .. "L", max .. "L")
 end
 
--- >> end functions from vanilla pz
-
 function UBUtils.GetValidBarrelObject(worldobjects)
     local valid_barrel_moveable_names = {
         "Base.MetalDrum",
@@ -74,5 +74,82 @@ function UBUtils.playerHasItem(playerInv, itemName) return playerInv:containsTyp
 
 function UBUtils.playerGetItem(playerInv, itemName) return playerInv:getFirstTypeEvalRecurse(itemName, UBUtils.predicateNotBroken) or playerInv:getFirstTagEvalRecurse(itemName, UBUtils.predicateNotBroken) end
 
+function UBUtils.ConvertToTable(list)
+	local tbl = {}
+	for i=0, list:size() - 1 do
+		local item = list:get(i)
+		table.insert(tbl, item)
+	end
+	return tbl
+end
+
+--function UBUtils.GetFluidContainersFromItems(items)
+--	local fluidContainers = {}
+--	for i=0, items:size() - 1 do
+--		local item = items:get(i)
+--		if (item:hasComponent(ComponentType.FluidContainer)) then
+--			table.insert(fluidContainers, item:getComponent(ComponentType.FluidContainer))
+--		end
+--	end
+--	return fluidContainers
+--end
+
+function UBUtils.CanTransferFluid(sourceContainers, targetFluidContainer, transferToSource)
+	local toSource = transferToSource ~= nil
+	local allContainers = {}
+	-- TODO validate on categories also!!
+	--make a table of all containers
+	for _,container in pairs(sourceContainers) do
+		local fluidContainer = container:getComponent(ComponentType.FluidContainer)
+		if not toSource and FluidContainer.CanTransfer(fluidContainer, targetFluidContainer) then
+			table.insert(allContainers, container)
+		elseif toSource and FluidContainer.CanTransfer(targetFluidContainer, fluidContainer) then
+			table.insert(allContainers, container)
+		end
+	end
+	return allContainers
+end
+
+function UBUtils.SortContainers(allContainers)
+	local allContainerTypes = {}
+	if #allContainers == 0 then return allContainerTypes end
+	local allContainersOfType = {}
+	----the table can have small groups of identical containers		eg: 1, 1, 2, 3, 1, 3, 2
+	----so it needs sorting to group them all together correctly		eg: 1, 1, 1, 2, 2, 3, 3
+	table.sort(allContainers, function(a,b) return not string.sort(a:getName(), b:getName()) end)
+	----once sorted, we can use it to make smaller tables for each item type
+	local previousContainer = nil;
+	for _,container in pairs(allContainers) do
+		if previousContainer ~= nil and container:getName() ~= previousContainer:getName() then
+			table.insert(allContainerTypes, allContainersOfType)
+			allContainersOfType = {}
+		end
+		table.insert(allContainersOfType, container)
+		previousContainer = container
+	end
+	table.insert(allContainerTypes, allContainersOfType)
+	return allContainerTypes
+end
+
+function UBUtils.DisableOptionAddTooltip(option, description)
+	if option then
+		option.notAvailable = true
+		option.toolTip = ISWorldObjectContextMenu.addToolTip()
+		if description then option.toolTip.description = description else option.toolTip.description = "" end
+	end
+end
+
+function UBUtils.GetFontSize()
+	local font = UIFont.FromString(getCore():getOptionContextMenuFont())
+	if font then return font else return UIFont.Medium end
+end
+
+function UBUtils.GetTranslatedFluidNameOrEmpty(fluidObject)
+	if fluidObject then
+		return fluidObject:getTranslatedName()
+	else
+		return getText("ContextMenu_Empty")
+	end
+end
 
 return UBUtils

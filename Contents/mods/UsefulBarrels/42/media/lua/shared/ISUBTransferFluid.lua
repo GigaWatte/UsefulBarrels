@@ -1,25 +1,25 @@
 require "TimedActions/ISBaseTimedAction"
 
-ISUBTakeFuel = ISBaseTimedAction:derive("ISUBTakeFuel");
+ISUBTransferFluid = ISBaseTimedAction:derive("ISUBTransferFluid");
 
-function ISUBTakeFuel:isValid()
-	local sourceAmount = self.fuelSource:getFluidContainer():getAmount()
-	local containsPetrol = self.fuelSource:getFluidContainer():contains(Fluid.Petrol)
-	return (sourceAmount > 0 and containsPetrol)
+function ISUBTransferFluid:isValid()
+	local sourceAmount = self.sourceFluidContainer:getAmount()
+	local canTransfer = FluidContainer.CanTransfer(self.sourceFluidContainer, self.destFluidContainer)
+	return (sourceAmount > 0 and canTransfer)
 end
 
-function ISUBTakeFuel:waitToStart()
+function ISUBTransferFluid:waitToStart()
 	self.character:faceLocation(self.square:getX(), self.square:getY())
 	return self.character:shouldBeTurning()
 end
 
-function ISUBTakeFuel:update()
+function ISUBTransferFluid:update()
 	self.itemToOperate:setJobDelta(self:getJobDelta())
 	self.character:faceLocation(self.square:getX(), self.square:getY())
 	if not isClient() then
 		local actionCurrent = math.floor(self.amount * self:getJobDelta() + 0.001);
 		--print("update - action current " .. actionCurrent)
-		local destinationAmount = self.fuelDestination:getFluidContainer():getAmount();
+		local destinationAmount = self.destFluidContainer:getAmount();
 		--print("update - destination amount " .. destinationAmount)
 		local desiredAmount = (self.destinationStart + actionCurrent)
 		--print("desired amount in target " .. desiredAmount)
@@ -27,18 +27,19 @@ function ISUBTakeFuel:update()
 		if desiredAmount > destinationAmount then
 			local amountToTransfer = desiredAmount - destinationAmount
 			--print("amount to transfer " .. amountToTransfer)
-			self.fuelSource:getFluidContainer():removeFluid(amountToTransfer)
+			FluidContainer.Transfer(self.sourceFluidContainer, self.destFluidContainer, amountToTransfer)
+			--self.sourceFluidContainer:removeFluid(amountToTransfer)
 			--print("update - remove from source " .. amountToTransfer)
-			self.fuelDestination:getFluidContainer():addFluid(Fluid.Petrol, amountToTransfer);
+			--self.destFluidContainer:addFluid(Fluid.Petrol, amountToTransfer);
 			--print("update - add to destination " ..  amountToTransfer)
 		end
 	end
     self.character:setMetabolicTarget(Metabolics.LightWork);
 end
 
-function ISUBTakeFuel:start()
+function ISUBTransferFluid:start()
 	local o = self
-	o.destinationStart = o.fuelDestination:getFluidContainer():getAmount()
+	o.destinationStart = o.destFluidContainer:getAmount()
 	--print("destination start amount " .. o.destinationStart)
 	o.destinationTarget = o.destinationStart + o.amount
 	--print("destination target amount " .. o.destinationTarget)
@@ -55,13 +56,13 @@ function ISUBTakeFuel:start()
 	self.sound = self.character:playSound("GetWaterFromLake")
 end
 
-function ISUBTakeFuel:stop()
+function ISUBTransferFluid:stop()
 	self.character:stopOrTriggerSound(self.sound)
 	self.itemToOperate:setJobDelta(0.0)
     ISBaseTimedAction.stop(self);
 end
 
-function ISUBTakeFuel:perform()
+function ISUBTransferFluid:perform()
 	self.character:stopOrTriggerSound(self.sound)
 	self.itemToOperate:setJobDelta(0.0)
 
@@ -69,26 +70,27 @@ function ISUBTakeFuel:perform()
 	ISBaseTimedAction.perform(self);
 end
 
-function ISUBTakeFuel:complete()
-	local itemCurrent = self.fuelDestination:getFluidContainer():getAmount();
+function ISUBTransferFluid:complete()
+	local itemCurrent = self.destFluidContainer:getAmount();
 	--print("complete - destination amount " .. itemCurrent)
 	--print ("destination target " .. self.destinationTarget)
 	if self.destinationTarget > itemCurrent then
-		self.fuelDestination:getFluidContainer():addFluid(Fluid.Petrol, self.destinationTarget - itemCurrent);
+		FluidContainer.Transfer(self.sourceFluidContainer, self.destFluidContainer, self.destinationTarget - itemCurrent)
+		--self.destFluidContainer:addFluid(Fluid.Petrol, self.destinationTarget - itemCurrent);
 		--print("complete - add to destination " .. (self.destinationTarget - itemCurrent))
 		--syncItemFields(self.character, self.itemToOperate);
-		self.fuelSource:getFluidContainer():removeFluid((self.destinationTarget - itemCurrent), true);
+		--self.sourceFluidContainer:removeFluid((self.destinationTarget - itemCurrent), true);
 		--print("complete - remove from source " .. (self.destinationTarget - itemCurrent))
 	end
 
 	return true;
 end
 
-function ISUBTakeFuel:serverStart()
+function ISUBTransferFluid:serverStart()
 
 end
 
-function ISUBTakeFuel:getDuration()
+function ISUBTransferFluid:getDuration()
 	if self.character:isTimedActionInstant() then
 		return 1;
 	end
@@ -101,24 +103,20 @@ function ISUBTakeFuel:getDuration()
 	return (basePerLiter * self.amount) / speedModifier
 end
 
-function ISUBTakeFuel:init()
+function ISUBTransferFluid:init()
 
 end
 
-function ISUBTakeFuel:new(character, fuelSource, fuelDestination, lookAt, itemToOperate, barrelObj, speedModifierApply)
+function ISUBTransferFluid:new(character, sourceFluidContainer, destFluidContainer, lookAt, itemToOperate, speedModifierApply)
 	local o = ISBaseTimedAction.new(self, character)
-	o.fuelSource = fuelSource
+	o.sourceFluidContainer = sourceFluidContainer
+	o.destFluidContainer = destFluidContainer
 	o.square = lookAt
-	o.fuelDestination = fuelDestination
 	o.itemToOperate = itemToOperate
-	o.barrelObj = barrelObj
-	local freeCapacity = o.fuelDestination:getFluidContainer():getFreeCapacity()
-	--print("destination free capacity " .. freeCapacity)
-	local sourceCurrent = tonumber(o.fuelSource:getFluidContainer():getAmount())
-	--print("source amount fuel " .. sourceCurrent)
+	o.speedModifierApply = speedModifierApply ~= nil
+	local freeCapacity = o.destFluidContainer:getFreeCapacity()
+	local sourceCurrent = tonumber(o.sourceFluidContainer:getAmount())
 	o.amount = math.min(sourceCurrent, freeCapacity)
-	--print("amount to transfer " .. o.amount)
-	if speedModifierApply ~= nil then o.speedModifierApply = true else o.speedModifierApply = false end
 	o.maxTime = o:getDuration()
 	return o;
 end

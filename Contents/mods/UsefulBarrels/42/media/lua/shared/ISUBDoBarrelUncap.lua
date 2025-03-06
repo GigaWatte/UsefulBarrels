@@ -54,7 +54,7 @@ function ISUBDoBarrelUncap:complete()
 			local barrelCapacity = SandboxVars.UsefulBarrels.BarrelCapacity
             component:setCapacity(barrelCapacity)
 			component:addFluid(FluidType.Petrol, 0)
-            component:setContainerName("UB_Fuel_" .. self.barrelObj:getSprite():getProperties():Val("CustomName"))
+            component:setContainerName("UB_" .. self.barrelObj:getSprite():getProperties():Val("CustomName"))
 
 			GameEntityFactory.AddComponent(self.barrelObj, true, component)
 		end

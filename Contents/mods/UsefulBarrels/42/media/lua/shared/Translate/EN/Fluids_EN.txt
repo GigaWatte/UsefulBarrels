@@ -1,4 +1,5 @@
 Fluids_EN = {
-    Fluid_UB_Show_Info = "Fluid Info"
-    Fluid_Container_UB_Fuel_Barrel = "Barrel",
+    Fluid_UB_Show_Info = "Fluid: %1"
+    Fluid_Container_UB_Barrel = "Barrel",
+    Fluid_Container_UB_MetalDrum = "Metal Drum"
 }
