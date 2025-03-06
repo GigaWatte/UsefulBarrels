@@ -18,20 +18,11 @@ function ISUBTransferFluid:update()
 	self.character:faceLocation(self.square:getX(), self.square:getY())
 	if not isClient() then
 		local actionCurrent = math.floor(self.amount * self:getJobDelta() + 0.001);
-		--print("update - action current " .. actionCurrent)
 		local destinationAmount = self.destFluidContainer:getAmount();
-		--print("update - destination amount " .. destinationAmount)
 		local desiredAmount = (self.destinationStart + actionCurrent)
-		--print("desired amount in target " .. desiredAmount)
-		--print("desired is bigger than destination " .. tostring(desiredAmount > destinationAmount))
 		if desiredAmount > destinationAmount then
 			local amountToTransfer = desiredAmount - destinationAmount
-			--print("amount to transfer " .. amountToTransfer)
 			FluidContainer.Transfer(self.sourceFluidContainer, self.destFluidContainer, amountToTransfer)
-			--self.sourceFluidContainer:removeFluid(amountToTransfer)
-			--print("update - remove from source " .. amountToTransfer)
-			--self.destFluidContainer:addFluid(Fluid.Petrol, amountToTransfer);
-			--print("update - add to destination " ..  amountToTransfer)
 		end
 	end
     self.character:setMetabolicTarget(Metabolics.LightWork);
@@ -40,9 +31,7 @@ end
 function ISUBTransferFluid:start()
 	local o = self
 	o.destinationStart = o.destFluidContainer:getAmount()
-	--print("destination start amount " .. o.destinationStart)
 	o.destinationTarget = o.destinationStart + o.amount
-	--print("destination target amount " .. o.destinationTarget)
 
 	if not isClient() then
 		self:init()
@@ -65,22 +54,14 @@ end
 function ISUBTransferFluid:perform()
 	self.character:stopOrTriggerSound(self.sound)
 	self.itemToOperate:setJobDelta(0.0)
-
     -- needed to remove from queue / start next.
 	ISBaseTimedAction.perform(self);
 end
 
 function ISUBTransferFluid:complete()
 	local itemCurrent = self.destFluidContainer:getAmount();
-	--print("complete - destination amount " .. itemCurrent)
-	--print ("destination target " .. self.destinationTarget)
 	if self.destinationTarget > itemCurrent then
 		FluidContainer.Transfer(self.sourceFluidContainer, self.destFluidContainer, self.destinationTarget - itemCurrent)
-		--self.destFluidContainer:addFluid(Fluid.Petrol, self.destinationTarget - itemCurrent);
-		--print("complete - add to destination " .. (self.destinationTarget - itemCurrent))
-		--syncItemFields(self.character, self.itemToOperate);
-		--self.sourceFluidContainer:removeFluid((self.destinationTarget - itemCurrent), true);
-		--print("complete - remove from source " .. (self.destinationTarget - itemCurrent))
 	end
 
 	return true;

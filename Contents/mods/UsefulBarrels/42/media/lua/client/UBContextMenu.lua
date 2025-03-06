@@ -42,6 +42,25 @@ function UBContextMenu:DoFluidMenu(context)
     if not squareToApproach or not AdjacentFreeTileFinder.Find(squareToApproach, self.playerObj) then
         return;
     end
+
+    function FilterMyBarrels(allContainers)
+        local containers = {}
+        local namesToSearch = {
+            Translator.getItemNameFromFullType("Base.MetalDrum"),
+            Translator.getItemNameFromFullType("Base.Mov_LightGreenBarrel"),
+            Translator.getItemNameFromFullType("Base.Mov_OrangeBarrel"),
+            Translator.getItemNameFromFullType("Base.Mov_DarkGreenBarrel"),
+        }
+        -- remove barrel options from sub menu
+        for _,container in pairs(allContainers) do
+            local foundMatch = false
+            for i = 1, #namesToSearch do
+                if container:getName() == namesToSearch[i] then foundMatch = true end
+            end
+            if not foundMatch then table.insert(containers, container) end
+        end
+        return containers
+    end
     
     function DoTakeFluidMenu()
         local hasHoseNearby = UBUtils.playerHasItem(self.loot.inventory, "RubberHose") or UBUtils.playerHasItem(self.playerInv, "RubberHose")
@@ -50,7 +69,8 @@ function UBContextMenu:DoFluidMenu(context)
         -- convert to table
         local fluidContainerItemsTable = UBUtils.ConvertToTable(fluidContainerItems)
         -- get only items that can be filled
-        local allContainers = UBUtils.CanTransferFluid(fluidContainerItemsTable, self.barrelFluidContainer, true)
+        local filteredFromBarrels = FilterMyBarrels(fluidContainerItemsTable)
+        local allContainers = UBUtils.CanTransferFluid(filteredFromBarrels, self.barrelFluidContainer, true)
         local allContainerTypes = UBUtils.SortContainers(allContainers)
         local takeOption = context:insertOptionAfter(getText("Fluid_UB_Show_Info", self.fluidName), getText("ContextMenu_Fill"))
         if #allContainers == 0 then
@@ -104,8 +124,9 @@ function UBContextMenu:DoFluidMenu(context)
         local fluidContainerItems = self.playerInv:getAllEvalRecurse(function (item) return UBUtils.predicateAnyFluid(item) end)
         -- convert to table
         local fluidContainerItemsTable = UBUtils.ConvertToTable(fluidContainerItems)
+        local filteredFromBarrels = FilterMyBarrels(fluidContainerItemsTable)
         -- get only items that can be poured into target
-        local allContainers = UBUtils.CanTransferFluid(fluidContainerItemsTable, self.barrelFluidContainer)
+        local allContainers = UBUtils.CanTransferFluid(filteredFromBarrels, self.barrelFluidContainer)
         local allContainerTypes = UBUtils.SortContainers(allContainers)
         local addOption = context:insertOptionAfter(getText("Fluid_UB_Show_Info", self.fluidName), getText("ContextMenu_UB_AddFluid"))
         if #allContainers == 0 then
@@ -169,7 +190,6 @@ end
 
 function UBContextMenu:AddInfoOption(context)
     local fluidAmount = self.barrelFluidContainer:getAmount()
-    --local infoOption = context:addOptionOnTop(getText("Fluid_UB_Show_Info"))
     local tooltip = ISWorldObjectContextMenu.addToolTip()
     local fluidMax = self.barrelFluidContainer:getCapacity()
     if fluidAmount > 0 then
@@ -201,15 +221,10 @@ function UBContextMenu:RemoveVanillaOptions(context, subcontext)
 end
 
 function UBContextMenu:MainMenu(player, context, worldobjects, test)
-    local fetch = ISWorldObjectContextMenu.fetchVars or {}
-
     if not self.barrelHasFluidContainer then
         local openBarrelOption = context:addOptionOnTop(getText("ContextMenu_UB_UncapBarrel", self.objectLabel), self, UBContextMenu.DoBarrelUncap);
         if not self.isValidWrench and SandboxVars.UsefulBarrels.RequirePipeWrench then
-            openBarrelOption.notAvailable = true;
-            local tooltip = ISWorldObjectContextMenu.addToolTip()
-            openBarrelOption.toolTip = tooltip
-            openBarrelOption.toolTip.description = getText("Tooltip_UB_WrenchMissing", getItemName("Base.PipeWrench"));
+            UBUtils.DisableOptionAddTooltip(openBarrelOption, getText("Tooltip_UB_WrenchMissing", getItemName("Base.PipeWrench")))
         end
     end
 
@@ -233,7 +248,6 @@ end
 function UBContextMenu:Bootstrap(player, context, worldobjects, test)
     local o = self
     o.playerObj = getSpecificPlayer(player)
-    -- does it cache previous player position loot
     o.loot = getPlayerLoot(player)
     o.playerInv = o.playerObj:getInventory()
     o.barrelObj = UBUtils.GetValidBarrelObject(worldobjects)

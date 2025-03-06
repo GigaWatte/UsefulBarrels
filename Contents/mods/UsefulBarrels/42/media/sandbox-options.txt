@@ -25,7 +25,7 @@ option UsefulBarrels.AllowHazardous
 {type = boolean, default = true, page = UsefulBarrels, translation = UsefulBarrelsAllowHazardous,}
 
 option UsefulBarrels.AllowWater
-{type = boolean, default = false, page = UsefulBarrels, translation = UsefulBarrelsAllowWater,}
+{type = boolean, default = true, page = UsefulBarrels, translation = UsefulBarrelsAllowWater,}
 
 option UsefulBarrels.AllowAlcoholic
 {type = boolean, default = false, page = UsefulBarrels, translation = UsefulBarrelsAllowAlcoholic,}

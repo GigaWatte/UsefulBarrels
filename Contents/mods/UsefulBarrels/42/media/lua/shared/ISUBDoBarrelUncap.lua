@@ -53,16 +53,15 @@ function ISUBDoBarrelUncap:complete()
 			local component = ComponentType.FluidContainer:CreateComponent()
 			local barrelCapacity = SandboxVars.UsefulBarrels.BarrelCapacity
             component:setCapacity(barrelCapacity)
-			component:addFluid(FluidType.Petrol, 0)
             component:setContainerName("UB_" .. self.barrelObj:getSprite():getProperties():Val("CustomName"))
 
 			GameEntityFactory.AddComponent(self.barrelObj, true, component)
-		end
 
-		local modData = self.barrelObj:getModData()
-		if not modData["UB_Uncapped"] then
-			modData["UB_Uncapped"] = true
-			self.barrelObj:setModData(modData)
+			local modData = self.barrelObj:getModData()
+			if not modData["UB_Uncapped"] then
+				modData["UB_Uncapped"] = true
+				self.barrelObj:setModData(modData)
+			end
 		end
 
 		buildUtil.setHaveConstruction(self.barrelObj:getSquare(), true)

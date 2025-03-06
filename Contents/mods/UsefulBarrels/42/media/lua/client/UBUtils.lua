@@ -83,16 +83,6 @@ function UBUtils.ConvertToTable(list)
 	return tbl
 end
 
---function UBUtils.GetFluidContainersFromItems(items)
---	local fluidContainers = {}
---	for i=0, items:size() - 1 do
---		local item = items:get(i)
---		if (item:hasComponent(ComponentType.FluidContainer)) then
---			table.insert(fluidContainers, item:getComponent(ComponentType.FluidContainer))
---		end
---	end
---	return fluidContainers
---end
 function UBUtils.ValidateFluidCategoty(fluidContainer)
 	local allowList = {
 		[FluidCategory.Industrial] = SandboxVars.UsefulBarrels.AllowIndustrial,
@@ -116,15 +106,11 @@ function UBUtils.ValidateFluidCategoty(fluidContainer)
 end
 
 function UBUtils.CanTransferFluid(sourceContainers, targetFluidContainer, transferToSource)
-
 	local toSource = transferToSource ~= nil
 	local allContainers = {}
-	-- TODO validate on categories also!!
-	--make a table of all containers
 	for _,container in pairs(sourceContainers) do
 		local fluidContainer = container:getComponent(ComponentType.FluidContainer)
 		if not toSource and FluidContainer.CanTransfer(fluidContainer, targetFluidContainer) then
-			-- verify is that fluid caregory is allowed
 			if UBUtils.ValidateFluidCategoty(fluidContainer) then
 				table.insert(allContainers, container)
 			end
@@ -164,17 +150,70 @@ function UBUtils.DisableOptionAddTooltip(option, description)
 	end
 end
 
-function UBUtils.GetFontSize()
-	local font = UIFont.FromString(getCore():getOptionContextMenuFont())
-	if font then return font else return UIFont.Medium end
-end
-
 function UBUtils.GetTranslatedFluidNameOrEmpty(fluidObject)
 	if fluidObject then
 		return fluidObject:getTranslatedName()
 	else
 		return getText("ContextMenu_Empty")
 	end
+end
+
+function UBUtils.CleanMenuFromBarrels(context, optionName)
+	local option = context:getOptionFromName(optionName)
+	if option then
+        local subMenu = context:getSubMenu(option.subOption)
+        if subMenu then
+            local namesToSearch = {
+                Translator.getItemNameFromFullType("Base.MetalDrum"),
+                Translator.getItemNameFromFullType("Base.Mov_LightGreenBarrel"),
+                Translator.getItemNameFromFullType("Base.Mov_OrangeBarrel"),
+                Translator.getItemNameFromFullType("Base.Mov_DarkGreenBarrel"),
+            }
+            -- remove barrel options from sub menu
+            for i = 1, #namesToSearch do
+                if subMenu:getOptionFromName(namesToSearch[i]) then subMenu:removeOptionByName(namesToSearch[i]) end
+            end
+            -- remove fill all button if there is only one container left
+            if subMenu.numOptions <= 3 and subMenu:getOptionFromName(getText("ContextMenu_FillAll")) then 
+                subMenu:removeOptionByName(getText("ContextMenu_FillAll")) 
+            end
+            -- remove entire option if there is no options at all
+            if subMenu.numOptions == 1 then
+                context:removeOptionByName(optionName)
+            end 
+        end
+    end
+end
+
+function UBUtils.CleanItemContainersFromBarrels(containerList, container)
+    local filteredContainerList = {}
+    if not containerList or (containerList and #containerList == 0) and container then
+        if container:hasModData() then
+            local modData = container:getModData()
+            if modData["modData"] ~= nil and modData["modData"]["UB_Uncapped"] ~= nil then
+                -- skip my barrel
+            else
+                table.insert(filteredContainerList, container)
+            end
+        else
+            table.insert(filteredContainerList, container)
+        end
+    elseif containerList then
+        for _,container in pairs(containerList) do
+            if container:hasModData() then
+                local modData = container:getModData()
+                if modData["modData"] ~= nil and modData["modData"]["UB_Uncapped"] ~= nil then
+                    -- skip my barrels
+                else
+                    table.insert(filteredContainerList, container)
+                end
+            else
+                table.insert(filteredContainerList, container)
+            end
+        end
+    end
+
+	return filteredContainerList
 end
 
 return UBUtils

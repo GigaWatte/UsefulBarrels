@@ -1,3 +1,5 @@
+
+local UBUtils = require "UBUtils"
 -- modify weight params to include fluid container weight also
 local ISMoveableSpriteProps_canPickUpMoveable = ISMoveableSpriteProps.canPickUpMoveable
 function ISMoveableSpriteProps:canPickUpMoveable( _character, _square, _object )
@@ -24,7 +26,7 @@ function ISMoveableSpriteProps:canPickUpMoveable( _character, _square, _object )
                     itemWeight = itemWeight + itemInstance:getActualWeight()
                 end
             end
-    
+
             self.weight = itemWeight
             self.rawWeight = self.weight * 10
         end
@@ -36,52 +38,29 @@ end
 local ISWorldObjectContextMenu_doFillFuelMenu = ISWorldObjectContextMenu.doFillFuelMenu
 ISWorldObjectContextMenu.doFillFuelMenu = function(source, playerNum, context)
     ISWorldObjectContextMenu_doFillFuelMenu(source, playerNum, context)
-    local option = context:getOptionFromName(getText("ContextMenu_TakeGasFromPump"))
-    
-    if option then
-        local subMenu = context:getSubMenu(option.subOption)
-        if subMenu then
-            local namesToSearch = {
-                Translator.getItemNameFromFullType("Base.MetalDrum"),
-                Translator.getItemNameFromFullType("Base.Mov_LightGreenBarrel"),
-                Translator.getItemNameFromFullType("Base.Mov_OrangeBarrel"),
-                Translator.getItemNameFromFullType("Base.Mov_DarkGreenBarrel"),
-            }
-            -- remove barrel options from sub menu
-            for i = 1, #namesToSearch do
-                if subMenu:getOptionFromName(namesToSearch[i]) then subMenu:removeOptionByName(namesToSearch[i]) end
-            end
-            -- remove fill all button if there is only one container left
-            if subMenu.numOptions <= 3 and subMenu:getOptionFromName(getText("ContextMenu_FillAll")) then 
-                subMenu:removeOptionByName(getText("ContextMenu_FillAll")) 
-            end
-            -- remove entire option if there is no options at all
-            if subMenu.numOptions == 1 then
-                context:removeOptionByName(getText("ContextMenu_TakeGasFromPump"))
-            end 
-        end
-    end
+    UBUtils.CleanMenuFromBarrels(context, getText("ContextMenu_TakeGasFromPump"))
 end
--- also need to remove my barrels from Fill All container list
+local ISWorldObjectContextMenu_doFillFluidMenu = ISWorldObjectContextMenu.doFillFluidMenu
+ISWorldObjectContextMenu.doFillFluidMenu = function(sink, playerNum, context)
+    ISWorldObjectContextMenu_doFillFluidMenu(sink, playerNum, context)
+    UBUtils.CleanMenuFromBarrels(context, getText("ContextMenu_Fill"))
+end
+-- also need to remove my barrels from containers lists
 local ISWorldObjectContextMenu_onTakeFuelNew = ISWorldObjectContextMenu.onTakeFuelNew
 ISWorldObjectContextMenu.onTakeFuelNew = function(worldobjects, fuelObject, fuelContainerList, fuelContainer, player)
-    local filteredFuelContainerList = {}
-    for _,container in pairs(fuelContainerList) do
-        if container:hasModData() then
-            local modData = container:getModData()
-            if modData["modData"] ~= nil and modData["modData"]["UB_Uncapped"] ~= nil then
-                -- skip my barrels
-            else
-                table.insert(filteredFuelContainerList, container)
-            end
-        end
-    end
-    return ISWorldObjectContextMenu_onTakeFuelNew(worldobjects, fuelObject, filteredFuelContainerList, fuelContainer, player)
+    local filteredContainerList = UBUtils.CleanItemContainersFromBarrels(fuelContainerList, fuelContainer)
+    return ISWorldObjectContextMenu_onTakeFuelNew(worldobjects, fuelObject, filteredContainerList, nil, player)
+end
+local ISWorldObjectContextMenu_onTakeWater = ISWorldObjectContextMenu.onTakeWater
+ISWorldObjectContextMenu.onTakeWater = function(worldobjects, waterObject, waterContainerList, waterContainer, player)
+    local filteredContainerList = UBUtils.CleanItemContainersFromBarrels(waterContainerList, waterContainer)
+    return ISWorldObjectContextMenu_onTakeWater(worldobjects, waterObject, filteredContainerList, nil, player)
 end
 -- patch disassemble to prevent it if barrel not empty
 local ISMoveableSpriteProps_canScrapObjectInternal = ISMoveableSpriteProps.canScrapObjectInternal
-local InfoPanelFlags_hasWater = InfoPanelFlags.hasWater
 function ISMoveableSpriteProps:canScrapObjectInternal(_result, _object)
+    -- cache flag value before changes
+    local InfoPanelFlags_hasWater = InfoPanelFlags.hasWater
     if _object and _object:getFluidContainer() and not _object:getFluidContainer():isEmpty() then
         local modData = _object:getModData()
         if modData["UB_Uncapped"] ~= nil then
