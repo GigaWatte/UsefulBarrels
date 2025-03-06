@@ -1,7 +1,6 @@
-
+-- modify weight params to include fluid container weight also
 local ISMoveableSpriteProps_canPickUpMoveable = ISMoveableSpriteProps.canPickUpMoveable
 function ISMoveableSpriteProps:canPickUpMoveable( _character, _square, _object )
-    -- modify weight params to include fluid container weight also
     if _object and _object:getFluidContainer() and not _object:getFluidContainer():isEmpty() then
         local modData = _object:getModData()
         if modData["UB_Uncapped"] ~= nil then
@@ -33,8 +32,7 @@ function ISMoveableSpriteProps:canPickUpMoveable( _character, _square, _object )
 
     return ISMoveableSpriteProps_canPickUpMoveable(self, _character, _square, _object)
 end
-
--- needs slightly patch fuel menu to remove my barrels from it
+-- patch fuel menu to remove my barrels from it
 local ISWorldObjectContextMenu_doFillFuelMenu = ISWorldObjectContextMenu.doFillFuelMenu
 ISWorldObjectContextMenu.doFillFuelMenu = function(source, playerNum, context)
     ISWorldObjectContextMenu_doFillFuelMenu(source, playerNum, context)
@@ -79,4 +77,19 @@ ISWorldObjectContextMenu.onTakeFuelNew = function(worldobjects, fuelObject, fuel
         end
     end
     return ISWorldObjectContextMenu_onTakeFuelNew(worldobjects, fuelObject, filteredFuelContainerList, fuelContainer, player)
+end
+-- patch disassemble to prevent it if barrel not empty
+local ISMoveableSpriteProps_canScrapObjectInternal = ISMoveableSpriteProps.canScrapObjectInternal
+local InfoPanelFlags_hasWater = InfoPanelFlags.hasWater
+function ISMoveableSpriteProps:canScrapObjectInternal(_result, _object)
+    if _object and _object:getFluidContainer() and not _object:getFluidContainer():isEmpty() then
+        local modData = _object:getModData()
+        if modData["UB_Uncapped"] ~= nil then
+            InfoPanelFlags.hasWater = true
+            return false
+        end
+    end
+
+    InfoPanelFlags.hasWater = InfoPanelFlags_hasWater
+    return ISMoveableSpriteProps_canScrapObjectInternal(self, _result, _object)
 end
