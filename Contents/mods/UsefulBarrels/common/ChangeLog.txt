@@ -5,11 +5,15 @@
 - Reworked PickUp tooltip and canMickUp validations code
 - Added Metal Drum as new possible fluid container
 - Barrel detection now relies on customName instead of sprite names
-- Fixed Barrel can be disassembled with fluid inside
-- Fixed Barrel can be filled from Gas pump or other fluid sources by being equipped in hands
+- Fixed Barrel can be disassembled with fluids inside
+- Fixed Barrel can be filled from Gas pump or other fluid sources while being in player inventory
 - Added more Sandbox options for future updates
 - Added TR translation, Thanks to @RedSystem
 - Added ES translation, Thanks to @Dust Runner
 - Added KO translation, Thanks to @Hx
 - Added Chuckleberry Finn's Mod Update and Alert System integration
+[ ------ ]
+[ 07/03/2025 ]
+2.0.1:
+- Fixed Barrel can be used via Fluid Transfer menu while being in player inventory
 [ ------ ]

@@ -60,3 +60,24 @@ function ISMoveableSpriteProps:canScrapObjectInternal(_result, _object)
     InfoPanelFlags.hasWater = InfoPanelFlags_hasWater
     return ISMoveableSpriteProps_canScrapObjectInternal(self, _result, _object)
 end
+local ISMoveableSpriteProps_pickUpMoveableInternal = ISMoveableSpriteProps.pickUpMoveableInternal
+function ISMoveableSpriteProps:pickUpMoveableInternal( _character, _square, _object, _sprInstance, _spriteName, _createItem, _rotating )
+    if _object then
+        local modData = _object:getModData()
+        if modData and modData["UB_Uncapped"] ~= nil then
+            _object:getComponent(ComponentType.FluidContainer):setInputLocked(true)
+            _object:getComponent(ComponentType.FluidContainer):setCanPlayerEmpty(false) 
+        end
+    end
+    return ISMoveableSpriteProps_pickUpMoveableInternal(self, _character, _square, _object, _sprInstance, _spriteName, _createItem, _rotating)
+end
+function OnObjectPlaced(_object)
+    if _object then
+        local modData = _object:getModData()
+        if modData and modData["UB_Uncapped"] ~= nil then
+            _object:getComponent(ComponentType.FluidContainer):setInputLocked(false)
+            _object:getComponent(ComponentType.FluidContainer):setCanPlayerEmpty(true)
+        end
+    end
+end
+Events.OnObjectAdded.Add(OnObjectPlaced)
