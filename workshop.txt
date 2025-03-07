@@ -36,6 +36,7 @@ description=[h3] Known bugs [/h3]
 description=[list]
 description=    [*]Barrel is not persisting the Gas if placed in locations located far away from vanilla (x:20000+) but I can not reproduce this issue, needs more information.
 description=    [*]Infinite Gas when pumped out all Gas. Still cant reproduce it, needs more info as well.
+description=    [*]If you used mod before B42.4 there can be an error while calling context menu on the barrel. PickUp action then Place may resolve it.Or repalce the barrel with entire new one you dont used before. (It looks like internal Java code error but I am not sure)
 description=[/list]
 description=
 description=[h3] Credits [/h3]
@@ -45,8 +46,15 @@ description=Thanks to [url=https://steamcommunity.com/id/mainfish]MainFish[/url]
 description=Thanks to [url=https://steamcommunity.com/profiles/76561198062695591]Hx[/url] for KO translation.
 description=Thanks to [url=https://steamcommunity.com/profiles/76561198355106439]RedSystem[/url] for TR translation.
 description=Thanks to [url=https://steamcommunity.com/profiles/76561199781026961]Dust Runner[/url] for ES translation.
+description=Thanks to [url=https://steamcommunity.com/id/Chuckleberry_Finn]Chuckleberry Finn[/url] for Mod Update and Alert System.
+description=
+description=https://steamcommunity.com/sharedfiles/filedetails/?id=3077900375
 description=
 description=This is my first experience making a mod, so it may not be perfect.
 description=Feel free to report bugs and suggestions for improvement!
+description=
+description=
+description=Workshop ID: 3436537035
+description=Mod ID: UsefulBarrels
 tags=Build 42;Misc;Realistic;QoL;WIP
 visibility=public
