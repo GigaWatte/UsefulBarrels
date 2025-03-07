@@ -30,6 +30,13 @@ ISWorldObjectContextMenu.doFillFuelMenu = function(source, playerNum, context)
 end
 local ISWorldObjectContextMenu_doFillFluidMenu = ISWorldObjectContextMenu.doFillFluidMenu
 ISWorldObjectContextMenu.doFillFluidMenu = function(sink, playerNum, context)
+    if sink then
+        local modData = sink:getModData()
+        if modData and modData["UB_Uncapped"] ~= nil then
+            -- I will draw all options by myself
+            return
+        end
+    end
     ISWorldObjectContextMenu_doFillFluidMenu(sink, playerNum, context)
     UBUtils.CleanMenuFromBarrels(context, getText("ContextMenu_Fill"))
 end

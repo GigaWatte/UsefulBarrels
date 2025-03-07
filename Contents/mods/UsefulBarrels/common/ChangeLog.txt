@@ -17,3 +17,7 @@
 2.0.1:
 - Fixed Barrel can be used via Fluid Transfer menu while being in player inventory
 [ ------ ]
+[ 07/03/2025 ]
+2.0.2:
+- Fixed bug while vanilla fluid context menu drawing with errors on barrel and prevent my context menu to appear.
+[ ------ ]
