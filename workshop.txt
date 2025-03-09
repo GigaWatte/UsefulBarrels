@@ -23,6 +23,7 @@ description=    [*]Is safe to add in existing saves as well as removing, FuidCon
 description=    [*]Barrels will be empty initially.
 description=    [*]Currently there is no options to refuel generator or vehicle directly. I'll try to add that in the future.
 description=    [*]Barrels are very fragile! Walkers will break it pretty quickly.
+description=    [*]Please! Any full 800L barrels in your characters pocket or car trunk is your responsibility, there is no proper way to haul them. For now at least.
 description=[/list]
 description=
 description=[h3] WIP [/h3]
@@ -31,6 +32,11 @@ description=    [*]Refueling generator from Barrel
 description=    [*]Randomized initial fluid and amount in new Barrel with sandbox vars control
 description=    [*]More translations
 description=[/list]
+description=
+description=[h3]Mods compatibility[/h3]
+description=In general, all other mods that in any way modify vanilla context options for FluidContainers can replace UB context options and after that it leads to unpredictable behaviour.
+description=For example: [url=https://steamcommunity.com/sharedfiles/filedetails/?id=3406674803]Plumbing Expanded[/url].
+description=If you have any issues with barrels and have similar mod then try to change mod load order and move Useful Barrels mod at the bottom as much as you can. It should remain other mods functional as well as UB works as intended.
 description=
 description=[h3] Known bugs [/h3]
 description=[list]
@@ -46,15 +52,10 @@ description=Thanks to [url=https://steamcommunity.com/id/mainfish]MainFish[/url]
 description=Thanks to [url=https://steamcommunity.com/profiles/76561198062695591]Hx[/url] for KO translation.
 description=Thanks to [url=https://steamcommunity.com/profiles/76561198355106439]RedSystem[/url] for TR translation.
 description=Thanks to [url=https://steamcommunity.com/profiles/76561199781026961]Dust Runner[/url] for ES translation.
-description=Thanks to [url=https://steamcommunity.com/id/Chuckleberry_Finn]Chuckleberry Finn[/url] for Mod Update and Alert System.
-description=
-description=https://steamcommunity.com/sharedfiles/filedetails/?id=3077900375
+description=Thanks to [url=https://steamcommunity.com/id/Chuckleberry_Finn]Chuckleberry Finn[/url] for [url=https://steamcommunity.com/sharedfiles/filedetails/?id=3077900375]Mod Update and Alert System[/url].
 description=
 description=This is my first experience making a mod, so it may not be perfect.
 description=Feel free to report bugs and suggestions for improvement!
 description=
-description=
-description=Workshop ID: 3436537035
-description=Mod ID: UsefulBarrels
 tags=Build 42;Misc;Realistic;QoL;WIP
 visibility=public

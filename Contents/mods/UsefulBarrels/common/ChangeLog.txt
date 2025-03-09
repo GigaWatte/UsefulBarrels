@@ -21,3 +21,7 @@
 2.0.2:
 - Fixed bug while vanilla fluid context menu drawing with errors on barrel and prevent my context menu to appear.
 [ ------ ]
+[ 09/03/2025 ]
+2.0.3:
+- Updated KO translation, thanks to Hx.
+[ ------ ]
