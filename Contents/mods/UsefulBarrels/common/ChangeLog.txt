@@ -25,3 +25,8 @@
 2.0.3:
 - Updated KO translation, thanks to Hx.
 [ ------ ]
+[ 12/03/2025 ]
+2.0.4:
+- Updated CN translation, thanks to 浪里个浪2346134
+- Added FR translation, thanks to Bobitec
+[ ------ ]

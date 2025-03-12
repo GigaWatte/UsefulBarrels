@@ -1,0 +1,5 @@
+ContextMenu_FR = {
+    ContextMenu_UB_UncapBarrel = "Ouvrir %1"
+    ContextMenu_UB_AddFluid = "Ajouter"
+    ContextMenu_UB_RefuelFromBarrel = "TBD: Ravitaillement à partir du baril"
+}
