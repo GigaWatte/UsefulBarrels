@@ -8,15 +8,33 @@ function UBContextMenu:OnTransferFluid(squareToApproach, fluidContainer, fluidCo
     local addToBarrel = canAddToBarrel ~= nil
 
     local didWalk = false
+
+    -- remember initially equipped items
+    local primaryItem = self.playerObj:getPrimaryHandItem()
+    local secondaryItem = self.playerObj:getSecondaryHandItem()
+
+    -- Drop corpse or generator
+	if isForceDropHeavyItem(primaryItem) then
+		ISTimedActionQueue.add(ISUnequipAction:new(self.playerObj, primaryItem, 50));
+	end
+
     for i,item in ipairs(fluidContainerItems) do
         if not didWalk and (not squareToApproach or not luautils.walkAdj(self.playerObj, squareToApproach, true)) then
 			return
 		end
 		didWalk = true
 
+        -- this returns item back to container it's taken. example: backpack
         local returnToContainer = item:getContainer():isInCharacterInventory(self.playerObj) and item:getContainer()
-		ISWorldObjectContextMenu.transferIfNeeded(self.playerObj, item)
-		ISInventoryPaneContextMenu.equipWeapon(item, false, false, self.playerObj:getPlayerNum())
+
+        -- if item not in player main inventory
+        if luautils.haveToBeTransfered(self.playerObj, item) then
+            -- transfer item to player inventory
+            ISTimedActionQueue.add(ISInventoryTransferAction:new(self.playerObj, item, item:getContainer(), self.playerObj:getInventory()))
+        end
+
+        -- action: equip items to primary hand. this action takes less time, according to code. funny
+        luautils.equipItems(self.playerObj, item, nil)
 
         if not addToBarrel then
             ISTimedActionQueue.add(ISUBTransferFluid:new(self.playerObj, fluidContainer, item:getFluidContainer(), squareToApproach, item))
@@ -26,10 +44,14 @@ function UBContextMenu:OnTransferFluid(squareToApproach, fluidContainer, fluidCo
             ISTimedActionQueue.add(ISUBTransferFluid:new(self.playerObj, item:getFluidContainer(), fluidContainer, squareToApproach, item, speedModifierApply))
         end
 
+        -- return item back to container
         if returnToContainer and (returnToContainer ~= self.playerInv) then
             ISTimedActionQueue.add(ISInventoryTransferAction:new(self.playerObj, item, self.playerInv, returnToContainer))
         end
     end
+
+    -- action: back equip items that was equipped before
+    luautils.equipItems(self.playerObj, primaryItem, secondaryItem)
 end
 
 function UBContextMenu:DoFluidMenu(context)
@@ -101,11 +123,24 @@ function UBContextMenu:DoFluidMenu(context)
     -- from inventory containers add to barrel
     function DoAddFluidMenu()
         local hasFunnelNearby = UBUtils.playerHasItem(self.loot.inventory, "Funnel") or UBUtils.playerHasItem(self.playerInv, "Funnel")
-        -- find all items that hold greater than 0 fluid
-        local fluidContainerItems = self.playerInv:getAllEvalRecurse(function (item) return UBUtils.predicateAnyFluid(item) end)
+        -- find all items in player inv that hold greater than 0 fluid
+        local fluidContainerItems = self.playerInv:getAllEvalRecurse(UBUtils.predicateAnyFluid)
+        local fluidContainerItemsOnFloor = self.loot.inventory:getAllEvalRecurse(function (item) print(tostring(item:getComponentForIndex(0)));return true end)
+        -- items on floor has no components. use world objects instead?
         -- convert to table
-        local fluidContainerItemsTable = UBUtils.ConvertToTable(fluidContainerItems)
-        local filteredFromBarrels = UBUtils.FilterMyBarrels(fluidContainerItemsTable)
+        local fluidContainerItemsTable1 = UBUtils.ConvertToTable(fluidContainerItems)
+        local fluidContainerItemsTable2 = UBUtils.ConvertToTable(fluidContainerItemsOnFloor)
+
+        for k,v in pairs(fluidContainerItemsTable2) do 
+            print(k,v)
+            table.insert(fluidContainerItemsTable1, v)
+        end
+        --print("---")
+        --for k,v in pairs(fluidContainerItemsTable1) do 
+        --    print(k,v)
+        --end
+
+        local filteredFromBarrels = UBUtils.FilterMyBarrels(fluidContainerItemsTable1)
         -- get only items that can be poured into target
         local allContainers = UBUtils.CanTransferFluid(filteredFromBarrels, self.barrelFluidContainer)
         local allContainerTypes = UBUtils.SortContainers(allContainers)

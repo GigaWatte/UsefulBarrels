@@ -124,6 +124,10 @@ function UBUtils.SortContainers(allContainers)
 	local allContainerTypes = {}
 	if #allContainers == 0 then return allContainerTypes end
 	local allContainersOfType = {}
+	-- TODO improve sort
+	-- first equipped and capable to get fluid
+	-- then then most filled
+	-- then other ones
 	----the table can have small groups of identical containers		eg: 1, 1, 2, 3, 1, 3, 2
 	----so it needs sorting to group them all together correctly		eg: 1, 1, 1, 2, 2, 3, 3
 	table.sort(allContainers, function(a,b) return not string.sort(a:getName(), b:getName()) end)
@@ -260,6 +264,56 @@ function UBUtils.CalculateTooltipWeight(_object)
 		weight = itemWeight
     end
 	return weight
+end
+
+function UBUtils.GenerateGridCoordinates(distance)
+	if not distance then distance = 1 end
+	local grid = {}
+	for x = -distance,distance + 1 do
+		for y = -distance,distance + 1 do
+			if math.abs(x) + math.abs(y) <= distance then table.insert(grid, {["x"]=x, ["y"]=y}) end
+		end 
+	end
+	return grid
+end
+
+function UBUtils.GetBarrelsNearby(square, distance, fluid)
+	if not square then return nil end
+	if not distance then distance = 1 end
+	local x,y,z = square:getX(), square:getY(), square:getZ()
+	local cell = square:getCell()
+	local grid = UBUtils.GenerateGridCoordinates(distance)
+	local squares = {}
+	for _,coord in ipairs(grid) do
+		local nextSquare = cell:getGridSquare(x+coord.x, y+coord.y, z)
+		if nextSquare then table.insert(squares, nextSquare) end
+	end
+
+	local barrels = {}
+	for _,aSquare in ipairs(squares) do
+		local squareObjects = aSquare:getObjects()
+		local sqTable = UBUtils.ConvertToTable(squareObjects)
+		local barrel = UBUtils.GetValidBarrelObject(sqTable)
+		if barrel and UBUtils.IsUBBarrel(barrel) then
+			if fluid and barrel:getFluidContainer():contains(fluid) then
+				table.insert(barrels, barrel)
+			elseif fluid == nil then
+				table.insert(barrels, barrel)
+			end
+		end
+	end
+	
+	return barrels
+end
+
+function UBUtils.IsUBBarrel(object)
+	if object then
+        local modData = object:getModData()
+        if modData and modData["UB_Uncapped"] ~= nil then
+            return true
+        end
+    end
+	return false
 end
 
 return UBUtils
