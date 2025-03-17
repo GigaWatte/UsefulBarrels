@@ -30,6 +30,7 @@ description=[h3] WIP [/h3]
 description=[list]
 description=    [*]Refueling generator from Barrel
 description=    [*]Randomized initial fluid and amount in new Barrel with sandbox vars control
+description=    [*]UX improvements: re-equip items after actions, proper action job titles, add partially filled containers to "Fill" menu, be able to Add fluid from items laying on floor, remove unnecessary actions, give preference to an already equipped item 
 description=    [*]More translations
 description=[/list]
 description=
@@ -56,6 +57,6 @@ description=Thanks to [url=https://steamcommunity.com/profiles/76561198027815009
 description=Thanks to [url=https://steamcommunity.com/id/Chuckleberry_Finn]Chuckleberry Finn[/url] for [url=https://steamcommunity.com/sharedfiles/filedetails/?id=3077900375]Mod Update and Alert System[/url].
 description=
 description=This is my first experience making a mod, so it may not be perfect.
-description=Feel free to report bugs and suggestions for improvement!
+description=Feel free to report bugs and suggestions for improvement!
 tags=Build 42;Misc;Realistic;QoL;WIP
 visibility=public
