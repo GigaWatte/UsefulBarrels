@@ -5,7 +5,7 @@ TODO allow ineract with items on ground
 TODO DONE include partially empty containers to fill
 TODO DONE Refueling generator from a barrel by Rubber Hose (hose:optional)
 TODO Refueling car from barrel by Rubber Hose (hose:optional)
-TODO random initial fluid
+TODO VERIFY random initial fluid
 TODO DONE show fluid info (menu?) only if nearby
 TODO VERIFY - calculate hose, funnel not from loot but from worldobjects near barrel cell
 TODO DONE fix item job title

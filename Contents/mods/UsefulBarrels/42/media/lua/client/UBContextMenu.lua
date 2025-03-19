@@ -9,6 +9,7 @@ function UBContextMenu:OnTransferFluid(fluidContainer, fluidContainerItems, canA
     local didWalk = false
 
     -- remember initially equipped items
+    -- what if these items is fluidcontainer?
     local primaryItem = self.playerObj:getPrimaryHandItem()
     local secondaryItem = self.playerObj:getSecondaryHandItem()
 
@@ -16,6 +17,9 @@ function UBContextMenu:OnTransferFluid(fluidContainer, fluidContainerItems, canA
 	if isForceDropHeavyItem(primaryItem) then
 		ISTimedActionQueue.add(ISUnequipAction:new(self.playerObj, primaryItem, 50));
 	end
+
+    print("pi: ", luautils.tableContains(fluidContainerItems, primaryItem))
+    print("si: ", luautils.tableContains(fluidContainerItems, secondaryItem))
 
     for i,item in ipairs(fluidContainerItems) do
         if not didWalk and (not self.barrelSquare or not luautils.walkAdj(self.playerObj, self.barrelSquare, true)) then
@@ -67,6 +71,35 @@ function UBContextMenu.CanCreateFluidMenu(playerObj, barrelObj)
     return true
 end
 
+function UBContextMenu:DoCategoryList(subMenu, allContainerTypes, addToBarrel, oneOptionText, allOptionText)
+    for _,containerType in pairs(allContainerTypes) do
+        local destItem = containerType[1]
+        if #containerType > 1 then
+            local containerOption = subMenu:addOption(destItem:getName() .. " (" .. #containerType ..")")
+            local containerTypeMenu = ISContextMenu:getNew(subMenu)
+            subMenu:addSubMenu(containerOption, containerTypeMenu)
+            local addOneContainerOption = containerTypeMenu:addGetUpOption(
+                oneOptionText, 
+                self, 
+                UBContextMenu.OnTransferFluid, self.barrelFluidContainer, { destItem }, addToBarrel
+            )
+            if containerType[2] ~= nil then
+                local addAllContainerOption = containerTypeMenu:addGetUpOption(
+                    allOptionText, 
+                    self, 
+                    UBContextMenu.OnTransferFluid, self.barrelFluidContainer, containerType, addToBarrel
+                )
+            end
+        else
+            local containerOption = subMenu:addGetUpOption(
+                destItem:getName(),
+                self,
+                UBContextMenu.OnTransferFluid, self.barrelFluidContainer, { destItem }, addToBarrel
+            )
+        end
+    end
+end
+
 function UBContextMenu:DoTakeFluidMenu(context, hasHoseNearby)
     -- find all items that contain fluid from barrel or empty
     local fluidContainerItems = self.playerInv:getAllEvalRecurse(
@@ -82,7 +115,7 @@ function UBContextMenu:DoTakeFluidMenu(context, hasHoseNearby)
         UBUtils.DisableOptionAddTooltip(takeOption, getText("Tooltip_UB_NoProperFluidInBarrel"))
         return
     end
-    if takeOption and SandboxVars.UsefulBarrels.RequireHoseForTake and not hasHoseNearby then 
+    if SandboxVars.UsefulBarrels.RequireHoseForTake and not hasHoseNearby then 
         UBUtils.DisableOptionAddTooltip(takeOption, getText("Tooltip_UB_HoseMissing", getItemName("Base.RubberHose")))
         return
     end
@@ -95,32 +128,7 @@ function UBContextMenu:DoTakeFluidMenu(context, hasHoseNearby)
             UBContextMenu.OnTransferFluid, self.barrelFluidContainer, allContainers
         )
     end
-    for _,containerType in pairs(allContainerTypes) do
-        local destItem = containerType[1]
-        if #containerType > 1 then
-            local containerOption = takeMenu:addOption(destItem:getName() .. " (" .. #containerType ..")")
-            local containerTypeMenu = ISContextMenu:getNew(takeMenu)
-            takeMenu:addSubMenu(containerOption, containerTypeMenu)
-            local addOneContainerOption = containerTypeMenu:addGetUpOption(
-                getText("ContextMenu_FillOne"), 
-                self, 
-                UBContextMenu.OnTransferFluid, self.barrelFluidContainer, { destItem }
-            )
-            if containerType[2] ~= nil then
-                local addAllContainerOption = containerTypeMenu:addGetUpOption(
-                    getText("ContextMenu_FillAll"), 
-                    self, 
-                    UBContextMenu.OnTransferFluid, self.barrelFluidContainer, containerType
-                )
-            end
-        else
-            local containerOption = takeMenu:addGetUpOption(
-                destItem:getName(),
-                self,
-                UBContextMenu.OnTransferFluid, self.barrelFluidContainer, { destItem }
-            )
-        end
-    end
+    self:DoCategoryList(takeMenu, allContainerTypes, false, getText("ContextMenu_FillOne"),getText("ContextMenu_FillAll"))
 end
 
 function UBContextMenu:DoAddFluidMenu(context, hasFunnelNearby)
@@ -150,32 +158,7 @@ function UBContextMenu:DoAddFluidMenu(context, hasFunnelNearby)
             UBContextMenu.OnTransferFluid, self.barrelFluidContainer, allContainers, true
         )
     end
-    for _,containerType in pairs(allContainerTypes) do
-        local destItem = containerType[1]
-        if #containerType > 1 then
-            local containerOption = addMenu:addOption(destItem:getName() .. " (" .. #containerType ..")")
-            local containerTypeMenu = ISContextMenu:getNew(addMenu)
-            addMenu:addSubMenu(containerOption, containerTypeMenu)
-            local addOneContainerOption = containerTypeMenu:addGetUpOption(
-                getText("ContextMenu_AddOne"), 
-                self, 
-                UBContextMenu.OnTransferFluid, self.barrelFluidContainer, { destItem }, true
-            )
-            if containerType[2] ~= nil then
-                local addAllContainerOption = containerTypeMenu:addGetUpOption(
-                    getText("ContextMenu_AddAll"), 
-                    self, 
-                    UBContextMenu.OnTransferFluid, self.barrelFluidContainer, containerType, true
-                )
-            end
-        else
-            local containerOption = addMenu:addGetUpOption(
-                destItem:getName(),
-                self,
-                UBContextMenu.OnTransferFluid, self.barrelFluidContainer, { destItem }, true
-            )
-        end
-    end
+    self:DoCategoryList(addMenu, allContainerTypes, true, getText("ContextMenu_AddOne"), getText("ContextMenu_AddAll"))
 end
 
 function UBContextMenu:DoBarrelUncap()

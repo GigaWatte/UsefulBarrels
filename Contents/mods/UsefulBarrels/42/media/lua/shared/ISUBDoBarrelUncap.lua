@@ -61,6 +61,14 @@ function ISUBDoBarrelUncap:complete()
             component:setCapacity(barrelCapacity)
             component:setContainerName("UB_" .. self.barrelObj:getSprite():getProperties():Val("CustomName"))
 
+			if SandboxVars.UsefulBarrels.InitialFluid and self:shouldSpawn() then
+				local fluid = self:getInitialFluid()
+				if fluid then
+					local amount = self:getInitialFluidAmount()
+					component:addFluid(fluid, amount)
+				end
+			end
+
 			GameEntityFactory.AddComponent(self.barrelObj, true, component)
 
 			local modData = self.barrelObj:getModData()
@@ -76,4 +84,31 @@ function ISUBDoBarrelUncap:complete()
 	end
 
 	return true;
+end
+
+function ISUBDoBarrelUncap:getInitialFluid()
+	local fluidTable = {}
+	for _,fluidStr in ipairs(luautils.split(SandboxVars.UsefulBarrels.InitialFluidPool, " ")) do
+		if Fluid:Get(fluidStr) then table.insert(fluidTable, Fluid:Get(fluidStr)) end
+	end
+
+	if #fluidTable == 1 then return nil end
+	local index = ZombRand(#fluidTable) + 1
+
+	return fluidTable[index]
+end
+
+function ISUBDoBarrelUncap:getInitialFluidAmount()
+	if SandboxVars.UsefulBarrels.InitialFluidMaxAmount > 0 then
+		return PZMath.clamp(ZombRand(SandboxVars.UsefulBarrels.InitialFluidMaxAmount), 0, SandboxVars.UsefulBarrels.BarrelCapacity)
+	end
+	return 0
+end
+
+function ISUBDoBarrelUncap:shouldSpawn()
+	if SandboxVars.UsefulBarrels.InitialFluidSpawnChance == 100 then return true end
+	if SandboxVars.UsefulBarrels.InitialFluidSpawnChance > 0 then
+		return ZombRand(0,100) <= SandboxVars.UsefulBarrels.InitialFluidSpawnChance
+	end
+	return false
 end
