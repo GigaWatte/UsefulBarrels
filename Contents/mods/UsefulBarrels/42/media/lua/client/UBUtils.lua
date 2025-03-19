@@ -1,6 +1,8 @@
 
 local UBUtils = {}
 
+
+-- add my barrels to predicates
 function UBUtils.predicateFluid(item, fluid)
 	return item:getFluidContainer() and item:getFluidContainer():contains(fluid) and (item:getFluidContainer():getAmount() >= 0.5)
 end
@@ -8,6 +10,8 @@ end
 function UBUtils.predicateHasEmptyFluidContainer(item)
 	return item:hasComponent(ComponentType.FluidContainer) and item:getComponent(ComponentType.FluidContainer):isEmpty()
 end
+
+function UBUtils.predicateHasFluidContainer(item) return item:hasComponent(ComponentType.FluidContainer) end
 
 function UBUtils.predicateAnyFluid(item)
 	return item:getFluidContainer() and (item:getFluidContainer():getAmount() >= 0.5)
@@ -266,32 +270,76 @@ function UBUtils.CalculateTooltipWeight(_object)
 	return weight
 end
 
-function UBUtils.GenerateGridCoordinates(distance)
+function UBUtils.GenerateGridCoordinates(distance, isDiamondShape)
 	if not distance then distance = 1 end
+	if not isDiamondShape then isDiamondShape = true end
 	local grid = {}
 	for x = -distance,distance + 1 do
 		for y = -distance,distance + 1 do
-			if math.abs(x) + math.abs(y) <= distance then table.insert(grid, {["x"]=x, ["y"]=y}) end
+			if isDiamondShape and math.abs(x) + math.abs(y) <= distance then 
+				table.insert(grid, {["x"]=x, ["y"]=y}) 
+			elseif not isDiamondShape then
+				table.insert(grid, {["x"]=x, ["y"]=y})
+			end
+
 		end 
 	end
 	return grid
 end
 
-function UBUtils.GetBarrelsNearby(square, distance, fluid)
-	if not square then return nil end
-	if not distance then distance = 1 end
+function UBUtils.GetSquaresFromCenterAtDistance(square, distance, includeInitialSquare)
 	local x,y,z = square:getX(), square:getY(), square:getZ()
 	local cell = square:getCell()
-	local grid = UBUtils.GenerateGridCoordinates(distance)
+	local grid = UBUtils.GenerateGridCoordinates(distance, true)
 	local squares = {}
 	for _,coord in ipairs(grid) do
 		local nextSquare = cell:getGridSquare(x+coord.x, y+coord.y, z)
 		if nextSquare then table.insert(squares, nextSquare) end
 	end
+	if includeInitialSquare ~= nil and includeInitialSquare then
+		table.insert(squares, square)
+	end
+	return squares
+end
+
+function UBUtils.TableContainsItem(table, item)
+	for _,v in pairs(table) do 
+		if v and v.item then
+			local item = v:getItem()
+			if item == item:getFullType() then return true end
+		end
+    end
+	return false
+end
+
+function UBUtils.GetWorldItemsNearby(square, distance)
+	if not square then return nil end
+	if not distance then distance = 1 end
+
+	local squares = UBUtils.GetSquaresFromCenterAtDistance(square, distance, true)
+
+	local worldItems = {}
+	for _,curr in ipairs(squares) do
+		local squareWorldItems = curr:getWorldObjects()
+		local sqTable = UBUtils.ConvertToTable(squareWorldItems)
+		for _,worldItem in ipairs(sqTable) do
+			table.insert(worldItems, worldItem)
+		end
+	end
+
+	return worldItems
+end
+
+function UBUtils.GetBarrelsNearby(square, distance, fluid)
+	-- this function not include an initial square in searching process
+	if not square then return nil end
+	if not distance then distance = 1 end
+
+	local squares = UBUtils.GetSquaresFromCenterAtDistance(square, distance, false)
 
 	local barrels = {}
-	for _,aSquare in ipairs(squares) do
-		local squareObjects = aSquare:getObjects()
+	for _,curr in ipairs(squares) do
+		local squareObjects = curr:getObjects()
 		local sqTable = UBUtils.ConvertToTable(squareObjects)
 		local barrel = UBUtils.GetValidBarrelObject(sqTable)
 		if barrel and UBUtils.IsUBBarrel(barrel) then
@@ -312,6 +360,10 @@ function UBUtils.IsUBBarrel(object)
         if modData and modData["UB_Uncapped"] ~= nil then
             return true
         end
+		-- in case of InventoryItem picked from world
+		if modData and modData["modData"] and modData["modData"]["UB_Uncapped"] ~= nil then
+			return true
+		end
     end
 	return false
 end

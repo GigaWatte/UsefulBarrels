@@ -20,9 +20,6 @@ end
 
 function ISUBAddFuelFromBarrel:start()
 	self:setActionAnim("refuelgascan")
-	-- Don't call setOverrideHandModels() with self.petrol, the right-hand mask
-	-- will bork the animation.
-	--self:setOverrideHandModels(self.petrol:getStaticModel(), nil)
 	self.sound = self.character:playSound("GeneratorAddFuel")
 end
 
@@ -40,7 +37,6 @@ end
 
 function ISUBAddFuelFromBarrel:complete()
 	local endFuel = 0;
-    print(self.fluidCont:getAmount())
 	while self.fluidCont and self.fluidCont:getAmount() >= 1.0 and self.generator:getFuel() + endFuel < 100 do
 		local amount = self.fluidCont:getAmount() - 1.0;
 		self.fluidCont:adjustAmount(amount);

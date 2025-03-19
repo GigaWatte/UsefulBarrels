@@ -1,14 +1,14 @@
 TODO Add more translations
 TODO improve sorting - prefere equipped and most filled
-TODO reequip items : DONE
+TODO DONE reequip items
 TODO allow ineract with items on ground
-TODO include partially empty containers to fill
-TODO Refueling generator from a barrel by Rubber Hose (hose:optional)
+TODO DONE include partially empty containers to fill
+TODO DONE Refueling generator from a barrel by Rubber Hose (hose:optional)
 TODO Refueling car from barrel by Rubber Hose (hose:optional)
 TODO random initial fluid
-TODO show fluid info (menu?) only if nearby
-TODO calculate hose, funnel not from loot but from worldobjects near barrel cell
-TODO fix item job title
+TODO DONE show fluid info (menu?) only if nearby
+TODO VERIFY - calculate hose, funnel not from loot but from worldobjects near barrel cell
+TODO DONE fix item job title
 FIXME barrel very fragile
 TODO IDEA - integration with fuel trailers
 TODO SUGGESTED - tarp or trash bags to store clean  fluids?

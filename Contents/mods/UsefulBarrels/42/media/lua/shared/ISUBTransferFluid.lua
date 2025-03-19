@@ -36,7 +36,7 @@ function ISUBTransferFluid:start()
 	if not isClient() then
 		self:init()
 	end
-	self.itemToOperate:setJobType(getText("ContextMenu_TakeGasFromPump"))
+	self.itemToOperate:setJobType(getText("ContextMenu_UB_TransferFluid"))
 	self.itemToOperate:setJobDelta(0.0)
 	
 	self:setOverrideHandModels(nil, self.itemToOperate:getStaticModel())
