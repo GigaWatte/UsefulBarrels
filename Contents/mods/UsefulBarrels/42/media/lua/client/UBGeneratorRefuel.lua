@@ -2,12 +2,13 @@
 local UBUtils = require "UBUtils"
 
 local UBRefuel = {}
+local TOOL_SCAN_DISTANCE = 2
 
 function UBRefuel.doAddFuelGenerator(worldobjects, generator, barrel, player)
 	local playerObj = getSpecificPlayer(player)
 	if luautils.walkAdj(playerObj, generator:getSquare()) then
         if generator:getFuel() < 100 then
-            ISTimedActionQueue.add(ISUBAddFuelFromBarrel:new(playerObj, generator, barrel, 70 + (barrel:getFluidContainer():getAmount() * 40)));
+            ISTimedActionQueue.add(ISUBAddFuelFromBarrel:new(playerObj, generator, barrel));
         end
 	end
 end
@@ -44,11 +45,6 @@ function UBRefuel:DoRefuelMenu(player, context)
     -- add option after vanilla add option and only if it exists
     if context:getOptionFromName(getText("ContextMenu_GeneratorAddFuel")) then 
         fillOption = context:insertOptionAfter(getText("ContextMenu_GeneratorAddFuel"), getText("ContextMenu_UB_RefuelFromBarrel"))
-    -- add option after turn on vanilla option if it is connected
-    --elseif context:getOptionFromName(getText("ContextMenu_Turn_On")) then
-    --    fillOption = context:insertOptionAfter(getText("ContextMenu_Turn_On"), getText("ContextMenu_UB_RefuelFromBarrel"))
-    --else
-    --    fillOption = context:addOptionOnTop(getText("ContextMenu_UB_RefuelFromBarrel"))
     end
     if not fillOption then return end
     if not self.generator:getSquare() or not AdjacentFreeTileFinder.Find(self.generator:getSquare(), self.playerObj) then
@@ -59,10 +55,10 @@ function UBRefuel:DoRefuelMenu(player, context)
 
     local containerMenu = ISContextMenu:getNew(context)
     context:addSubMenu(fillOption, containerMenu) 
-    
-    local hasHoseNearby = UBUtils.playerHasItem(self.loot.inventory, "RubberHose") or UBUtils.playerHasItem(self.playerInv, "RubberHose")
 
     for _,barrel in ipairs(self.barrels) do
+        local worldObjects = UBUtils.GetWorldItemsNearby(self.barrelObj:getSquare(), TOOL_SCAN_DISTANCE)
+        local hasHoseNearby = UBUtils.TableContainsItem(worldObjects, "Base.RubberHose") or UBUtils.playerHasItem(self.playerInv, "RubberHose")
         self:CreateBarrelOption(containerMenu, barrel, hasHoseNearby, player)
     end
 
@@ -89,7 +85,6 @@ end
 function UBRefuel:new(player, context, worldobjects, test)
     local o = self
     o.playerObj = getSpecificPlayer(player)
-    o.loot = getPlayerLoot(player)
     o.playerInv = o.playerObj:getInventory()
     o.generator = ISWorldObjectContextMenu.fetchVars.generator
 

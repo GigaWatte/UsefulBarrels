@@ -62,14 +62,11 @@ function ISUBDoBarrelUncap:complete()
             component:setContainerName("UB_" .. self.barrelObj:getSprite():getProperties():Val("CustomName"))
 
 			local shouldSpawn = self:shouldSpawn()
-			print("spawning fluid: ", shouldSpawn)
 			if SandboxVars.UsefulBarrels.InitialFluid and shouldSpawn then
 				local fluid = self:getInitialFluid()
-				print("initial fluid: ", fluid)
 				if fluid then
 					local amount = self:getInitialFluidAmount()
 					component:addFluid(fluid, amount)
-					print("initial amount: ", amount)
 				end
 			end
 

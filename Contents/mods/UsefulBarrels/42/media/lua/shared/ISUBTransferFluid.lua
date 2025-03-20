@@ -53,10 +53,6 @@ function ISUBTransferFluid:start()
 end
 
 function ISUBTransferFluid:stop()
-	--print("valid:", self.action:valid())
-	--print("finished :", self.action:finished())
-	--print("force stop :", self.action.forceStop)
-	--print("force complete :", self.action.forceComplete)
 	self.character:stopOrTriggerSound(self.sound)
 	self.itemToOperate:setJobDelta(0.0)
     ISBaseTimedAction.stop(self);
