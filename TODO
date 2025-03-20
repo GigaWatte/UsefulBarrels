@@ -1,14 +1,16 @@
-TODO Add more translations
-TODO improve sorting - prefere equipped and most filled
-TODO DONE reequip items
-TODO allow ineract with items on ground
+TODO DONE - calculate hose, funnel not from loot but from worldobjects near barrel cell
 TODO DONE include partially empty containers to fill
-TODO DONE Refueling generator from a barrel by Rubber Hose (hose:optional)
-TODO Refueling car from barrel by Rubber Hose (hose:optional)
-TODO VERIFY random initial fluid
-TODO DONE show fluid info (menu?) only if nearby
-TODO VERIFY - calculate hose, funnel not from loot but from worldobjects near barrel cell
+TODO DONE show fluid info only if nearby, also show poison or not
+TODO DONE random initial fluid
 TODO DONE fix item job title
+FIXED - interruption of Fill or Add actions if selected "All"
+TODO DONE improve sorting - prefere equipped and most filled
+TODO DONE reequip items
+TODO DONE Refueling generator from a barrel by Rubber Hose (hose:optional)
+
+TODO Refueling car from barrel by Rubber Hose (hose:optional)
+TODO Add more translations
+TODO allow ineract with items on ground
 FIXME barrel very fragile
 TODO IDEA - integration with fuel trailers
 TODO SUGGESTED - tarp or trash bags to store clean  fluids?

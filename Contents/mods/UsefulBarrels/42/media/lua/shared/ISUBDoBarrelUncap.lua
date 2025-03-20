@@ -61,11 +61,15 @@ function ISUBDoBarrelUncap:complete()
             component:setCapacity(barrelCapacity)
             component:setContainerName("UB_" .. self.barrelObj:getSprite():getProperties():Val("CustomName"))
 
-			if SandboxVars.UsefulBarrels.InitialFluid and self:shouldSpawn() then
+			local shouldSpawn = self:shouldSpawn()
+			print("spawning fluid: ", shouldSpawn)
+			if SandboxVars.UsefulBarrels.InitialFluid and shouldSpawn then
 				local fluid = self:getInitialFluid()
+				print("initial fluid: ", fluid)
 				if fluid then
 					local amount = self:getInitialFluidAmount()
 					component:addFluid(fluid, amount)
+					print("initial amount: ", amount)
 				end
 			end
 
@@ -88,8 +92,9 @@ end
 
 function ISUBDoBarrelUncap:getInitialFluid()
 	local fluidTable = {}
-	for _,fluidStr in ipairs(luautils.split(SandboxVars.UsefulBarrels.InitialFluidPool, " ")) do
-		if Fluid:Get(fluidStr) then table.insert(fluidTable, Fluid:Get(fluidStr)) end
+	local fluids = luautils.split(SandboxVars.UsefulBarrels.InitialFluidPool)
+	for _,fluidStr in ipairs(fluids, " ") do
+		if Fluid.Get(fluidStr) then table.insert(fluidTable, Fluid.Get(fluidStr)) end
 	end
 
 	if #fluidTable == 1 then return nil end

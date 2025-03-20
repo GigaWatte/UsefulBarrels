@@ -3,58 +3,66 @@ local UBUtils = require "UBUtils"
 
 local UBContextMenu = {}
 
-function UBContextMenu:OnTransferFluid(fluidContainer, fluidContainerItems, canAddToBarrel)
-    local addToBarrel = canAddToBarrel ~= nil
-
-    local didWalk = false
-
-    -- remember initially equipped items
-    -- what if these items is fluidcontainer?
+function UBContextMenu:OnTransferFluid(fluidContainer, fluidContainerItems, addToBarrel)
     local primaryItem = self.playerObj:getPrimaryHandItem()
     local secondaryItem = self.playerObj:getSecondaryHandItem()
-
+    local twohanded = primaryItem == secondaryItem
+    -- reequip items if it is not our fluidContainers
+    local reequipPrimary = primaryItem and not luautils.tableContains(fluidContainerItems, primaryItem)
+    local reequipSecondary = secondaryItem and not luautils.tableContains(fluidContainerItems, secondaryItem)
     -- Drop corpse or generator
 	if isForceDropHeavyItem(primaryItem) then
 		ISTimedActionQueue.add(ISUnequipAction:new(self.playerObj, primaryItem, 50));
 	end
 
-    print("pi: ", luautils.tableContains(fluidContainerItems, primaryItem))
-    print("si: ", luautils.tableContains(fluidContainerItems, secondaryItem))
+    if not luautils.walkAdj(self.playerObj, self.barrelSquare, true) then return end
+
+    function sortByEquip(a,b)
+        return a == primaryItem and not (b == primaryItem)
+    end
+    -- sort to remove unnecesary equip action if proper container already equipped
+    table.sort(fluidContainerItems, sortByEquip)
 
     for i,item in ipairs(fluidContainerItems) do
-        if not didWalk and (not self.barrelSquare or not luautils.walkAdj(self.playerObj, self.barrelSquare, true)) then
-			return
-		end
-		didWalk = true
-
         -- this returns item back to container it's taken. example: backpack
         local returnToContainer = item:getContainer():isInCharacterInventory(self.playerObj) and item:getContainer()
-
         -- if item not in player main inventory
         if luautils.haveToBeTransfered(self.playerObj, item) then
             -- transfer item to player inventory
             ISTimedActionQueue.add(ISInventoryTransferAction:new(self.playerObj, item, item:getContainer(), self.playerObj:getInventory()))
         end
-
         -- action: equip items to primary hand. this action takes less time, according to code. funny
-        luautils.equipItems(self.playerObj, item, nil)
-
-        if not addToBarrel then
-            ISTimedActionQueue.add(ISUBTransferFluid:new(self.playerObj, fluidContainer, item:getFluidContainer(), self.barrelSquare, item))
-        else
-            local hasFunnelNearby = UBUtils.playerHasItem(self.loot.inventory, "Funnel") or UBUtils.playerHasItem(self.playerInv, "Funnel")
-            local speedModifierApply = SandboxVars.UsefulBarrels.FunnelSpeedUpFillModifier > 0 and hasFunnelNearby
-            ISTimedActionQueue.add(ISUBTransferFluid:new(self.playerObj, item:getFluidContainer(), fluidContainer, self.barrelSquare, item, speedModifierApply))
+        if item ~= primaryItem then
+            ISTimedActionQueue.add(ISEquipWeaponAction:new(self.playerObj, item, 25, true))
         end
 
+        if addToBarrel ~= nil and addToBarrel == true then
+            local worldObjects = UBUtils.GetWorldItemsNearby(self.barrelObj:getSquare(), 2)
+            local hasFunnelNearby = UBUtils.TableContainsItem(worldObjects, "Base.Funnel") or UBUtils.playerHasItem(self.playerInv, "Funnel")
+            local speedModifierApply = SandboxVars.UsefulBarrels.FunnelSpeedUpFillModifier > 0 and hasFunnelNearby
+            ISTimedActionQueue.add(ISUBTransferFluid:new(self.playerObj, item:getFluidContainer(), fluidContainer, self.barrelSquare, item, speedModifierApply))
+        else
+            ISTimedActionQueue.add(ISUBTransferFluid:new(self.playerObj, fluidContainer, item:getFluidContainer(), self.barrelSquare, item))
+        end
         -- return item back to container
         if returnToContainer and (returnToContainer ~= self.playerInv) then
             ISTimedActionQueue.add(ISInventoryTransferAction:new(self.playerObj, item, self.playerInv, returnToContainer))
         end
     end
 
-    -- action: back equip items that was equipped before
-    luautils.equipItems(self.playerObj, primaryItem, secondaryItem)
+    if twohanded then
+        ISTimedActionQueue.add(ISEquipWeaponAction:new(self.playerObj, primaryItem, 25, true, twohanded))
+    elseif reequipPrimary and reequipSecondary then
+        ISTimedActionQueue.add(ISEquipWeaponAction:new(self.playerObj, primaryItem, 25, true))
+        ISTimedActionQueue.add(ISEquipWeaponAction:new(self.playerObj, secondaryItem, 25, false))
+    else
+        if reequipPrimary then
+            ISTimedActionQueue.add(ISEquipWeaponAction:new(self.playerObj, primaryItem, 25, true))
+        end
+        if reequipSecondary then
+            ISTimedActionQueue.add(ISEquipWeaponAction:new(self.playerObj, secondaryItem, 25, false))
+        end
+    end
 end
 
 function UBContextMenu.CanCreateFluidMenu(playerObj, barrelObj)
@@ -186,9 +194,13 @@ function UBContextMenu:AddInfoOption(context)
 
     local infoOption = context:addOptionOnTop(getText("Fluid_UB_Show_Info", fluidName))
     if self.playerObj:DistToSquared(self.barrelObj:getX() + 0.5, self.barrelObj:getY() + 0.5) < 2 * 2 then
-        tooltip:setName("Tooltip name")
         infoOption.toolTip = tooltip
     end
+    if self.barrelFluid and self.barrelFluid:isPoisonous() then
+        infoOption.iconTexture = getTexture("media/ui/Skull2.png")
+        tooltip.description = tooltip.description .. "\n" .. getText("Fluid_Poison")
+    end
+
 end
 
 function UBContextMenu:RemoveVanillaOptions(context, subcontext)

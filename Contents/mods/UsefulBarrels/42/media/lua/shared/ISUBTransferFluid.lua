@@ -2,10 +2,12 @@ require "TimedActions/ISBaseTimedAction"
 
 ISUBTransferFluid = ISBaseTimedAction:derive("ISUBTransferFluid");
 
+function ISUBTransferFluid:isValidStart()
+	return FluidContainer.CanTransfer(self.sourceFluidContainer, self.destFluidContainer)
+end
+
 function ISUBTransferFluid:isValid()
-	local sourceAmount = self.sourceFluidContainer:getAmount()
-	local canTransfer = FluidContainer.CanTransfer(self.sourceFluidContainer, self.destFluidContainer)
-	return (sourceAmount > 0 and canTransfer)
+	return self.character:isEquipped(self.itemToOperate)
 end
 
 function ISUBTransferFluid:waitToStart()
@@ -17,12 +19,17 @@ function ISUBTransferFluid:update()
 	self.itemToOperate:setJobDelta(self:getJobDelta())
 	self.character:faceLocation(self.square:getX(), self.square:getY())
 	if not isClient() then
-		local actionCurrent = math.floor(self.amount * self:getJobDelta() + 0.001);
-		local destinationAmount = self.destFluidContainer:getAmount();
-		local desiredAmount = (self.destinationStart + actionCurrent)
-		if desiredAmount > destinationAmount then
-			local amountToTransfer = desiredAmount - destinationAmount
-			FluidContainer.Transfer(self.sourceFluidContainer, self.destFluidContainer, amountToTransfer)
+		local sourceAmount = self.sourceFluidContainer:getAmount()
+		if sourceAmount > 0 then
+			local actionCurrent = math.floor(self.amount * self:getJobDelta() + 0.001);
+			local destinationAmount = self.destFluidContainer:getAmount();
+			local desiredAmount = (self.destinationStart + actionCurrent)
+			if desiredAmount > destinationAmount then
+				local amountToTransfer = desiredAmount - destinationAmount
+				FluidContainer.Transfer(self.sourceFluidContainer, self.destFluidContainer, amountToTransfer)
+			end
+		else
+			self.action:forceComplete()
 		end
 	end
     self.character:setMetabolicTarget(Metabolics.LightWork);
@@ -46,6 +53,10 @@ function ISUBTransferFluid:start()
 end
 
 function ISUBTransferFluid:stop()
+	--print("valid:", self.action:valid())
+	--print("finished :", self.action:finished())
+	--print("force stop :", self.action.forceStop)
+	--print("force complete :", self.action.forceComplete)
 	self.character:stopOrTriggerSound(self.sound)
 	self.itemToOperate:setJobDelta(0.0)
     ISBaseTimedAction.stop(self);

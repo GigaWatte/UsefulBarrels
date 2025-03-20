@@ -41,12 +41,16 @@ end
 
 function UBRefuel:DoRefuelMenu(player, context)
     local fillOption
+    -- add option after vanilla add option and only if it exists
     if context:getOptionFromName(getText("ContextMenu_GeneratorAddFuel")) then 
         fillOption = context:insertOptionAfter(getText("ContextMenu_GeneratorAddFuel"), getText("ContextMenu_UB_RefuelFromBarrel"))
-    else
-        fillOption = context:addOptionOnTop(getText("ContextMenu_UB_RefuelFromBarrel"))
+    -- add option after turn on vanilla option if it is connected
+    --elseif context:getOptionFromName(getText("ContextMenu_Turn_On")) then
+    --    fillOption = context:insertOptionAfter(getText("ContextMenu_Turn_On"), getText("ContextMenu_UB_RefuelFromBarrel"))
+    --else
+    --    fillOption = context:addOptionOnTop(getText("ContextMenu_UB_RefuelFromBarrel"))
     end
-
+    if not fillOption then return end
     if not self.generator:getSquare() or not AdjacentFreeTileFinder.Find(self.generator:getSquare(), self.playerObj) then
         fillOption.notAvailable = true;
         -- if the player can reach the tile, populate the submenu, otherwise don't bother

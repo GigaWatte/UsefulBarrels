@@ -302,12 +302,10 @@ function UBUtils.GetSquaresFromCenterAtDistance(square, distance, includeInitial
 	return squares
 end
 
-function UBUtils.TableContainsItem(table, item)
+function UBUtils.TableContainsItem(table, item_name)
 	for _,v in pairs(table) do 
-		if v and v.item then
-			local item = v:getItem()
-			if item == item:getFullType() then return true end
-		end
+		local item = v:getItem()
+		if item_name == item:getFullType() then return true end
     end
 	return false
 end
@@ -366,6 +364,21 @@ function UBUtils.IsUBBarrel(object)
 		end
     end
 	return false
+end
+
+function UBUtils.GetBarrelNearbyVehicle(vehicle)
+    local part = vehicle:getPartById("GasTank")
+	if not part then return nil end
+	local areaCenter = vehicle:getAreaCenter(part:getArea())
+	if not areaCenter then return nil end
+	local square = getCell():getGridSquare(areaCenter:getX(), areaCenter:getY(), vehicle:getZ())
+	if not square then return nil end
+
+    local barrels = UBUtils.GetBarrelsNearby(square, 4, Fluid.Petrol)
+
+    if #barrels == 1 then return nil end
+
+    return barrels[1]
 end
 
 return UBUtils
