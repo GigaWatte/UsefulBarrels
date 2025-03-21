@@ -1,5 +1,6 @@
 ContextMenu_RU = {
     ContextMenu_UB_UncapBarrel = "Открутить %1",
     ContextMenu_UB_AddFluid = "Добавить топливо",
-    ContextMenu_UB_RefuelFromBarrel = "TBD: Refuel From Barrel",
+    ContextMenu_UB_RefuelFromBarrel = "Refuel From Barrel",
+    ContextMenu_UB_TransferFluid = "Transfer fluid",
 }
