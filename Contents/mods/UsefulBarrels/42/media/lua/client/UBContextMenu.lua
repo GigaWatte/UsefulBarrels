@@ -7,7 +7,7 @@ local TOOL_SCAN_DISTANCE = 2
 function UBContextMenu:OnTransferFluid(fluidContainer, fluidContainerItems, addToBarrel)
     local primaryItem = self.playerObj:getPrimaryHandItem()
     local secondaryItem = self.playerObj:getSecondaryHandItem()
-    local twohanded = primaryItem == secondaryItem
+    local twohanded = (primaryItem == secondaryItem) and primaryItem ~= nil
     -- reequip items if it is not our fluidContainers
     local reequipPrimary = primaryItem and not luautils.tableContains(fluidContainerItems, primaryItem)
     local reequipSecondary = secondaryItem and not luautils.tableContains(fluidContainerItems, secondaryItem)
@@ -23,12 +23,14 @@ function UBContextMenu:OnTransferFluid(fluidContainer, fluidContainerItems, addT
     for i,item in ipairs(fluidContainerItems) do
         -- this returns item back to container it's taken. example: backpack
         local returnToContainer = item:getContainer():isInCharacterInventory(self.playerObj) and item:getContainer()
+        local isEquippedOnBody = item:isEquipped()
+        --local isEquippedOnBody = self.playerObj:isEquippedClothing(self.item)
         -- if item not in player main inventory
         if luautils.haveToBeTransfered(self.playerObj, item) then
             -- transfer item to player inventory
             ISTimedActionQueue.add(ISInventoryTransferAction:new(self.playerObj, item, item:getContainer(), self.playerObj:getInventory()))
         end
-        -- action: equip items to primary hand. this action takes less time, according to code. funny
+        -- action: equip items to primary hand
         if item ~= primaryItem then
             ISTimedActionQueue.add(ISEquipWeaponAction:new(self.playerObj, item, 25, true))
         end
@@ -44,6 +46,10 @@ function UBContextMenu:OnTransferFluid(fluidContainer, fluidContainerItems, addT
         -- return item back to container
         if returnToContainer and (returnToContainer ~= self.playerInv) then
             ISTimedActionQueue.add(ISInventoryTransferAction:new(self.playerObj, item, self.playerInv, returnToContainer))
+        end
+
+        if isEquippedOnBody then
+            ISTimedActionQueue.add(ISWearClothing:new(self.playerObj, item, 25))
         end
     end
 

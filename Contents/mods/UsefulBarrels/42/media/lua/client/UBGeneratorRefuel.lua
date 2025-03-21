@@ -3,6 +3,7 @@ local UBUtils = require "UBUtils"
 
 local UBRefuel = {}
 local TOOL_SCAN_DISTANCE = 2
+local BARREL_SCAN_DISTANCE = 2
 
 function UBRefuel.doAddFuelGenerator(worldobjects, generator, barrel, player)
 	local playerObj = getSpecificPlayer(player)
@@ -45,7 +46,10 @@ function UBRefuel:DoRefuelMenu(player, context)
     -- add option after vanilla add option and only if it exists
     if context:getOptionFromName(getText("ContextMenu_GeneratorAddFuel")) then 
         fillOption = context:insertOptionAfter(getText("ContextMenu_GeneratorAddFuel"), getText("ContextMenu_UB_RefuelFromBarrel"))
+    elseif context:getOptionFromName(getText("ContextMenu_GeneratorInfo")) then
+        fillOption = context:insertOptionAfter(getText("ContextMenu_GeneratorInfo"), getText("ContextMenu_UB_RefuelFromBarrel"))
     end
+    -- add option if no canisters but barrel
     if not fillOption then return end
     if not self.generator:getSquare() or not AdjacentFreeTileFinder.Find(self.generator:getSquare(), self.playerObj) then
         fillOption.notAvailable = true;
@@ -57,7 +61,7 @@ function UBRefuel:DoRefuelMenu(player, context)
     context:addSubMenu(fillOption, containerMenu) 
 
     for _,barrel in ipairs(self.barrels) do
-        local worldObjects = UBUtils.GetWorldItemsNearby(self.barrelObj:getSquare(), TOOL_SCAN_DISTANCE)
+        local worldObjects = UBUtils.GetWorldItemsNearby(barrel:getSquare(), TOOL_SCAN_DISTANCE)
         local hasHoseNearby = UBUtils.TableContainsItem(worldObjects, "Base.RubberHose") or UBUtils.playerHasItem(self.playerInv, "RubberHose")
         self:CreateBarrelOption(containerMenu, barrel, hasHoseNearby, player)
     end
@@ -91,9 +95,9 @@ function UBRefuel:new(player, context, worldobjects, test)
     if not o.generator or o.playerObj:getVehicle() then return end
     if o.generator:isActivated() or o.generator:getFuel() >= 100 then return end
 
-    o.barrels = UBUtils.GetBarrelsNearby(o.generator:getSquare(), 2, Fluid.Petrol)
+    o.barrels = UBUtils.GetBarrelsNearby(o.generator:getSquare(), BARREL_SCAN_DISTANCE, Fluid.Petrol)
 
-    if #o.barrels == 1 then return end
+    if #o.barrels == 0 then return end
 
     return self:DoRefuelMenu(player, context)
 end
