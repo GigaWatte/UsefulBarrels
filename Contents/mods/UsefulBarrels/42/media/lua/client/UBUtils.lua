@@ -9,6 +9,8 @@ function UBUtils.predicateHasEmptyFluidContainer(item)
 	return item:hasComponent(ComponentType.FluidContainer) and item:getComponent(ComponentType.FluidContainer):isEmpty()
 end
 
+function UBUtils.predicateHasFluidContainer(item) return item:hasComponent(ComponentType.FluidContainer) end
+
 function UBUtils.predicateAnyFluid(item)
 	return item:getFluidContainer() and (item:getFluidContainer():getAmount() >= 0.5)
 end
@@ -260,6 +262,117 @@ function UBUtils.CalculateTooltipWeight(_object)
 		weight = itemWeight
     end
 	return weight
+end
+
+function UBUtils.GenerateGridCoordinates(distance, isDiamondShape)
+	if not distance then distance = 1 end
+	if not isDiamondShape then isDiamondShape = true end
+	local grid = {}
+	for x = -distance,distance + 1 do
+		for y = -distance,distance + 1 do
+			if isDiamondShape and math.abs(x) + math.abs(y) <= distance then 
+				table.insert(grid, {["x"]=x, ["y"]=y}) 
+			elseif not isDiamondShape then
+				table.insert(grid, {["x"]=x, ["y"]=y})
+			end
+
+		end 
+	end
+	return grid
+end
+
+function UBUtils.GetSquaresFromCenterAtDistance(square, distance, includeInitialSquare)
+	local x,y,z = square:getX(), square:getY(), square:getZ()
+	local cell = square:getCell()
+	local grid = UBUtils.GenerateGridCoordinates(distance, true)
+	local squares = {}
+	for _,coord in ipairs(grid) do
+		local nextSquare = cell:getGridSquare(x+coord.x, y+coord.y, z)
+		if nextSquare then table.insert(squares, nextSquare) end
+	end
+	if includeInitialSquare ~= nil and includeInitialSquare then
+		table.insert(squares, square)
+	end
+	return squares
+end
+
+function UBUtils.TableContainsItem(table, item_name)
+	for _,v in pairs(table) do 
+		local item = v:getItem()
+		if item_name == item:getFullType() then return true end
+    end
+	return false
+end
+
+function UBUtils.GetWorldItemsNearby(square, distance)
+	if not square then return nil end
+	if not distance then distance = 1 end
+
+	local squares = UBUtils.GetSquaresFromCenterAtDistance(square, distance, true)
+
+	local worldItems = {}
+	for _,curr in ipairs(squares) do
+		local squareWorldItems = curr:getWorldObjects()
+		local sqTable = UBUtils.ConvertToTable(squareWorldItems)
+		for _,worldItem in ipairs(sqTable) do
+			table.insert(worldItems, worldItem)
+		end
+	end
+
+	return worldItems
+end
+
+function UBUtils.GetBarrelsNearby(square, distance, fluid)
+	-- this function not include an initial square in searching process
+	if not square then return nil end
+	if not distance then distance = 1 end
+
+	local squares = UBUtils.GetSquaresFromCenterAtDistance(square, distance, false)
+
+	local barrels = {}
+	for _,curr in ipairs(squares) do
+		local squareObjects = curr:getObjects()
+		local sqTable = UBUtils.ConvertToTable(squareObjects)
+		local barrel = UBUtils.GetValidBarrelObject(sqTable)
+		if barrel and UBUtils.IsUBBarrel(barrel) then
+			if fluid and barrel:getFluidContainer():contains(fluid) then
+				table.insert(barrels, barrel)
+			elseif fluid == nil then
+				table.insert(barrels, barrel)
+			end
+		end
+	end
+	
+	return barrels
+end
+
+function UBUtils.IsUBBarrel(object)
+	if object then
+        local modData = object:getModData()
+        if modData and modData["UB_Uncapped"] ~= nil then
+            return true
+        end
+		-- in case of InventoryItem picked from world
+		if modData and modData["modData"] and modData["modData"]["UB_Uncapped"] ~= nil then
+			return true
+		end
+    end
+	return false
+end
+
+function UBUtils.GetBarrelNearbyVehicle(vehicle)
+    local part = vehicle:getPartById("GasTank")
+	if not part then return nil end
+	local areaCenter = vehicle:getAreaCenter(part:getArea())
+	if not areaCenter then return nil end
+	local square = getCell():getGridSquare(areaCenter:getX(), areaCenter:getY(), vehicle:getZ())
+	if not square then return nil end
+
+    local barrels = UBUtils.GetBarrelsNearby(square, 4, Fluid.Petrol)
+
+    if #barrels == 1 then return nil end
+
+    return barrels[1]
 end
 
 return UBUtils

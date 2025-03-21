@@ -10,11 +10,12 @@ function ISUBDoBarrelUncap:getDuration()
 	return 40
 end
 
-function ISUBDoBarrelUncap:new(character, barrelObj, wrench)
+function ISUBDoBarrelUncap:new(character, barrelObj, wrench, objectLabel)
 	local o = ISBaseTimedAction.new(self, character)
 	o.character = character;
     o.barrelObj = barrelObj;
 	o.wrench = wrench;
+	o.objectLabel = objectLabel
 	o.maxTime = o:getDuration();
 	return o;
 end
@@ -28,21 +29,26 @@ function ISUBDoBarrelUncap:isValid()
 end
 
 function ISUBDoBarrelUncap:update()
+	self.wrench:setJobDelta(self:getJobDelta())
 	self.character:faceThisObject(self.barrelObj)
     self.character:setMetabolicTarget(Metabolics.MediumWork)
 end
 
 function ISUBDoBarrelUncap:start()
+	self.wrench:setJobType(getText("ContextMenu_UB_UncapBarrel", self.objectLabel))
+	self.wrench:setJobDelta(0.0)
 	self.sound = self.character:playSound("RepairWithWrench")
 end
 
 function ISUBDoBarrelUncap:stop()
 	self.character:stopOrTriggerSound(self.sound)
+	self.wrench:setJobDelta(0.0)
     ISBaseTimedAction.stop(self);
 end
 
 function ISUBDoBarrelUncap:perform()
 	self.character:stopOrTriggerSound(self.sound)
+	self.wrench:setJobDelta(0.0)
 	-- needed to remove from queue / start next.
 	ISBaseTimedAction.perform(self);
 end
@@ -54,6 +60,15 @@ function ISUBDoBarrelUncap:complete()
 			local barrelCapacity = SandboxVars.UsefulBarrels.BarrelCapacity
             component:setCapacity(barrelCapacity)
             component:setContainerName("UB_" .. self.barrelObj:getSprite():getProperties():Val("CustomName"))
+
+			local shouldSpawn = self:shouldSpawn()
+			if SandboxVars.UsefulBarrels.InitialFluid and shouldSpawn then
+				local fluid = self:getInitialFluid()
+				if fluid then
+					local amount = self:getInitialFluidAmount()
+					component:addFluid(fluid, amount)
+				end
+			end
 
 			GameEntityFactory.AddComponent(self.barrelObj, true, component)
 
@@ -70,4 +85,32 @@ function ISUBDoBarrelUncap:complete()
 	end
 
 	return true;
+end
+
+function ISUBDoBarrelUncap:getInitialFluid()
+	local fluidTable = {}
+	local fluids = luautils.split(SandboxVars.UsefulBarrels.InitialFluidPool)
+	for _,fluidStr in ipairs(fluids, " ") do
+		if Fluid.Get(fluidStr) then table.insert(fluidTable, Fluid.Get(fluidStr)) end
+	end
+
+	if #fluidTable == 1 then return nil end
+	local index = ZombRand(#fluidTable) + 1
+
+	return fluidTable[index]
+end
+
+function ISUBDoBarrelUncap:getInitialFluidAmount()
+	if SandboxVars.UsefulBarrels.InitialFluidMaxAmount > 0 then
+		return PZMath.clamp(ZombRand(SandboxVars.UsefulBarrels.InitialFluidMaxAmount), 0, SandboxVars.UsefulBarrels.BarrelCapacity)
+	end
+	return 0
+end
+
+function ISUBDoBarrelUncap:shouldSpawn()
+	if SandboxVars.UsefulBarrels.InitialFluidSpawnChance == 100 then return true end
+	if SandboxVars.UsefulBarrels.InitialFluidSpawnChance > 0 then
+		return ZombRand(0,100) <= SandboxVars.UsefulBarrels.InitialFluidSpawnChance
+	end
+	return false
 end

@@ -1,5 +1,6 @@
 ContextMenu_EN = {
     ContextMenu_UB_UncapBarrel = "Uncap %1"
     ContextMenu_UB_AddFluid = "Add"
-    ContextMenu_UB_RefuelFromBarrel = "TBD: Refuel From Barrel"
+    ContextMenu_UB_RefuelFromBarrel = "Refuel From Barrel"
+    ContextMenu_UB_TransferFluid = "Transfer fluid"
 }

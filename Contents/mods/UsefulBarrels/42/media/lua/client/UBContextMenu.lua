@@ -2,188 +2,206 @@
 local UBUtils = require "UBUtils"
 
 local UBContextMenu = {}
+local TOOL_SCAN_DISTANCE = 2
 
--- << recreated vanilla functions 
-function UBContextMenu:OnTransferFluid(squareToApproach, fluidContainer, fluidContainerItems, canAddToBarrel)
-    local addToBarrel = canAddToBarrel ~= nil
+function UBContextMenu:OnTransferFluid(fluidContainer, fluidContainerItems, addToBarrel)
+    local primaryItem = self.playerObj:getPrimaryHandItem()
+    local secondaryItem = self.playerObj:getSecondaryHandItem()
+    local twohanded = (primaryItem == secondaryItem) and primaryItem ~= nil
+    -- reequip items if it is not our fluidContainers
+    local reequipPrimary = primaryItem and not luautils.tableContains(fluidContainerItems, primaryItem)
+    local reequipSecondary = secondaryItem and not luautils.tableContains(fluidContainerItems, secondaryItem)
+    -- Drop corpse or generator
+	if isForceDropHeavyItem(primaryItem) then
+		ISTimedActionQueue.add(ISUnequipAction:new(self.playerObj, primaryItem, 50));
+	end
 
-    local didWalk = false
+    if not luautils.walkAdj(self.playerObj, self.barrelSquare, true) then return end
+    -- sort to remove unnecesary equip action if proper container already equipped
+    table.sort(fluidContainerItems, function(a,b) return a == primaryItem and not (b == primaryItem) end)
+
     for i,item in ipairs(fluidContainerItems) do
-        if not didWalk and (not squareToApproach or not luautils.walkAdj(self.playerObj, squareToApproach, true)) then
-			return
-		end
-		didWalk = true
-
+        -- this returns item back to container it's taken. example: backpack
         local returnToContainer = item:getContainer():isInCharacterInventory(self.playerObj) and item:getContainer()
-		ISWorldObjectContextMenu.transferIfNeeded(self.playerObj, item)
-		ISInventoryPaneContextMenu.equipWeapon(item, false, false, self.playerObj:getPlayerNum())
-
-        if not addToBarrel then
-            ISTimedActionQueue.add(ISUBTransferFluid:new(self.playerObj, fluidContainer, item:getFluidContainer(), squareToApproach, item))
-        else
-            local hasFunnelNearby = UBUtils.playerHasItem(self.loot.inventory, "Funnel") or UBUtils.playerHasItem(self.playerInv, "Funnel")
-            local speedModifierApply = SandboxVars.UsefulBarrels.FunnelSpeedUpFillModifier > 0 and hasFunnelNearby
-            ISTimedActionQueue.add(ISUBTransferFluid:new(self.playerObj, item:getFluidContainer(), fluidContainer, squareToApproach, item, speedModifierApply))
+        local isEquippedOnBody = item:isEquipped()
+        --local isEquippedOnBody = self.playerObj:isEquippedClothing(self.item)
+        -- if item not in player main inventory
+        if luautils.haveToBeTransfered(self.playerObj, item) then
+            -- transfer item to player inventory
+            ISTimedActionQueue.add(ISInventoryTransferAction:new(self.playerObj, item, item:getContainer(), self.playerObj:getInventory()))
+        end
+        -- action: equip items to primary hand
+        if item ~= primaryItem then
+            ISTimedActionQueue.add(ISEquipWeaponAction:new(self.playerObj, item, 25, true))
         end
 
+        if addToBarrel ~= nil and addToBarrel == true then
+            local worldObjects = UBUtils.GetWorldItemsNearby(self.barrelObj:getSquare(), TOOL_SCAN_DISTANCE)
+            local hasFunnelNearby = UBUtils.TableContainsItem(worldObjects, "Base.Funnel") or UBUtils.playerHasItem(self.playerInv, "Funnel")
+            local speedModifierApply = SandboxVars.UsefulBarrels.FunnelSpeedUpFillModifier > 0 and hasFunnelNearby
+            ISTimedActionQueue.add(ISUBTransferFluid:new(self.playerObj, item:getFluidContainer(), fluidContainer, self.barrelSquare, item, speedModifierApply))
+        else
+            ISTimedActionQueue.add(ISUBTransferFluid:new(self.playerObj, fluidContainer, item:getFluidContainer(), self.barrelSquare, item))
+        end
+        -- return item back to container
         if returnToContainer and (returnToContainer ~= self.playerInv) then
             ISTimedActionQueue.add(ISInventoryTransferAction:new(self.playerObj, item, self.playerInv, returnToContainer))
         end
+
+        if isEquippedOnBody then
+            ISTimedActionQueue.add(ISWearClothing:new(self.playerObj, item, 25))
+        end
+    end
+
+    if twohanded then
+        ISTimedActionQueue.add(ISEquipWeaponAction:new(self.playerObj, primaryItem, 25, true, twohanded))
+    elseif reequipPrimary and reequipSecondary then
+        ISTimedActionQueue.add(ISEquipWeaponAction:new(self.playerObj, primaryItem, 25, true))
+        ISTimedActionQueue.add(ISEquipWeaponAction:new(self.playerObj, secondaryItem, 25, false))
+    else
+        if reequipPrimary then
+            ISTimedActionQueue.add(ISEquipWeaponAction:new(self.playerObj, primaryItem, 25, true))
+        end
+        if reequipSecondary then
+            ISTimedActionQueue.add(ISEquipWeaponAction:new(self.playerObj, secondaryItem, 25, false))
+        end
     end
 end
 
-function UBContextMenu:DoFluidMenu(context)
-    local squareToApproach = self.barrelObj:getSquare()
+function UBContextMenu.CanCreateFluidMenu(playerObj, barrelObj)
+    local squareToApproach = barrelObj:getSquare()
     -- thats from vanilla method. it seems to verify target square room and current player room
-    if squareToApproach:getBuilding() ~= self.playerObj:getBuilding() then
-        return 
+    if squareToApproach:getBuilding() ~= playerObj:getBuilding() then
+        return false
     end
     --if the player can reach the tile, populate the submenu, otherwise don't bother
-    if not squareToApproach or not AdjacentFreeTileFinder.Find(squareToApproach, self.playerObj) then
-        return;
+    if not squareToApproach or not AdjacentFreeTileFinder.Find(squareToApproach, playerObj) then
+        return false
     end
 
-    function DoTakeFluidMenu()
-        local hasHoseNearby = UBUtils.playerHasItem(self.loot.inventory, "RubberHose") or UBUtils.playerHasItem(self.playerInv, "RubberHose")
-        -- find all items that contain fluid from barrel or empty
-        local fluidContainerItems = self.playerInv:getAllEvalRecurse(function (item) return UBUtils.predicateFluid(item, self.barrelFluid) or UBUtils.predicateHasEmptyFluidContainer(item) end)
-        -- convert to table
-        local fluidContainerItemsTable = UBUtils.ConvertToTable(fluidContainerItems)
-        -- get only items that can be filled
-        local filteredFromBarrels = UBUtils.FilterMyBarrels(fluidContainerItemsTable)
-        local allContainers = UBUtils.CanTransferFluid(filteredFromBarrels, self.barrelFluidContainer, true)
-        local allContainerTypes = UBUtils.SortContainers(allContainers)
-        local takeOption = context:insertOptionAfter(getText("Fluid_UB_Show_Info", self.fluidName), getText("ContextMenu_Fill"))
-        if #allContainers == 0 then
-            UBUtils.DisableOptionAddTooltip(takeOption, getText("Tooltip_UB_NoProperFluidInBarrel"))
-            return
-        end
-        if takeOption and SandboxVars.UsefulBarrels.RequireHoseForTake and not hasHoseNearby then 
-            UBUtils.DisableOptionAddTooltip(takeOption, getText("Tooltip_UB_HoseMissing", getItemName("Base.RubberHose")))
-            return
-        end
-        local takeMenu = ISContextMenu:getNew(context)
-        context:addSubMenu(takeOption, takeMenu)
-        if #allContainers > 1 and #allContainerTypes > 1 then
-            local containerOption = takeMenu:addGetUpOption(
-                getText("ContextMenu_FillAll"),
-                self,
-                UBContextMenu.OnTransferFluid, squareToApproach, self.barrelFluidContainer, allContainers
-            )
-        end
-        for _,containerType in pairs(allContainerTypes) do
-            local destItem = containerType[1]
-            if #containerType > 1 then
-                local containerOption = takeMenu:addOption(destItem:getName() .. " (" .. #containerType ..")")
-                local containerTypeMenu = ISContextMenu:getNew(takeMenu)
-                takeMenu:addSubMenu(containerOption, containerTypeMenu)
-                local addOneContainerOption = containerTypeMenu:addGetUpOption(
-                    getText("ContextMenu_FillOne"), 
-                    self, 
-                    UBContextMenu.OnTransferFluid, squareToApproach, self.barrelFluidContainer, { destItem }
-                )
-                if containerType[2] ~= nil then
-                    local addAllContainerOption = containerTypeMenu:addGetUpOption(
-                        getText("ContextMenu_FillAll"), 
-                        self, 
-                        UBContextMenu.OnTransferFluid, squareToApproach, self.barrelFluidContainer, containerType
-                    )
-                end
-            else
-                local containerOption = takeMenu:addGetUpOption(
-                    destItem:getName(),
-                    self,
-                    UBContextMenu.OnTransferFluid, squareToApproach, self.barrelFluidContainer, { destItem }
-                )
-            end
-        end
-    end
-    -- from inventory containers add to barrel
-    function DoAddFluidMenu()
-        local hasFunnelNearby = UBUtils.playerHasItem(self.loot.inventory, "Funnel") or UBUtils.playerHasItem(self.playerInv, "Funnel")
-        -- find all items that hold greater than 0 fluid
-        local fluidContainerItems = self.playerInv:getAllEvalRecurse(function (item) return UBUtils.predicateAnyFluid(item) end)
-        -- convert to table
-        local fluidContainerItemsTable = UBUtils.ConvertToTable(fluidContainerItems)
-        local filteredFromBarrels = UBUtils.FilterMyBarrels(fluidContainerItemsTable)
-        -- get only items that can be poured into target
-        local allContainers = UBUtils.CanTransferFluid(filteredFromBarrels, self.barrelFluidContainer)
-        local allContainerTypes = UBUtils.SortContainers(allContainers)
-        local addOption = context:insertOptionAfter(getText("Fluid_UB_Show_Info", self.fluidName), getText("ContextMenu_UB_AddFluid"))
-        if #allContainers == 0 then
-            UBUtils.DisableOptionAddTooltip(addOption, getText("Tooltip_UB_NoProperFluidInInventory"))
-            return
-        end
-        if SandboxVars.UsefulBarrels.RequireFunnelForFill and not hasFunnelNearby then
-            UBUtils.DisableOptionAddTooltip(addOption, getText("Tooltip_UB_FunnelMissing", getItemName("Base.Funnel")))
-            return
-        end
-        local addMenu = ISContextMenu:getNew(context)
-        context:addSubMenu(addOption, addMenu)
-        if #allContainers > 1 and #allContainerTypes > 1 then
-            local containerOption = addMenu:addGetUpOption(
-                getText("ContextMenu_AddAll"), 
-                self, 
-                UBContextMenu.OnTransferFluid, squareToApproach, self.barrelFluidContainer, allContainers, true
-            )
-        end
-        for _,containerType in pairs(allContainerTypes) do
-            local destItem = containerType[1]
-            if #containerType > 1 then
-                local containerOption = addMenu:addOption(destItem:getName() .. " (" .. #containerType ..")")
-                local containerTypeMenu = ISContextMenu:getNew(addMenu)
-                addMenu:addSubMenu(containerOption, containerTypeMenu)
-                local addOneContainerOption = containerTypeMenu:addGetUpOption(
-                    getText("ContextMenu_AddOne"), 
-                    self, 
-                    UBContextMenu.OnTransferFluid, squareToApproach, self.barrelFluidContainer, { destItem }, true
-                )
-                if containerType[2] ~= nil then
-                    local addAllContainerOption = containerTypeMenu:addGetUpOption(
-                        getText("ContextMenu_AddAll"), 
-                        self, 
-                        UBContextMenu.OnTransferFluid, squareToApproach, self.barrelFluidContainer, containerType, true
-                    )
-                end
-            else
-                local containerOption = addMenu:addGetUpOption(
-                    destItem:getName(),
-                    self,
-                    UBContextMenu.OnTransferFluid, squareToApproach, self.barrelFluidContainer, { destItem }, true
-                )
-            end
-        end
-    end
-
-    DoTakeFluidMenu()
-    DoAddFluidMenu()
+    return true
 end
--- >> end recreated functions from vanilla pz
+
+function UBContextMenu:DoCategoryList(subMenu, allContainerTypes, addToBarrel, oneOptionText, allOptionText)
+    for _,containerType in pairs(allContainerTypes) do
+        local destItem = containerType[1]
+        if #containerType > 1 then
+            local containerOption = subMenu:addOption(destItem:getName() .. " (" .. #containerType ..")")
+            local containerTypeMenu = ISContextMenu:getNew(subMenu)
+            subMenu:addSubMenu(containerOption, containerTypeMenu)
+            local addOneContainerOption = containerTypeMenu:addGetUpOption(
+                oneOptionText, 
+                self, 
+                UBContextMenu.OnTransferFluid, self.barrelFluidContainer, { destItem }, addToBarrel
+            )
+            if containerType[2] ~= nil then
+                local addAllContainerOption = containerTypeMenu:addGetUpOption(
+                    allOptionText, 
+                    self, 
+                    UBContextMenu.OnTransferFluid, self.barrelFluidContainer, containerType, addToBarrel
+                )
+            end
+        else
+            local containerOption = subMenu:addGetUpOption(
+                destItem:getName(),
+                self,
+                UBContextMenu.OnTransferFluid, self.barrelFluidContainer, { destItem }, addToBarrel
+            )
+        end
+    end
+end
+
+function UBContextMenu:DoTakeFluidMenu(context, hasHoseNearby)
+    -- find all items that contain fluid from barrel or empty
+    local fluidContainerItems = self.playerInv:getAllEvalRecurse(
+        function (item) return (UBUtils.predicateFluid(item, self.barrelFluid) or UBUtils.predicateHasFluidContainer(item)) and not UBUtils.IsUBBarrel(item) end
+    )
+    -- convert to table
+    local fluidContainerItemsTable = UBUtils.ConvertToTable(fluidContainerItems)
+    -- get only items that can be filled
+    local allContainers = UBUtils.CanTransferFluid(fluidContainerItemsTable, self.barrelFluidContainer, true)
+    local allContainerTypes = UBUtils.SortContainers(allContainers)
+    local takeOption = context:addOption(getText("ContextMenu_Fill"))
+    if #allContainers == 0 then
+        UBUtils.DisableOptionAddTooltip(takeOption, getText("Tooltip_UB_NoProperFluidInBarrel"))
+        return
+    end
+    if SandboxVars.UsefulBarrels.RequireHoseForTake and not hasHoseNearby then 
+        UBUtils.DisableOptionAddTooltip(takeOption, getText("Tooltip_UB_HoseMissing", getItemName("Base.RubberHose")))
+        return
+    end
+    local takeMenu = ISContextMenu:getNew(context)
+    context:addSubMenu(takeOption, takeMenu)
+    if #allContainers > 1 and #allContainerTypes > 1 then
+        local containerOption = takeMenu:addGetUpOption(
+            getText("ContextMenu_FillAll"),
+            self,
+            UBContextMenu.OnTransferFluid, self.barrelFluidContainer, allContainers
+        )
+    end
+    self:DoCategoryList(takeMenu, allContainerTypes, false, getText("ContextMenu_FillOne"),getText("ContextMenu_FillAll"))
+end
+
+function UBContextMenu:DoAddFluidMenu(context, hasFunnelNearby)
+    -- find all items in player inv that hold greater than 0 fluid
+    local fluidContainerItems = self.playerInv:getAllEvalRecurse(function (item) return UBUtils.predicateAnyFluid(item) and not UBUtils.IsUBBarrel(item) end)
+    -- convert to table
+    local fluidContainerItemsTable = UBUtils.ConvertToTable(fluidContainerItems)
+    -- get only items that can be poured into target
+    local allContainers = UBUtils.CanTransferFluid(fluidContainerItemsTable, self.barrelFluidContainer)
+    local allContainerTypes = UBUtils.SortContainers(allContainers)
+    local addOption = context:addOption(getText("ContextMenu_UB_AddFluid"))
+    if #allContainers == 0 then
+        UBUtils.DisableOptionAddTooltip(addOption, getText("Tooltip_UB_NoProperFluidInInventory"))
+        return
+    end
+    if SandboxVars.UsefulBarrels.RequireFunnelForFill and not hasFunnelNearby then
+        UBUtils.DisableOptionAddTooltip(addOption, getText("Tooltip_UB_FunnelMissing", getItemName("Base.Funnel")))
+        return
+    end
+    local addMenu = ISContextMenu:getNew(context)
+    context:addSubMenu(addOption, addMenu)
+    if #allContainers > 1 and #allContainerTypes > 1 then
+        local containerOption = addMenu:addGetUpOption(
+            getText("ContextMenu_AddAll"), 
+            self, 
+            UBContextMenu.OnTransferFluid, self.barrelFluidContainer, allContainers, true
+        )
+    end
+    self:DoCategoryList(addMenu, allContainerTypes, true, getText("ContextMenu_AddOne"), getText("ContextMenu_AddAll"))
+end
 
 function UBContextMenu:DoBarrelUncap()
     if luautils.walkAdj(self.playerObj, self.barrelObj:getSquare(), true) then
         if SandboxVars.UsefulBarrels.RequirePipeWrench and self.isValidWrench then
-            ISWorldObjectContextMenu.equip(self.playerObj, self.playerObj:getPrimaryHandItem(), self.wrench, true)
+            ISTimedActionQueue.add(ISEquipWeaponAction:new(self.playerObj, self.wrench, 25, true))
         end
-        ISTimedActionQueue.add(ISUBDoBarrelUncap:new(self.playerObj, self.barrelObj, self.wrench))
+        ISTimedActionQueue.add(ISUBDoBarrelUncap:new(self.playerObj, self.barrelObj, self.wrench, self.objectLabel))
     end
 end
 
 function UBContextMenu:AddInfoOption(context)
     local fluidAmount = self.barrelFluidContainer:getAmount()
-    local tooltip = ISWorldObjectContextMenu.addToolTip()
     local fluidMax = self.barrelFluidContainer:getCapacity()
     if fluidAmount > 0 then
         self.barrelFluid = self.barrelFluidContainer:getPrimaryFluid()
     else
         self.barrelFluid = nil
     end
-    self.fluidName = UBUtils.GetTranslatedFluidNameOrEmpty(self.barrelFluid)
-    local tx = getTextManager():MeasureStringX(tooltip.font, self.fluidName .. ":") + 20
-    tooltip.maxLineWidth = 512
-    tooltip.description = tooltip.description .. UBUtils.FormatFluidAmount(tx, fluidAmount, fluidMax, self.fluidName)
-    local infoOption = context:addOptionOnTop(getText("Fluid_UB_Show_Info", self.fluidName))
-    infoOption.toolTip = tooltip
+    local fluidName = UBUtils.GetTranslatedFluidNameOrEmpty(self.barrelFluid)
+    local infoOption = context:addOptionOnTop(getText("Fluid_UB_Show_Info", fluidName))
+    if self.playerObj:DistToSquared(self.barrelObj:getX() + 0.5, self.barrelObj:getY() + 0.5) < 2 * 2 then
+        local tooltip = ISWorldObjectContextMenu.addToolTip()
+        local tx = getTextManager():MeasureStringX(tooltip.font, fluidName .. ":") + 20
+        --tooltip.maxLineWidth = 512
+        tooltip.description = tooltip.description .. UBUtils.FormatFluidAmount(tx, fluidAmount, fluidMax, fluidName)
+        infoOption.toolTip = tooltip
+        if self.barrelFluid and self.barrelFluid:isPoisonous() then
+            infoOption.iconTexture = getTexture("media/ui/Skull2.png")
+            tooltip.description = tooltip.description .. "\n" .. getText("Fluid_Poison")
+        end
+    end
+
 end
 
 function UBContextMenu:RemoveVanillaOptions(context, subcontext)
@@ -221,7 +239,13 @@ function UBContextMenu:MainMenu(player, context, worldobjects, test)
             local barrelMenu = context:getSubMenu(barrelOption.subOption)
             self:RemoveVanillaOptions(context, barrelMenu)
             self:AddInfoOption(barrelMenu)
-            UBContextMenu:DoFluidMenu(barrelMenu)
+            if UBContextMenu.CanCreateFluidMenu(self.playerObj, self.barrelObj) then
+                local worldObjects = UBUtils.GetWorldItemsNearby(self.barrelObj:getSquare(), TOOL_SCAN_DISTANCE)
+                local hasHoseNearby = UBUtils.TableContainsItem(worldObjects, "Base.RubberHose") or UBUtils.playerHasItem(self.playerInv, "RubberHose")
+                local hasFunnelNearby = UBUtils.TableContainsItem(worldObjects, "Base.Funnel") or UBUtils.playerHasItem(self.playerInv, "Funnel")
+                self:DoAddFluidMenu(barrelMenu, hasFunnelNearby)
+                self:DoTakeFluidMenu(barrelMenu, hasHoseNearby)
+            end
         end
     end
 end
@@ -229,7 +253,6 @@ end
 function UBContextMenu:new(player, context, worldobjects, test)
     local o = self
     o.playerObj = getSpecificPlayer(player)
-    o.loot = getPlayerLoot(player)
     o.playerInv = o.playerObj:getInventory()
     o.barrelObj = UBUtils.GetValidBarrelObject(worldobjects)
     
@@ -241,6 +264,7 @@ function UBContextMenu:new(player, context, worldobjects, test)
     o.barrelHasFluidContainer = o.barrelObj:hasComponent(ComponentType.FluidContainer)
     o.objectName = o.barrelObj:getSprite():getProperties():Val("CustomName")
     o.objectLabel = UBUtils.getMoveableDisplayName(o.barrelObj)
+    o.barrelSquare = o.barrelObj:getSquare()
 
     return self:MainMenu(player, context, worldobjects, test)
 end

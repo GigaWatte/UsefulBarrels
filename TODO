@@ -1,12 +1,10 @@
-TODO Add more translations
-
-TODO Refueling generator from a barrel by Rubber Hose (hose:optional)
+TODO refactor pick up and place - reports for container input stuck
+TODO crashes may not save fluidContainer
 TODO Refueling car from barrel by Rubber Hose (hose:optional)
-TODO random initial fluid
+TODO Add more translations
+TODO allow ineract with items on ground
+TODO cut the lid of barrel to make it water collector - can combine with tarp or trash bags
 FIXME barrel very fragile
-TODO IDEA - integration with fuel trailers
+TODO integration with fuel trailers
 TODO SUGGESTED - tarp or trash bags to store clean  fluids?
-TODO SUGGESTED - plump from rain collector to push water down
 TODO make barrel with fluid moveable somehow
-TODO IDEA - Add mod changelog integration
-TODO IDEA - easter egg - Jeebus barrel!!! Water into fuel - very rare

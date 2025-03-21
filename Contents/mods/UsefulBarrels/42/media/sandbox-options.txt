@@ -68,10 +68,10 @@ option UsefulBarrels.InitialFluid
 {type = boolean, default = false, page = UsefulBarrels, translation = UsefulBarrelsInitialFluid,}
 
 option UsefulBarrels.InitialFluidPool
-{type = string, default = Acid Water TaintedWater Gasoline Bleach PotentPoison, page = UsefulBarrels, translation = UsefulBarrelsInitialFluidPool,}
+{type = string, default = Acid Water TaintedWater Gasoline Gasoline Bleach PotentPoison, page = UsefulBarrels, translation = UsefulBarrelsInitialFluidPool,}
 
 option UsefulBarrels.InitialFluidMaxAmount
-{type = integer, min = 0, max=9999, default = 80, page = UsefulBarrels, translation = UsefulBarrelsInitialFluidMaxAmount,}
+{type = integer, min = 0, max=9999, default = 54, page = UsefulBarrels, translation = UsefulBarrelsInitialFluidMaxAmount,}
 
 option UsefulBarrels.InitialFluidSpawnChance
-{type = double, min = 0, max=100, default = 15, page = UsefulBarrels, translation = UsefulBarrelsInitialFluidSpawnChance,}
+{type = double, min = 0, max=100, default = 25, page = UsefulBarrels, translation = UsefulBarrelsInitialFluidSpawnChance,}
