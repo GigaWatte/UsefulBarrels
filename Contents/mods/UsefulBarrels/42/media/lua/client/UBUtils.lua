@@ -1,8 +1,6 @@
 
 local UBUtils = {}
 
-
--- add my barrels to predicates
 function UBUtils.predicateFluid(item, fluid)
 	return item:getFluidContainer() and item:getFluidContainer():contains(fluid) and (item:getFluidContainer():getAmount() >= 0.5)
 end
@@ -128,10 +126,6 @@ function UBUtils.SortContainers(allContainers)
 	local allContainerTypes = {}
 	if #allContainers == 0 then return allContainerTypes end
 	local allContainersOfType = {}
-	-- TODO improve sort
-	-- first equipped and capable to get fluid
-	-- then then most filled
-	-- then other ones
 	----the table can have small groups of identical containers		eg: 1, 1, 2, 3, 1, 3, 2
 	----so it needs sorting to group them all together correctly		eg: 1, 1, 1, 2, 2, 3, 3
 	table.sort(allContainers, function(a,b) return not string.sort(a:getName(), b:getName()) end)

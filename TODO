@@ -8,6 +8,7 @@ TODO DONE improve sorting - prefere equipped and most filled
 TODO DONE reequip items
 TODO DONE Refueling generator from a barrel by Rubber Hose (hose:optional)
 
+TODO crashes may not save fluidContainer..
 TODO Refueling car from barrel by Rubber Hose (hose:optional)
 TODO Add more translations
 TODO allow ineract with items on ground
