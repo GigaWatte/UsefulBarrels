@@ -3,4 +3,5 @@ ContextMenu_EN = {
     ContextMenu_UB_AddFluid = "Add"
     ContextMenu_UB_RefuelFromBarrel = "Refuel From Barrel"
     ContextMenu_UB_TransferFluid = "Transfer fluid"
+    ContextMenu_UB_DebugOption = "UB Debug Info"
 }

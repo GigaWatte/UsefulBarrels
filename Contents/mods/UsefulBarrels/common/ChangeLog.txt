@@ -42,3 +42,7 @@
 - The equipped fluid container is now first in the queue if it is part of an action.
 - Hand-equipped items, as well as those worn on the body, are now re-equipped at the end.
 [ ------ ]
+[ 22/03/2025 ]
+2.1.1:
+- Added debug option
+[ ------ ]

@@ -219,6 +219,65 @@ function UBContextMenu:RemoveVanillaOptions(context, subcontext)
     if subcontext:getOptionFromName(getText("ContextMenu_Wash")) then subcontext:removeOptionByName(getText("ContextMenu_Wash")) end
 end
 
+function UBContextMenu:DoDebugOption(player, context, worldobjects, test)
+    local debugOption = context:addOptionOnTop(getText("ContextMenu_UB_DebugOption"))
+    local tooltip = ISWorldObjectContextMenu.addToolTip()
+    local worldObjects = UBUtils.GetWorldItemsNearby(self.barrelObj:getSquare(), TOOL_SCAN_DISTANCE)
+    local hasHoseNearby = UBUtils.TableContainsItem(worldObjects, "Base.RubberHose") or UBUtils.playerHasItem(self.playerInv, "RubberHose")
+    local hasFunnelNearby = UBUtils.TableContainsItem(worldObjects, "Base.Funnel") or UBUtils.playerHasItem(self.playerInv, "Funnel")
+
+    tooltip.description = tooltip.description .. string.format("Barrel object: %s", tostring(self.barrelObj)) .. "\n"
+    tooltip.description = tooltip.description .. string.format("isValidWrench: %s", tostring(self.isValidWrench)) .. "\n"
+    tooltip.description = tooltip.description .. string.format("hasFluidContainer: %s", tostring(self.barrelHasFluidContainer)) .. "\n"
+    tooltip.description = tooltip.description .. string.format("SVRequirePipeWrench: %s", tostring(SandboxVars.UsefulBarrels.RequirePipeWrench)) .. "\n"
+    tooltip.description = tooltip.description .. string.format("SVRequireFunnel: %s", tostring(SandboxVars.UsefulBarrels.RequireFunnelForFill)) .. "\n"
+    tooltip.description = tooltip.description .. string.format("hasHoseNearby: %s", tostring(hasHoseNearby)) .. "\n"
+    tooltip.description = tooltip.description .. string.format("hasFunnelNearby: %s", tostring(hasFunnelNearby)) .. "\n"
+    tooltip.description = tooltip.description .. string.format("Can Create Menu: %s", tostring(UBContextMenu.CanCreateFluidMenu(self.playerObj, self.barrelObj))) .. "\n"
+
+    if self.barrelHasFluidContainer then
+        local fluidAmount = self.barrelFluidContainer:getAmount()
+        local fluidMax = self.barrelFluidContainer:getCapacity()
+        if fluidAmount > 0 then
+            self.barrelFluid = self.barrelFluidContainer:getPrimaryFluid()
+        else
+            self.barrelFluid = nil
+        end
+        tooltip.description = tooltip.description .. string.format("Fluid: %s", tostring(self.barrelFluid)) .. "\n"
+        tooltip.description = tooltip.description .. string.format("Fluid amount: %s", tostring(fluidAmount)) .. "\n"
+        tooltip.description = tooltip.description .. string.format("Fluid capacity: %s", tostring(fluidMax)) .. "\n"
+        local addfluidContainerItems = self.playerInv:getAllEvalRecurse(function (item) return UBUtils.predicateAnyFluid(item) and not UBUtils.IsUBBarrel(item) end)
+        local addfluidContainerItemsTable = UBUtils.ConvertToTable(addfluidContainerItems)
+        tooltip.description = tooltip.description .. string.format("All containers to add: %s", tostring(#addfluidContainerItemsTable)) .. "\n"
+        local addallContainers = UBUtils.CanTransferFluid(addfluidContainerItemsTable, self.barrelFluidContainer)
+        tooltip.description = tooltip.description .. string.format("Valid containers to add: %s", tostring(#addallContainers)) .. "\n"
+        local takefluidContainerItems = self.playerInv:getAllEvalRecurse(
+            function (item) return (UBUtils.predicateFluid(item, self.barrelFluid) or UBUtils.predicateHasFluidContainer(item)) and not UBUtils.IsUBBarrel(item) end
+        )
+        local takefluidContainerItemsTable = UBUtils.ConvertToTable(takefluidContainerItems)
+        tooltip.description = tooltip.description .. string.format("All containers for pouring: %s", tostring(#takefluidContainerItemsTable)) .. "\n"
+        local takeallContainers = UBUtils.CanTransferFluid(takefluidContainerItemsTable, self.barrelFluidContainer, true)
+        tooltip.description = tooltip.description .. string.format("Valid containers for pouring: %s", tostring(#takeallContainers)) .. "\n"
+
+        tooltip.description = tooltip.description .. string.format("isInputLocked: %s", tostring(self.barrelFluidContainer:isInputLocked())) .. "\n"
+        tooltip.description = tooltip.description .. string.format("canPlayerEmpty: %s", tostring(self.barrelFluidContainer:canPlayerEmpty())) .. "\n"
+    end
+
+    if self.barrelObj:hasModData() then
+        local modData = self.barrelObj:getModData()
+        if modData["UB_Uncapped"] then tooltip.description = tooltip.description .. string.format("UB_Uncapped: %s", tostring(modData["UB_Uncapped"])) .. "\n" end
+        if modData["UB_Initial_fluid"] then tooltip.description = tooltip.description .. string.format("UB_Initial_fluid: %s", tostring(modData["UB_Initial_fluid"])) .. "\n" end
+        if modData["UB_Initial_amount"] then tooltip.description = tooltip.description .. string.format("UB_Initial_amount: %s", tostring(modData["UB_Initial_amount"])) .. "\n" end
+        if modData["modData"] then
+            tooltip.description = tooltip.description .. "Nested modData options"
+            if modData["modData"]["UB_Uncapped"] then tooltip.description = tooltip.description .. string.format("UB_Uncapped: %s", tostring(modData["modData"]["UB_Uncapped"])) .. "\n" end
+            if modData["modData"]["UB_Initial_fluid"] then tooltip.description = tooltip.description .. string.format("UB_Initial_fluid: %s", tostring(modData["modData"]["UB_Initial_fluid"])) .. "\n" end
+            if modData["modData"]["UB_Initial_amount"] then tooltip.description = tooltip.description .. string.format("UB_Initial_amount: %s", tostring(modData["modData"]["UB_Initial_amount"])) .. "\n" end
+        end
+    end
+    debugOption.toolTip = tooltip
+end
+
 function UBContextMenu:MainMenu(player, context, worldobjects, test)
     if not self.barrelHasFluidContainer then
         local openBarrelOption = context:addOptionOnTop(getText("ContextMenu_UB_UncapBarrel", self.objectLabel), self, UBContextMenu.DoBarrelUncap);
@@ -247,6 +306,10 @@ function UBContextMenu:MainMenu(player, context, worldobjects, test)
                 self:DoTakeFluidMenu(barrelMenu, hasHoseNearby)
             end
         end
+    end
+
+    if SandboxVars.UsefulBarrels.DebugMode then
+        self:DoDebugOption(player, context, worldobjects, test)
     end
 end
 
