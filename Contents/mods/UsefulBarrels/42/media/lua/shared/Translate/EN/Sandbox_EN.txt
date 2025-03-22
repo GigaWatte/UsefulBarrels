@@ -1,5 +1,7 @@
 Sandbox_EN = {
     Sandbox_UsefulBarrels = "Useful Barrels"
+    Sandbox_UsefulBarrelsDebugMode = "Enable Debug"
+    Sandbox_UsefulBarrelsDebugMode_tooltip = "Enables additional information for debugging purposes."
     Sandbox_UsefulBarrelsBarrelCapacity = "Barrel Capacity"
     Sandbox_UsefulBarrelsBarrelCapacity_tooltip = "Maximum barrel capacity.<br>Applied only for new barrels, previously used is unaffected."
     Sandbox_UsefulBarrelsRequirePipeWrench = "Require Pipe Wrench"
