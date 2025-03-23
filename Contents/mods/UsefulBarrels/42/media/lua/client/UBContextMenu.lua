@@ -230,6 +230,7 @@ function UBContextMenu:DoDebugOption(player, context, worldobjects, test)
     tooltip.description = tooltip.description .. string.format("isValidWrench: %s", tostring(self.isValidWrench)) .. "\n"
     tooltip.description = tooltip.description .. string.format("hasFluidContainer: %s", tostring(self.barrelHasFluidContainer)) .. "\n"
     tooltip.description = tooltip.description .. string.format("SVRequirePipeWrench: %s", tostring(SandboxVars.UsefulBarrels.RequirePipeWrench)) .. "\n"
+    tooltip.description = tooltip.description .. string.format("SVRequireHose: %s", tostring(SandboxVars.UsefulBarrels.RequireHoseForTake)) .. "\n"
     tooltip.description = tooltip.description .. string.format("SVRequireFunnel: %s", tostring(SandboxVars.UsefulBarrels.RequireFunnelForFill)) .. "\n"
     tooltip.description = tooltip.description .. string.format("hasHoseNearby: %s", tostring(hasHoseNearby)) .. "\n"
     tooltip.description = tooltip.description .. string.format("hasFunnelNearby: %s", tostring(hasFunnelNearby)) .. "\n"
