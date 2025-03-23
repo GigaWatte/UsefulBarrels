@@ -1,4 +1,3 @@
-TODO refactor pick up and place - reports for container input stuck
 TODO crashes may not save fluidContainer
 TODO Refueling car from barrel by Rubber Hose (hose:optional)
 TODO Add more translations
@@ -8,4 +7,3 @@ FIXME barrel very fragile
 TODO integration with fuel trailers
 TODO SUGGESTED - tarp or trash bags to store clean  fluids?
 TODO make barrel with fluid moveable somehow
-TODO add debug option to show more info..

@@ -4,8 +4,7 @@ local ISMoveableSpriteProps_canPickUpMoveableInternal = ISMoveableSpriteProps.ca
 function ISMoveableSpriteProps:canPickUpMoveableInternal( _character, _square, _object, _isMulti)
     local canPickUp = ISMoveableSpriteProps_canPickUpMoveableInternal(self, _character, _square, _object, _isMulti)
     if _object then
-        local modData = _object:getModData()
-        if modData and modData["UB_Uncapped"] ~= nil then
+        if UBUtils.CheckIsoObjectIsBarrel(_object) and _object:hasComponent(ComponentType.FluidContainer) then
             canPickUp = _character:getInventory():hasRoomFor(_character, UBUtils.CalculateTooltipWeight(_object))
         end
     end
@@ -15,8 +14,7 @@ local ISMoveableSpriteProps_getInfoPanelFlagsGeneral = ISMoveableSpriteProps.get
 function ISMoveableSpriteProps:getInfoPanelFlagsGeneral( _square, _object, _player, _mode )
     ISMoveableSpriteProps_getInfoPanelFlagsGeneral(self, _square, _object, _player, _mode )
     if _object then
-        local modData = _object:getModData()
-        if modData and modData["UB_Uncapped"] ~= nil then
+        if UBUtils.CheckIsoObjectIsBarrel(_object) and _object:hasComponent(ComponentType.FluidContainer) then
             InfoPanelFlags.weight = tostring(round(UBUtils.CalculateTooltipWeight(_object), 3))
             InfoPanelFlags.tooHeavy = not _player:getInventory():hasRoomFor(_player, UBUtils.CalculateTooltipWeight(_object))
         end
@@ -31,8 +29,7 @@ end
 local ISWorldObjectContextMenu_doFillFluidMenu = ISWorldObjectContextMenu.doFillFluidMenu
 ISWorldObjectContextMenu.doFillFluidMenu = function(sink, playerNum, context)
     if sink then
-        local modData = sink:getModData()
-        if modData and modData["UB_Uncapped"] ~= nil then
+        if UBUtils.CheckIsoObjectIsBarrel(sink) and sink:hasComponent(ComponentType.FluidContainer) then
             -- I will draw all options by myself
             return
         end
@@ -56,9 +53,8 @@ local ISMoveableSpriteProps_canScrapObjectInternal = ISMoveableSpriteProps.canSc
 function ISMoveableSpriteProps:canScrapObjectInternal(_result, _object)
     -- cache flag value before changes
     local InfoPanelFlags_hasWater = InfoPanelFlags.hasWater
-    if _object and _object:getFluidContainer() and not _object:getFluidContainer():isEmpty() then
-        local modData = _object:getModData()
-        if modData["UB_Uncapped"] ~= nil then
+    if _object then
+        if UBUtils.CheckIsoObjectIsBarrel(_object) and _object:hasComponent(ComponentType.FluidContainer) and not _object:getComponent(ComponentType.FluidContainer):isEmpty() then
             InfoPanelFlags.hasWater = true
             return false
         end
@@ -70,8 +66,7 @@ end
 local ISMoveableSpriteProps_pickUpMoveableInternal = ISMoveableSpriteProps.pickUpMoveableInternal
 function ISMoveableSpriteProps:pickUpMoveableInternal( _character, _square, _object, _sprInstance, _spriteName, _createItem, _rotating )
     if _object then
-        local modData = _object:getModData()
-        if modData and modData["UB_Uncapped"] ~= nil then
+        if UBUtils.CheckIsoObjectIsBarrel(_object) and _object:hasComponent(ComponentType.FluidContainer) then
             _object:getComponent(ComponentType.FluidContainer):setInputLocked(true)
             _object:getComponent(ComponentType.FluidContainer):setCanPlayerEmpty(false) 
         end
@@ -80,8 +75,7 @@ function ISMoveableSpriteProps:pickUpMoveableInternal( _character, _square, _obj
 end
 function OnObjectPlaced(_object)
     if _object then
-        local modData = _object:getModData()
-        if modData and modData["UB_Uncapped"] ~= nil then
+        if UBUtils.CheckIsoObjectIsBarrel(_object) and _object:hasComponent(ComponentType.FluidContainer) then
             _object:getComponent(ComponentType.FluidContainer):setInputLocked(false)
             _object:getComponent(ComponentType.FluidContainer):setCanPlayerEmpty(true)
         end

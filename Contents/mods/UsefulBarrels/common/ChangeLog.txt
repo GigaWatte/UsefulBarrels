@@ -46,3 +46,8 @@
 2.1.1:
 - Added debug option
 [ ------ ]
+[ 23/03/2025 ]
+2.1.2:
+- Added debug option for generator refueling
+- Refactor for moveable operations to not to rely on modOption
+[ ------ ]
