@@ -48,6 +48,14 @@
 [ ------ ]
 [ 23/03/2025 ]
 2.1.2:
-- Added debug option for generator refueling
-- Refactor for moveable operations to not to rely on modOption
+- Added debug option for generator.
+- Refactor movable operations to not rely on modOption.
+[ ------ ]
+[ 23/03/2025 ]
+2.1.3:
+- Disabled pickup, scraping and info panel options temporarily
+[ ------ ]
+[ 24/03/2025 ]
+2.1.4:
+- Repaired pickup, scraping and info panel options
 [ ------ ]

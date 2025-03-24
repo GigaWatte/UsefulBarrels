@@ -54,42 +54,37 @@ function UBUtils.FormatFluidAmount(setX, amount, max, fluidName)
     return string.format("%s: <SETX:%d> %s / %s", getText(fluidName), setX, luautils.round(amount, 2) .. "L", max .. "L")
 end
 
-function UBUtils.CheckIsoObjectIsBarrel(isoObject)
-    local valid_barrel_moveable_names = {
-        "Base.MetalDrum",
-        "Base.Mov_LightGreenBarrel",
-        "Base.Mov_OrangeBarrel",
-        "Base.Mov_DarkGreenBarrel",
-    }
-    if not isoObject or not isoObject:getSquare() then return end
-    if not isoObject:getSprite() then return end
-    if not isoObject:getSpriteName() then return end
-    for i = 1, #valid_barrel_moveable_names do
-        if isoObject:getSprite():getProperties():Val("CustomItem") == valid_barrel_moveable_names[i] then return isoObject end
+function UBUtils.CheckObjectIsBarrel(_object)
+    if instanceof(_object, "Moveable") then
+        local valid_item_names = {
+            Translator.getItemNameFromFullType("Base.MetalDrum"),
+            Translator.getItemNameFromFullType("Base.Mov_LightGreenBarrel"),
+            Translator.getItemNameFromFullType("Base.Mov_OrangeBarrel"),
+            Translator.getItemNameFromFullType("Base.Mov_DarkGreenBarrel"),
+        }
+        for i = 1, #valid_item_names do
+            if _object:getName() == valid_item_names[i] then return _object end
+        end
+    end
+    if instanceof(_object, "IsoObject") then 
+        local valid_barrel_moveable_names = {
+            "Base.MetalDrum",
+            "Base.Mov_LightGreenBarrel",
+            "Base.Mov_OrangeBarrel",
+            "Base.Mov_DarkGreenBarrel",
+        }
+        if not _object or not _object:getSquare() then return end
+        if not _object:getSprite() then return end
+        if not _object:getSpriteName() then return end
+        for i = 1, #valid_barrel_moveable_names do
+            if _object:getSprite():getProperties():Val("CustomItem") == valid_barrel_moveable_names[i] then return _object end
+        end
     end
 end
 
 function UBUtils.GetValidBarrelObject(worldObjects)
     for i,isoObject in ipairs(worldObjects) do
-        if UBUtils.CheckIsoObjectIsBarrel(isoObject) then return isoObject end
-    end
-end
-
-function UBUtils.CheckInventoryItemIsBarrel(inventoryItem)
-    local valid_item_names = {
-        "Base.MetalDrum",
-        "Base.Mov_LightGreenBarrel",
-        "Base.Mov_OrangeBarrel",
-        "Base.Mov_DarkGreenBarrel",
-    }
-    for i = 1, #valid_item_names do
-        if inventoryItem:getFullName() == valid_item_names[i] then return inventoryItem end
-    end
-end
-
-function UBUtils.GetValidBarrelItem(inventoryItems)
-    for i,inventoryItem in ipairs(inventoryItems) do
-        if UBUtils.CheckInventoryItemIsBarrel(inventoryItem) then return inventoryItem end
+        if UBUtils.CheckObjectIsBarrel(isoObject) then return isoObject end
     end
 end
 
@@ -241,28 +236,31 @@ end
 function UBUtils.CalculateTooltipWeight(_object)
     local weight = 0
     if _object then
-        local itemWeight
         if _object:hasComponent(ComponentType.FluidContainer) then
-            itemWeight = _object:getFluidContainer():getAmount()
+            weight = weight + _object:getFluidContainer():getAmount()
         end
-        local sprite = _object:getSprite()
-        local props = sprite:getProperties()
-        if props and props:Is("CustomItem")  then
-            local customItem = props:Val("CustomItem")
-            local itemInstance = nil;
-            if not ISMoveableSpriteProps.itemInstances[customItem] then
-                itemInstance = instanceItem(customItem);
-                if itemInstance then
-                    ISMoveableSpriteProps.itemInstances[customItem] = itemInstance;
+        if instanceof(_object, "Moveable") then
+            weight = weight + _object:getActualWeight()
+        end
+        if instanceof(_object, "IsoObject") then 
+            local sprite = _object:getSprite()
+            local props = sprite:getProperties()
+            if props and props:Is("CustomItem")  then
+                local customItem = props:Val("CustomItem")
+                local itemInstance = nil;
+                if not ISMoveableSpriteProps.itemInstances[customItem] then
+                    itemInstance = instanceItem(customItem);
+                    if itemInstance then
+                        ISMoveableSpriteProps.itemInstances[customItem] = itemInstance;
+                    end
+                else
+                    itemInstance = ISMoveableSpriteProps.itemInstances[customItem];
                 end
-            else
-                itemInstance = ISMoveableSpriteProps.itemInstances[customItem];
+                if itemInstance then
+                    weight = weight + itemInstance:getActualWeight()
+                end
             end
-            if itemInstance then
-                itemWeight = itemWeight + itemInstance:getActualWeight()
-            end
-        end
-        weight = itemWeight
+        end        
     end
     return weight
 end
