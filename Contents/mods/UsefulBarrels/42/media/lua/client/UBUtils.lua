@@ -1,5 +1,6 @@
 
 local UBUtils = {}
+local UBBarrel = require("UBBarrel")
 
 function UBUtils.predicateFluid(item, fluid)
     return item:getFluidContainer() and item:getFluidContainer():contains(fluid) and (item:getFluidContainer():getAmount() >= 0.5)
@@ -82,9 +83,10 @@ function UBUtils.CheckObjectIsBarrel(_object)
     end
 end
 
-function UBUtils.GetValidBarrelObject(worldObjects)
+function UBUtils.GetUBBarrel(worldObjects)
     for i,isoObject in ipairs(worldObjects) do
-        if UBUtils.CheckObjectIsBarrel(isoObject) then return isoObject end
+		local obj = UBBarrel:new(isoObject)
+        if obj then return obj end
     end
 end
 
@@ -334,7 +336,7 @@ function UBUtils.GetBarrelsNearby(square, distance, fluid)
     for _,curr in ipairs(squares) do
         local squareObjects = curr:getObjects()
         local sqTable = UBUtils.ConvertToTable(squareObjects)
-        local barrel = UBUtils.GetValidBarrelObject(sqTable)
+        local barrel = UBUtils.GetUBBarrel(sqTable)
         if barrel and UBUtils.IsUBBarrel(barrel) then
             if fluid and barrel:getFluidContainer():contains(fluid) then
                 table.insert(barrels, barrel)

@@ -16,7 +16,7 @@ function UBContextMenu:OnTransferFluid(fluidContainer, fluidContainerItems, addT
 		ISTimedActionQueue.add(ISUnequipAction:new(self.playerObj, primaryItem, 50));
 	end
 
-    if not luautils.walkAdj(self.playerObj, self.barrelSquare, true) then return end
+    if not luautils.walkAdj(self.playerObj, self.barrel.square, true) then return end
     -- sort to remove unnecesary equip action if proper container already equipped
     table.sort(fluidContainerItems, function(a,b) return a == primaryItem and not (b == primaryItem) end)
 
@@ -39,9 +39,9 @@ function UBContextMenu:OnTransferFluid(fluidContainer, fluidContainerItems, addT
             local worldObjects = UBUtils.GetWorldItemsNearby(self.barrelObj:getSquare(), TOOL_SCAN_DISTANCE)
             local hasFunnelNearby = UBUtils.TableContainsItem(worldObjects, "Base.Funnel") or UBUtils.playerHasItem(self.playerInv, "Funnel")
             local speedModifierApply = SandboxVars.UsefulBarrels.FunnelSpeedUpFillModifier > 0 and hasFunnelNearby
-            ISTimedActionQueue.add(ISUBTransferFluid:new(self.playerObj, item:getFluidContainer(), fluidContainer, self.barrelSquare, item, speedModifierApply))
+            ISTimedActionQueue.add(ISUBTransferFluid:new(self.playerObj, item:getFluidContainer(), fluidContainer, self.barrel.square, item, speedModifierApply))
         else
-            ISTimedActionQueue.add(ISUBTransferFluid:new(self.playerObj, fluidContainer, item:getFluidContainer(), self.barrelSquare, item))
+            ISTimedActionQueue.add(ISUBTransferFluid:new(self.playerObj, fluidContainer, item:getFluidContainer(), self.barrel.square, item))
         end
         -- return item back to container
         if returnToContainer and (returnToContainer ~= self.playerInv) then
@@ -228,7 +228,7 @@ function UBContextMenu:DoDebugOption(player, context, worldobjects, test)
 
     tooltip.description = tooltip.description .. string.format("Barrel object: %s", tostring(self.barrelObj)) .. "\n"
     tooltip.description = tooltip.description .. string.format("isValidWrench: %s", tostring(self.isValidWrench)) .. "\n"
-    tooltip.description = tooltip.description .. string.format("hasFluidContainer: %s", tostring(self.barrelHasFluidContainer)) .. "\n"
+    tooltip.description = tooltip.description .. string.format("hasFluidContainer: %s", tostring(self.barrel:hasFluidContainer())) .. "\n"
     tooltip.description = tooltip.description .. string.format("SVRequirePipeWrench: %s", tostring(SandboxVars.UsefulBarrels.RequirePipeWrench)) .. "\n"
     tooltip.description = tooltip.description .. string.format("SVRequireHose: %s", tostring(SandboxVars.UsefulBarrels.RequireHoseForTake)) .. "\n"
     tooltip.description = tooltip.description .. string.format("SVRequireFunnel: %s", tostring(SandboxVars.UsefulBarrels.RequireFunnelForFill)) .. "\n"
@@ -236,7 +236,7 @@ function UBContextMenu:DoDebugOption(player, context, worldobjects, test)
     tooltip.description = tooltip.description .. string.format("hasFunnelNearby: %s", tostring(hasFunnelNearby)) .. "\n"
     tooltip.description = tooltip.description .. string.format("Can Create Menu: %s", tostring(UBContextMenu.CanCreateFluidMenu(self.playerObj, self.barrelObj))) .. "\n"
 
-    if self.barrelHasFluidContainer then
+    if self.barrel:hasFluidContainer() then
         local fluidAmount = self.barrelFluidContainer:getAmount()
         local fluidMax = self.barrelFluidContainer:getCapacity()
         if fluidAmount > 0 then
@@ -280,19 +280,19 @@ function UBContextMenu:DoDebugOption(player, context, worldobjects, test)
 end
 
 function UBContextMenu:MainMenu(player, context, worldobjects, test)
-    if not self.barrelHasFluidContainer then
+    if not self.barrel:hasFluidContainer() then
         local openBarrelOption = context:addOptionOnTop(getText("ContextMenu_UB_UncapBarrel", self.objectLabel), self, UBContextMenu.DoBarrelUncap);
         if not self.isValidWrench and SandboxVars.UsefulBarrels.RequirePipeWrench then
             UBUtils.DisableOptionAddTooltip(openBarrelOption, getText("Tooltip_UB_WrenchMissing", getItemName("Base.PipeWrench")))
         end
     end
 
-    if self.barrelHasFluidContainer then
+    if self.barrel:hasFluidContainer() then
         self.barrelFluidContainer = self.barrelObj:getComponent(ComponentType.FluidContainer)
         -- get vanilla FluidContainer object option
         local barrelOption = context:getOptionFromName(self.objectLabel)
         if not barrelOption then
-            barrelOption = context:getOptionFromName(self.objectName)
+            barrelOption = context:getOptionFromName(self.barrel.objectName)
         end
 
         if barrelOption then
@@ -315,20 +315,20 @@ function UBContextMenu:MainMenu(player, context, worldobjects, test)
 end
 
 function UBContextMenu:new(player, context, worldobjects, test)
+    -- TODO for what this?
+    if test then return end
+
     local o = self
     o.playerObj = getSpecificPlayer(player)
     o.playerInv = o.playerObj:getInventory()
-    o.barrelObj = UBUtils.GetValidBarrelObject(worldobjects)
+    o.barrel = UBUtils.GetUBBarrel(worldobjects)
     
-    if not o.barrelObj then return end
+    if not o.barrel then return end
 
     o.wrench = UBUtils.playerGetItem(o.playerInv, "PipeWrench")
     o.isValidWrench = o.wrench ~= nil and UBUtils.predicateNotBroken(o.wrench)
 
-    o.barrelHasFluidContainer = o.barrelObj:hasComponent(ComponentType.FluidContainer)
-    o.objectName = o.barrelObj:getSprite():getProperties():Val("CustomName")
-    o.objectLabel = UBUtils.getMoveableDisplayName(o.barrelObj)
-    o.barrelSquare = o.barrelObj:getSquare()
+    o.objectLabel = o.barrel:getMoveableDisplayName()
 
     return self:MainMenu(player, context, worldobjects, test)
 end
