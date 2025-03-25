@@ -60,26 +60,27 @@ function ISUBDoBarrelUncap:complete()
 			local barrelCapacity = SandboxVars.UsefulBarrels.BarrelCapacity
             component:setCapacity(barrelCapacity)
             component:setContainerName("UB_" .. self.barrelObj:getSprite():getProperties():Val("CustomName"))
+			
+			local modData = self.barrelObj:getModData()
 
 			local shouldSpawn = self:shouldSpawn()
-			print("spawning fluid: ", shouldSpawn)
 			if SandboxVars.UsefulBarrels.InitialFluid and shouldSpawn then
 				local fluid = self:getInitialFluid()
-				print("initial fluid: ", fluid)
 				if fluid then
 					local amount = self:getInitialFluidAmount()
 					component:addFluid(fluid, amount)
-					print("initial amount: ", amount)
+					modData["UB_Initial_fluid"] = tostring(fluid)
+					modData["UB_Initial_amount"] = tostring(amount)
 				end
 			end
 
 			GameEntityFactory.AddComponent(self.barrelObj, true, component)
 
-			local modData = self.barrelObj:getModData()
 			if not modData["UB_Uncapped"] then
 				modData["UB_Uncapped"] = true
-				self.barrelObj:setModData(modData)
 			end
+			
+			self.barrelObj:setModData(modData)
 		end
 
 		buildUtil.setHaveConstruction(self.barrelObj:getSquare(), true)

@@ -30,3 +30,32 @@
 - Updated CN translation, thanks to 浪里个浪2346134
 - Added FR translation, thanks to Bobitec
 [ ------ ]
+[ 21/03/2025 ]
+2.1.0:
+- The generator can be refueled directly from the barrel, optionally requiring a hose to be nearby.
+- Rubber hose and funnel positions are now calculated from the barrel's square, not from the player's current position.
+- Partially filled containers are now listed in the menu for "Fill" options.
+- The fluid info tooltip is displayed only if the player opens the menu near the barrel.
+- Added randomization for the initial fluid in the barrel, as well as its amount and spawn chance.
+- Replaced the job title with a more general description instead of just "Take Gas."
+- Fixed the interruption of "Fill All" and "Add All" actions in the queue.
+- The equipped fluid container is now first in the queue if it is part of an action.
+- Hand-equipped items, as well as those worn on the body, are now re-equipped at the end.
+[ ------ ]
+[ 22/03/2025 ]
+2.1.1:
+- Added debug option
+[ ------ ]
+[ 23/03/2025 ]
+2.1.2:
+- Added debug option for generator.
+- Refactor movable operations to not rely on modOption.
+[ ------ ]
+[ 23/03/2025 ]
+2.1.3:
+- Disabled pickup, scraping and info panel options temporarily
+[ ------ ]
+[ 24/03/2025 ]
+2.1.4:
+- Repaired pickup, scraping and info panel options
+[ ------ ]

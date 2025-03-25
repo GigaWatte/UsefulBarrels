@@ -1,5 +1,8 @@
 VERSION = 1,
 
+option UsefulBarrels.DebugMode
+{type = boolean, default = false, page = UsefulBarrels, translation = UsefulBarrelsDebugMode,}
+
 option UsefulBarrels.BarrelCapacity
 {type = integer, min = 1, max = 9999, default = 800, page = UsefulBarrels, translation = UsefulBarrelsBarrelCapacity,}
 

@@ -2,12 +2,14 @@
 local UBUtils = require "UBUtils"
 
 local UBRefuel = {}
+local TOOL_SCAN_DISTANCE = 2
+local BARREL_SCAN_DISTANCE = 2
 
 function UBRefuel.doAddFuelGenerator(worldobjects, generator, barrel, player)
 	local playerObj = getSpecificPlayer(player)
 	if luautils.walkAdj(playerObj, generator:getSquare()) then
         if generator:getFuel() < 100 then
-            ISTimedActionQueue.add(ISUBAddFuelFromBarrel:new(playerObj, generator, barrel, 70 + (barrel:getFluidContainer():getAmount() * 40)));
+            ISTimedActionQueue.add(ISUBAddFuelFromBarrel:new(playerObj, generator, barrel));
         end
 	end
 end
@@ -39,30 +41,32 @@ function UBRefuel:CreateBarrelOption(containerMenu, barrel, hasHoseNearby, playe
     containerOption.toolTip = tooltip
 end
 
+function UBRefuel.CanCreateRefuelMenu(generatorSquare, playerObj)
+    if not generatorSquare or not AdjacentFreeTileFinder.Find(generatorSquare, playerObj) then
+        -- if the player can reach the tile, populate the submenu, otherwise don't bother
+        return false
+    end
+
+    return true
+end
+
 function UBRefuel:DoRefuelMenu(player, context)
     local fillOption
     -- add option after vanilla add option and only if it exists
     if context:getOptionFromName(getText("ContextMenu_GeneratorAddFuel")) then 
         fillOption = context:insertOptionAfter(getText("ContextMenu_GeneratorAddFuel"), getText("ContextMenu_UB_RefuelFromBarrel"))
-    -- add option after turn on vanilla option if it is connected
-    --elseif context:getOptionFromName(getText("ContextMenu_Turn_On")) then
-    --    fillOption = context:insertOptionAfter(getText("ContextMenu_Turn_On"), getText("ContextMenu_UB_RefuelFromBarrel"))
-    --else
-    --    fillOption = context:addOptionOnTop(getText("ContextMenu_UB_RefuelFromBarrel"))
+    elseif context:getOptionFromName(getText("ContextMenu_GeneratorInfo")) then
+        fillOption = context:insertOptionAfter(getText("ContextMenu_GeneratorInfo"), getText("ContextMenu_UB_RefuelFromBarrel"))
     end
+    -- add option if no canisters but barrel
     if not fillOption then return end
-    if not self.generator:getSquare() or not AdjacentFreeTileFinder.Find(self.generator:getSquare(), self.playerObj) then
-        fillOption.notAvailable = true;
-        -- if the player can reach the tile, populate the submenu, otherwise don't bother
-        return;
-    end
 
     local containerMenu = ISContextMenu:getNew(context)
     context:addSubMenu(fillOption, containerMenu) 
-    
-    local hasHoseNearby = UBUtils.playerHasItem(self.loot.inventory, "RubberHose") or UBUtils.playerHasItem(self.playerInv, "RubberHose")
 
     for _,barrel in ipairs(self.barrels) do
+        local worldObjects = UBUtils.GetWorldItemsNearby(barrel:getSquare(), TOOL_SCAN_DISTANCE)
+        local hasHoseNearby = UBUtils.TableContainsItem(worldObjects, "Base.RubberHose") or UBUtils.playerHasItem(self.playerInv, "RubberHose")
         self:CreateBarrelOption(containerMenu, barrel, hasHoseNearby, player)
     end
 
@@ -86,20 +90,56 @@ function UBRefuel:DoRefuelMenu(player, context)
     end
 end
 
+function UBRefuel:DoDebugOption(player, context, worldobjects, test)
+    local debugOption = context:addOptionOnTop(getText("ContextMenu_UB_DebugOption"))
+    local tooltip = ISWorldObjectContextMenu.addToolTip()
+    tooltip.description = tooltip.description .. string.format("SVGeneratorRequireHose: %s", tostring(SandboxVars.UsefulBarrels.GeneratorRefuelRequiresHose)) .. "\n"
+    tooltip.description = tooltip.description .. string.format("Gen isActivated: %s", tostring(self.generator:isActivated())) .. "\n"
+    tooltip.description = tooltip.description .. string.format("Gen fuel >= 100: %s", tostring(self.generator:getFuel() >= 100)) .. "\n"
+    tooltip.description = tooltip.description .. string.format("Barrels available: %s", tostring(#self.barrels)) .. "\n"
+    tooltip.description = tooltip.description .. string.format("Can create menu: %s", tostring(UBRefuel.CanCreateRefuelMenu(self.generator:getSquare(), self.playerObj))) .. "\n"
+
+    for _,barrel in ipairs(self.barrels) do
+        local worldObjects = UBUtils.GetWorldItemsNearby(barrel:getSquare(), TOOL_SCAN_DISTANCE)
+        local hasHoseNearby = UBUtils.TableContainsItem(worldObjects, "Base.RubberHose") or UBUtils.playerHasItem(self.playerInv, "RubberHose")
+        tooltip.description = tooltip.description .. string.format("Barrel object: %s", tostring(barrel)) .. "\n"
+        tooltip.description = tooltip.description .. string.format("hasHoseNearby: %s", tostring(hasHoseNearby)) .. "\n"
+
+        local barrelFluidContainer = barrel:getComponent(ComponentType.FluidContainer)
+        local fluidAmount = barrelFluidContainer:getAmount()
+        local fluidMax = barrelFluidContainer:getCapacity()
+        local barrelFluid
+        if fluidAmount > 0 then
+            barrelFluid = barrelFluidContainer:getPrimaryFluid()
+        else
+            barrelFluid = nil
+        end
+        tooltip.description = tooltip.description .. string.format("Fluid: %s", tostring(barrelFluid)) .. "\n"
+        tooltip.description = tooltip.description .. string.format("Fluid amount: %s", tostring(fluidAmount)) .. "\n"
+        tooltip.description = tooltip.description .. string.format("Fluid capacity: %s", tostring(fluidMax)) .. "\n"
+        tooltip.description = tooltip.description .. string.format("isInputLocked: %s", tostring(barrelFluidContainer:isInputLocked())) .. "\n"
+        tooltip.description = tooltip.description .. string.format("canPlayerEmpty: %s", tostring(barrelFluidContainer:canPlayerEmpty())) .. "\n"
+    end
+    debugOption.toolTip = tooltip
+end
+
 function UBRefuel:new(player, context, worldobjects, test)
     local o = self
     o.playerObj = getSpecificPlayer(player)
-    o.loot = getPlayerLoot(player)
     o.playerInv = o.playerObj:getInventory()
     o.generator = ISWorldObjectContextMenu.fetchVars.generator
 
     if not o.generator or o.playerObj:getVehicle() then return end
     if o.generator:isActivated() or o.generator:getFuel() >= 100 then return end
 
-    o.barrels = UBUtils.GetBarrelsNearby(o.generator:getSquare(), 2, Fluid.Petrol)
+    o.barrels = UBUtils.GetBarrelsNearby(o.generator:getSquare(), BARREL_SCAN_DISTANCE, Fluid.Petrol)
 
-    if #o.barrels == 1 then return end
+    if SandboxVars.UsefulBarrels.DebugMode then
+        self:DoDebugOption(player, context, worldobjects, test)
+    end
 
+    if #o.barrels == 0 then return end
+    if not UBRefuel.CanCreateRefuelMenu(o.generator:getSquare(), o.playerObj) then return end
     return self:DoRefuelMenu(player, context)
 end
 
