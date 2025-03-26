@@ -30,20 +30,6 @@ function UBUtils.predicateStoreFluid(item, fluid)
     return false
 end
 
-function UBUtils.getMoveableDisplayName(obj)
-    if not obj then return nil end
-    if not obj:getSprite() then return nil end
-    local props = obj:getSprite():getProperties()
-    if props:Is("CustomName") then
-        local name = props:Val("CustomName")
-        if props:Is("GroupName") then
-            name = props:Val("GroupName") .. " " .. name
-        end
-        return Translator.getMoveableDisplayName(name)
-    end
-    return nil
-end
-
 function UBUtils.predicateNotBroken(item)
     return not item:isBroken()
 end
@@ -53,34 +39,6 @@ function UBUtils.FormatFluidAmount(setX, amount, max, fluidName)
         return string.format("%s: <SETX:%d> %s", getText(fluidName), setX, getText("Tooltip_WaterUnlimited"))
     end
     return string.format("%s: <SETX:%d> %s / %s", getText(fluidName), setX, luautils.round(amount, 2) .. "L", max .. "L")
-end
-
-function UBUtils.CheckObjectIsBarrel(_object)
-    if instanceof(_object, "Moveable") then
-        local valid_item_names = {
-            Translator.getItemNameFromFullType("Base.MetalDrum"),
-            Translator.getItemNameFromFullType("Base.Mov_LightGreenBarrel"),
-            Translator.getItemNameFromFullType("Base.Mov_OrangeBarrel"),
-            Translator.getItemNameFromFullType("Base.Mov_DarkGreenBarrel"),
-        }
-        for i = 1, #valid_item_names do
-            if _object:getName() == valid_item_names[i] then return _object end
-        end
-    end
-    if instanceof(_object, "IsoObject") then 
-        local valid_barrel_moveable_names = {
-            "Base.MetalDrum",
-            "Base.Mov_LightGreenBarrel",
-            "Base.Mov_OrangeBarrel",
-            "Base.Mov_DarkGreenBarrel",
-        }
-        if not _object or not _object:getSquare() then return end
-        if not _object:getSprite() then return end
-        if not _object:getSpriteName() then return end
-        for i = 1, #valid_barrel_moveable_names do
-            if _object:getSprite():getProperties():Val("CustomItem") == valid_barrel_moveable_names[i] then return _object end
-        end
-    end
 end
 
 function UBUtils.GetUBBarrel(worldObjects)
@@ -101,44 +59,6 @@ function UBUtils.ConvertToTable(list)
         table.insert(tbl, item)
     end
     return tbl
-end
-
-function UBUtils.ValidateFluidCategoty(fluidContainer)
-    local allowList = {
-        [FluidCategory.Industrial] = SandboxVars.UsefulBarrels.AllowIndustrial,
-        [FluidCategory.Fuel]       = SandboxVars.UsefulBarrels.AllowFuel,
-        [FluidCategory.Hazardous]  = SandboxVars.UsefulBarrels.AllowHazardous,
-        [FluidCategory.Alcoholic]  = SandboxVars.UsefulBarrels.AllowAlcoholic,
-        [FluidCategory.Beverage]   = SandboxVars.UsefulBarrels.AllowBeverage,
-        [FluidCategory.Medical]    = SandboxVars.UsefulBarrels.AllowMedical,
-        [FluidCategory.Colors]     = SandboxVars.UsefulBarrels.AllowColors,
-        [FluidCategory.Dyes]       = SandboxVars.UsefulBarrels.AllowDyes,
-        [FluidCategory.HairDyes]   = SandboxVars.UsefulBarrels.AllowHairDyes,
-        [FluidCategory.Poisons]    = SandboxVars.UsefulBarrels.AllowPoisons,
-        [FluidCategory.Water]      = SandboxVars.UsefulBarrels.AllowWater,
-    }
-    local fluid = fluidContainer:getPrimaryFluid()
-    if not fluid then return true end
-    for category, allowed in pairs(allowList) do
-        if fluid:isCategory(category) and allowed then return true end
-    end
-    return false
-end
-
-function UBUtils.CanTransferFluid(sourceContainers, targetFluidContainer, transferToSource)
-    local toSource = transferToSource ~= nil
-    local allContainers = {}
-    for _,container in pairs(sourceContainers) do
-        local fluidContainer = container:getComponent(ComponentType.FluidContainer)
-        if not toSource and FluidContainer.CanTransfer(fluidContainer, targetFluidContainer) then
-            if UBUtils.ValidateFluidCategoty(fluidContainer) then
-                table.insert(allContainers, container)
-            end
-        elseif toSource and FluidContainer.CanTransfer(targetFluidContainer, fluidContainer) then
-            table.insert(allContainers, container)
-        end
-    end
-    return allContainers
 end
 
 function UBUtils.SortContainers(allContainers)
@@ -167,14 +87,6 @@ function UBUtils.DisableOptionAddTooltip(option, description)
         option.notAvailable = true
         option.toolTip = ISWorldObjectContextMenu.addToolTip()
         if description then option.toolTip.description = description else option.toolTip.description = "" end
-    end
-end
-
-function UBUtils.GetTranslatedFluidNameOrEmpty(fluidObject)
-    if fluidObject then
-        return fluidObject:getTranslatedName()
-    else
-        return getText("ContextMenu_Empty")
     end
 end
 
@@ -233,38 +145,6 @@ function UBUtils.CleanItemContainersFromBarrels(containerList, container)
         end
     end
     return filteredContainerList
-end
-
-function UBUtils.CalculateTooltipWeight(_object)
-    local weight = 0
-    if _object then
-        if _object:hasComponent(ComponentType.FluidContainer) then
-            weight = weight + _object:getFluidContainer():getAmount()
-        end
-        if instanceof(_object, "Moveable") then
-            weight = weight + _object:getActualWeight()
-        end
-        if instanceof(_object, "IsoObject") then 
-            local sprite = _object:getSprite()
-            local props = sprite:getProperties()
-            if props and props:Is("CustomItem")  then
-                local customItem = props:Val("CustomItem")
-                local itemInstance = nil;
-                if not ISMoveableSpriteProps.itemInstances[customItem] then
-                    itemInstance = instanceItem(customItem);
-                    if itemInstance then
-                        ISMoveableSpriteProps.itemInstances[customItem] = itemInstance;
-                    end
-                else
-                    itemInstance = ISMoveableSpriteProps.itemInstances[customItem];
-                end
-                if itemInstance then
-                    weight = weight + itemInstance:getActualWeight()
-                end
-            end
-        end        
-    end
-    return weight
 end
 
 function UBUtils.GenerateGridCoordinates(distance, isDiamondShape)
@@ -347,20 +227,6 @@ function UBUtils.GetBarrelsNearby(square, distance, fluid)
     end
     
     return barrels
-end
-
-function UBUtils.IsUBBarrel(object)
-    if object then
-        local modData = object:getModData()
-        if modData and modData["UB_Uncapped"] ~= nil then
-            return true
-        end
-        -- in case of InventoryItem picked from world
-        if modData and modData["modData"] and modData["modData"]["UB_Uncapped"] ~= nil then
-            return true
-        end
-    end
-    return false
 end
 
 function UBUtils.GetBarrelNearbyVehicle(vehicle)
