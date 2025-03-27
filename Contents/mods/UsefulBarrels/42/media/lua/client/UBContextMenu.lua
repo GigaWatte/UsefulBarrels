@@ -171,7 +171,7 @@ function UBContextMenu:DoBarrelUncap()
         if SandboxVars.UsefulBarrels.RequirePipeWrench and self.isValidWrench then
             ISTimedActionQueue.add(ISEquipWeaponAction:new(self.playerObj, self.wrench, 25, true))
         end
-        ISTimedActionQueue.add(ISUBDoBarrelUncap:new(self.playerObj, self.barrel, self.wrench))
+        ISTimedActionQueue.add(ISUBDoBarrelUncap:new(self.playerObj, self.barrel.isoObject, self.wrench, self.barrel.objectLabel))
     end
 end
 

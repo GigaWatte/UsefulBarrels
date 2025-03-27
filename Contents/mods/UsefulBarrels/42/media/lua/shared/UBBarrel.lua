@@ -25,6 +25,28 @@ function UBBarrel.ValidateFluidCategoty(fluidContainer)
     return false
 end
 
+function UBBarrel:OnPickup()
+    self.fluidContainer:setInputLocked(true)
+    self.fluidContainer:setCanPlayerEmpty(false)
+end
+
+function UBBarrel:OnPlace()
+    self.fluidContainer:setInputLocked(false)
+    self.fluidContainer:setCanPlayerEmpty(true)
+    if instanceof(self.isoObject, "IsoThumpable") then
+        --TODO restore it from modData
+
+        --obj:setMaxHealth(self:getObjectHealth());
+        --obj:setHealth(obj:getMaxHealth());
+        self.isoObject:setThumpDmg(8); --zeds needed to hurt obj
+        --obj:setIsThumpable(true);
+        --obj:setBlockAllTheSquare(true);
+        --obj:setCanPassThrough(false);
+        --obj:setHoppable(false);
+        --obj:setBreakSound(IsoThumpable.GetBreakFurnitureSound(itemSprite));
+    end
+end
+
 function UBBarrel:GetBarrelInfo(playerInv)
     local output = string.format("Barrel object: %s\n", tostring(self.isoObject))
     output = output .. string.format("hasFluidContainer: %s\n", tostring(self:hasFluidContainer()))
