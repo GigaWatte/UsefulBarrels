@@ -3,66 +3,6 @@ local UBBarrel = ISBaseObject:derive("UBBarrel")
 
 -- object TTL is current context menu lifetime and recreates every time
 
-function UBBarrel:Uncap()
-    function getInitialFluid()
-        local fluidTable = {}
-        local fluids = luautils.split(SandboxVars.UsefulBarrels.InitialFluidPool)
-        for _,fluidStr in ipairs(fluids, " ") do
-            if Fluid.Get(fluidStr) then table.insert(fluidTable, Fluid.Get(fluidStr)) end
-        end
-    
-        if #fluidTable == 1 then return nil end
-        local index = ZombRand(#fluidTable) + 1
-    
-        return fluidTable[index]
-    end
-    
-    function getInitialFluidAmount()
-        if SandboxVars.UsefulBarrels.InitialFluidMaxAmount > 0 then
-            return PZMath.clamp(ZombRand(SandboxVars.UsefulBarrels.InitialFluidMaxAmount), 0, SandboxVars.UsefulBarrels.BarrelCapacity)
-        end
-        return 0
-    end
-    
-    function shouldSpawn()
-        if SandboxVars.UsefulBarrels.InitialFluidSpawnChance == 100 then return true end
-        if SandboxVars.UsefulBarrels.InitialFluidSpawnChance > 0 then
-            return ZombRand(0,100) <= SandboxVars.UsefulBarrels.InitialFluidSpawnChance
-        end
-        return false
-    end
-
-    if not self:hasFluidContainer() then
-		local component = ComponentType.FluidContainer:CreateComponent()
-		local barrelCapacity = SandboxVars.UsefulBarrels.BarrelCapacity
-		component:setCapacity(barrelCapacity)
-		component:setContainerName("UB_" .. self.barrel.objectName)
-		
-		local modData = self.isoObject:getModData()
-
-		local shouldSpawn = shouldSpawn()
-		if SandboxVars.UsefulBarrels.InitialFluid and shouldSpawn then
-			local fluid = getInitialFluid()
-			if fluid then
-				local amount = getInitialFluidAmount()
-				component:addFluid(fluid, amount)
-				modData["UB_Initial_fluid"] = tostring(fluid)
-				modData["UB_Initial_amount"] = tostring(amount)
-			end
-		end
-
-		GameEntityFactory.AddComponent(self.isoObject, true, component)
-
-		if not modData["UB_Uncapped"] then
-			modData["UB_Uncapped"] = true
-		end
-		
-		self.isoObject:setModData(modData)
-	end
-
-	buildUtil.setHaveConstruction(self.square, true)
-end
-
 function UBBarrel.ValidateFluidCategoty(fluidContainer)
     local allowList = {
         [FluidCategory.Industrial] = SandboxVars.UsefulBarrels.AllowIndustrial,
@@ -242,16 +182,10 @@ function UBBarrel.GetMoveableDisplayName(isoObject)
     return nil
 end
 
----@param isoObject IsoObject
-function UBBarrel:new(isoObject)
-    local o = {};
-    setmetatable(o, self)
-    self.__index = self
-
-    if not isoObject then return nil end
-
-    -- Moveable is subclass of InventoryItem
-    if instanceof(isoObject, "Moveable") then
+function UBBarrel.validate(object)
+    if not object then return false end
+        -- Moveable is subclass of InventoryItem
+    if instanceof(object, "Moveable") then
         local valid_item_names = {
             Translator.getItemNameFromFullType("Base.MetalDrum"),
             Translator.getItemNameFromFullType("Base.Mov_LightGreenBarrel"),
@@ -259,39 +193,61 @@ function UBBarrel:new(isoObject)
             Translator.getItemNameFromFullType("Base.Mov_DarkGreenBarrel"),
         }
         for i = 1, #valid_item_names do
-            if isoObject:getName() == valid_item_names[i] then 
-                o.isoObject = isoObject
-                o.fluidContainer = isoObject:getComponent(ComponentType.FluidContainer)
-                o.square = nil
-                o.objectName = nil
-                o.objectLabel = nil
-                return o 
-            end
+            if object:getName() == valid_item_names[i] then return true end
         end
     end
     -- IsoObject is base class for any world object
-    if instanceof(isoObject, "IsoObject") then 
+    if instanceof(object, "IsoObject") then 
         local valid_barrel_moveable_names = {
             "Base.MetalDrum",
             "Base.Mov_LightGreenBarrel",
             "Base.Mov_OrangeBarrel",
             "Base.Mov_DarkGreenBarrel",
         }
-        if not isoObject:getSquare() then return end
-        if not isoObject:getSprite() then return end
-        local props = isoObject:getSprite():getProperties()
+        if not object:getSquare() then return end
+        if not object:getSprite() then return end
+        local props = object:getSprite():getProperties()
         if props and not props:Val("CustomItem") then return end
 
         for i = 1, #valid_barrel_moveable_names do
             -- CustomItem is Moveable item
             if props:Val("CustomItem") == valid_barrel_moveable_names[i] then 
-                o.isoObject = isoObject
-                o.fluidContainer = isoObject:getComponent(ComponentType.FluidContainer)
-                o.square = isoObject:getSquare()
-                o.objectName = props:Val("CustomName")
-                o.objectLabel = UBBarrel.GetMoveableDisplayName(isoObject)
-                return o 
+                return true
             end
         end
+    end
+end
+
+function UBBarrel:new(isoObject)
+    local o = {};
+    setmetatable(o, self)
+    self.__index = self
+
+    if not isoObject then return nil end
+    if not UBBarrel.validate(isoObject) then return nil end
+
+    -- Moveable is subclass of InventoryItem
+    if instanceof(isoObject, "Moveable") then
+        o.isoObject = isoObject
+        o.fluidContainer = isoObject:getComponent(ComponentType.FluidContainer)
+        o.square = nil
+        o.objectName = nil
+        o.objectLabel = nil
+        return o 
+    end
+    -- IsoObject is base class for any world object
+    if instanceof(isoObject, "IsoObject") then 
+        local props = isoObject:getSprite():getProperties()
+        if props and not props:Val("CustomItem") then return end
+
+        -- CustomItem is Moveable item
+
+        o.isoObject = isoObject
+        o.fluidContainer = isoObject:getComponent(ComponentType.FluidContainer)
+        o.square = isoObject:getSquare()
+        o.objectName = props:Val("CustomName")
+        o.objectLabel = UBBarrel.GetMoveableDisplayName(isoObject)
+        return o 
+
     end
 end

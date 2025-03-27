@@ -1,11 +1,13 @@
 
 local UBUtils = require "UBUtils"
+local UBBarrel = require "UBBarrel"
 local ISMoveableSpriteProps_canPickUpMoveableInternal = ISMoveableSpriteProps.canPickUpMoveableInternal
 function ISMoveableSpriteProps:canPickUpMoveableInternal( _character, _square, _object, _isMulti)
     local canPickUp = ISMoveableSpriteProps_canPickUpMoveableInternal(self, _character, _square, _object, _isMulti)
     if _object then
-        if UBUtils.CheckObjectIsBarrel(_object) and _object:hasComponent(ComponentType.FluidContainer) then
-            canPickUp = _character:getInventory():hasRoomFor(_character, UBUtils.CalculateTooltipWeight(_object))
+        if UBBarrel.validate(_object) and _object:hasComponent(ComponentType.FluidContainer) then
+            local barrel = UBBarrel:new(_object)
+            canPickUp = _character:getInventory():hasRoomFor(_character, barrel:GetWeight(_object))
         end
     end
     return canPickUp

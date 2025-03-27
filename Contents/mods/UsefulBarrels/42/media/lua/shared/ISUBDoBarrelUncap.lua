@@ -55,6 +55,5 @@ function ISUBDoBarrelUncap:perform()
 end
 
 function ISUBDoBarrelUncap:complete()
-	self.barrel:Uncap()
 	return true
 end

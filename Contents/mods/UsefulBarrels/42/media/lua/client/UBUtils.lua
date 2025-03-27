@@ -34,6 +34,24 @@ function UBUtils.predicateNotBroken(item)
     return not item:isBroken()
 end
 
+function UBUtils.hasItemNearbyOrInInv(worldObjects, playerInv, item)
+	return UBUtils.TableContainsItem(worldObjects, item) or UBUtils.playerHasItem(self.playerInv, item)
+end
+
+function UBUtils.getPlayerFluidContainers(playerInv)
+	return playerInv:getAllEvalRecurse(
+		function (item) return UBUtils.predicateAnyFluid(item) and not UBBarrel.validate(item) end
+	)
+end
+
+function UBUtils.getPlayerFluidContainersWithFluid(playerInv, fluid)
+	return playerInv:getAllEvalRecurse(
+        function (item) return (
+			UBUtils.predicateFluid(item, fluid) or UBUtils.predicateHasFluidContainer(item)
+		) and not UBBarrel.validate(item) end
+    )
+end
+
 function UBUtils.FormatFluidAmount(setX, amount, max, fluidName)
     if max >= 9999 then
         return string.format("%s: <SETX:%d> %s", getText(fluidName), setX, getText("Tooltip_WaterUnlimited"))
