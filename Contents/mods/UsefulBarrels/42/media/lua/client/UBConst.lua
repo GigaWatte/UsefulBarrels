@@ -1,5 +1,6 @@
 local UBConst = {}
 
+UBConst.BARREL_SCAN_DISTANCE = 2
 UBConst.TOOL_SCAN_DISTANCE = 2
 
 return UBConst

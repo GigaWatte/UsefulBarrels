@@ -1,9 +1,8 @@
 
 local UBUtils = require "UBUtils"
-
+local UBConst = require "UBConst"
 local UBRefuel = {}
-local TOOL_SCAN_DISTANCE = 2
-local BARREL_SCAN_DISTANCE = 2
+
 
 function UBRefuel.doAddFuelGenerator(worldobjects, generator, barrel, player)
 	local playerObj = getSpecificPlayer(player)
@@ -65,8 +64,8 @@ function UBRefuel:DoRefuelMenu(player, context)
     context:addSubMenu(fillOption, containerMenu) 
 
     for _,barrel in ipairs(self.barrels) do
-        local worldObjects = UBUtils.GetWorldItemsNearby(barrel:getSquare(), TOOL_SCAN_DISTANCE)
-        local hasHoseNearby = UBUtils.TableContainsItem(worldObjects, "Base.RubberHose") or UBUtils.playerHasItem(self.playerInv, "RubberHose")
+        local worldObjects = UBUtils.GetWorldItemsNearby(barrel:getSquare(), UBConst.TOOL_SCAN_DISTANCE)
+        local hasHoseNearby = UBUtils.hasItemNearbyOrInInv(worldObjects, self.playerInv, "Base.RubberHose")
         self:CreateBarrelOption(containerMenu, barrel, hasHoseNearby, player)
     end
 
@@ -93,33 +92,26 @@ end
 function UBRefuel:DoDebugOption(player, context, worldobjects, test)
     local debugOption = context:addOptionOnTop(getText("ContextMenu_UB_DebugOption"))
     local tooltip = ISWorldObjectContextMenu.addToolTip()
-    tooltip.description = tooltip.description .. string.format("SVGeneratorRequireHose: %s", tostring(SandboxVars.UsefulBarrels.GeneratorRefuelRequiresHose)) .. "\n"
-    tooltip.description = tooltip.description .. string.format("Gen isActivated: %s", tostring(self.generator:isActivated())) .. "\n"
-    tooltip.description = tooltip.description .. string.format("Gen fuel >= 100: %s", tostring(self.generator:getFuel() >= 100)) .. "\n"
-    tooltip.description = tooltip.description .. string.format("Barrels available: %s", tostring(#self.barrels)) .. "\n"
-    tooltip.description = tooltip.description .. string.format("Can create menu: %s", tostring(UBRefuel.CanCreateRefuelMenu(self.generator:getSquare(), self.playerObj))) .. "\n"
-
+    local description = string.format(
+        [[SVGeneratorRequireHose: %s\n
+        Gen isActivated: %s\n
+        Gen fuel >= 100: %s\n
+        Barrels available: %s\n
+        CanCreateMenu: %s\n
+        ]],
+        tostring(SandboxVars.UsefulBarrels.GeneratorRefuelRequiresHose),
+        tostring(self.generator:isActivated()),
+        tostring(self.generator:getFuel() >= 100),
+        tostring(#self.barrels),
+        tostring(UBRefuel.CanCreateRefuelMenu(self.generator:getSquare(), self.playerObj))
+    )
     for _,barrel in ipairs(self.barrels) do
-        local worldObjects = UBUtils.GetWorldItemsNearby(barrel:getSquare(), TOOL_SCAN_DISTANCE)
-        local hasHoseNearby = UBUtils.TableContainsItem(worldObjects, "Base.RubberHose") or UBUtils.playerHasItem(self.playerInv, "RubberHose")
-        tooltip.description = tooltip.description .. string.format("Barrel object: %s", tostring(barrel)) .. "\n"
-        tooltip.description = tooltip.description .. string.format("hasHoseNearby: %s", tostring(hasHoseNearby)) .. "\n"
-
-        local barrelFluidContainer = barrel:getComponent(ComponentType.FluidContainer)
-        local fluidAmount = barrelFluidContainer:getAmount()
-        local fluidMax = barrelFluidContainer:getCapacity()
-        local barrelFluid
-        if fluidAmount > 0 then
-            barrelFluid = barrelFluidContainer:getPrimaryFluid()
-        else
-            barrelFluid = nil
-        end
-        tooltip.description = tooltip.description .. string.format("Fluid: %s", tostring(barrelFluid)) .. "\n"
-        tooltip.description = tooltip.description .. string.format("Fluid amount: %s", tostring(fluidAmount)) .. "\n"
-        tooltip.description = tooltip.description .. string.format("Fluid capacity: %s", tostring(fluidMax)) .. "\n"
-        tooltip.description = tooltip.description .. string.format("isInputLocked: %s", tostring(barrelFluidContainer:isInputLocked())) .. "\n"
-        tooltip.description = tooltip.description .. string.format("canPlayerEmpty: %s", tostring(barrelFluidContainer:canPlayerEmpty())) .. "\n"
+        local worldObjects = UBUtils.GetWorldItemsNearby(barrel:getSquare(), UBConst.TOOL_SCAN_DISTANCE)
+        local hasHoseNearby = UBUtils.hasItemNearbyOrInInv(worldObjects, self.playerInv, "Base.RubberHose")
+        description = description .. string.format("hasHoseNearby: %s\n", tostring(hasHoseNearby))
+        description = description .. barrel:GetBarrelInfo()
     end
+    tooltip.description = description
     debugOption.toolTip = tooltip
 end
 
@@ -132,7 +124,7 @@ function UBRefuel:new(player, context, worldobjects, test)
     if not o.generator or o.playerObj:getVehicle() then return end
     if o.generator:isActivated() or o.generator:getFuel() >= 100 then return end
 
-    o.barrels = UBUtils.GetBarrelsNearby(o.generator:getSquare(), BARREL_SCAN_DISTANCE, Fluid.Petrol)
+    o.barrels = UBUtils.GetBarrelsNearby(o.generator:getSquare(), UBConst.BARREL_SCAN_DISTANCE, Fluid.Petrol)
 
     if SandboxVars.UsefulBarrels.DebugMode then
         self:DoDebugOption(player, context, worldobjects, test)

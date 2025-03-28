@@ -165,32 +165,25 @@ function UBUtils.CleanItemContainersFromBarrels(containerList, container)
     return filteredContainerList
 end
 
-function UBUtils.GenerateGridCoordinates(distance, isDiamondShape)
-    if not distance then distance = 1 end
+function UBUtils.GetSquaresInRange(square, distance, includeInitialSquare, isDiamondShape)
+	if not distance then distance = 1 end
     if not isDiamondShape then isDiamondShape = true end
-    local grid = {}
-    for x = -distance,distance + 1 do
-        for y = -distance,distance + 1 do
-            if isDiamondShape and math.abs(x) + math.abs(y) <= distance then 
-                table.insert(grid, {["x"]=x, ["y"]=y}) 
-            elseif not isDiamondShape then
-                table.insert(grid, {["x"]=x, ["y"]=y})
-            end
 
-        end 
-    end
-    return grid
-end
-
-function UBUtils.GetSquaresFromCenterAtDistance(square, distance, includeInitialSquare)
     local x,y,z = square:getX(), square:getY(), square:getZ()
     local cell = square:getCell()
-    local grid = UBUtils.GenerateGridCoordinates(distance, true)
-    local squares = {}
-    for _,coord in ipairs(grid) do
-        local nextSquare = cell:getGridSquare(x+coord.x, y+coord.y, z)
-        if nextSquare then table.insert(squares, nextSquare) end
+	local squares = {}
+    for xx = -distance,distance + 1 do
+        for yy = -distance,distance + 1 do
+            if isDiamondShape and math.abs(x) + math.abs(y) <= distance then
+				local nextSquare = cell:getGridSquare(x+xx, y+yy, z)
+                if nextSquare then table.insert(squares, nextSquare) end
+            elseif not isDiamondShape then
+				local nextSquare = cell:getGridSquare(x+xx, y+yy, z)
+                if nextSquare then table.insert(squares, nextSquare) end
+            end
+        end 
     end
+
     if includeInitialSquare ~= nil and includeInitialSquare then
         table.insert(squares, square)
     end
@@ -207,9 +200,8 @@ end
 
 function UBUtils.GetWorldItemsNearby(square, distance)
     if not square then return nil end
-    if not distance then distance = 1 end
 
-    local squares = UBUtils.GetSquaresFromCenterAtDistance(square, distance, true)
+    local squares = UBUtils.GetSquaresInRange(square, distance, true)
 
     local worldItems = {}
     for _,curr in ipairs(squares) do
@@ -226,17 +218,16 @@ end
 function UBUtils.GetBarrelsNearby(square, distance, fluid)
     -- this function not include an initial square in searching process
     if not square then return nil end
-    if not distance then distance = 1 end
 
-    local squares = UBUtils.GetSquaresFromCenterAtDistance(square, distance, false)
+    local squares = UBUtils.GetSquaresInRange(square, distance, false)
 
     local barrels = {}
     for _,curr in ipairs(squares) do
         local squareObjects = curr:getObjects()
         local sqTable = UBUtils.ConvertToTable(squareObjects)
         local barrel = UBUtils.GetUBBarrel(sqTable)
-        if barrel and UBUtils.IsUBBarrel(barrel) then
-            if fluid and barrel:getFluidContainer():contains(fluid) then
+        if barrel and barrel:hasFluidContainer() then
+            if fluid and barrel:ContainsFluid(fluid) then
                 table.insert(barrels, barrel)
             elseif fluid == nil then
                 table.insert(barrels, barrel)
@@ -247,7 +238,7 @@ function UBUtils.GetBarrelsNearby(square, distance, fluid)
     return barrels
 end
 
-function UBUtils.GetBarrelNearbyVehicle(vehicle)
+function UBUtils.GetBarrelsNearbyVehicle(vehicle, distance)
     local part = vehicle:getPartById("GasTank")
     if not part then return nil end
     local areaCenter = vehicle:getAreaCenter(part:getArea())
@@ -255,11 +246,11 @@ function UBUtils.GetBarrelNearbyVehicle(vehicle)
     local square = getCell():getGridSquare(areaCenter:getX(), areaCenter:getY(), vehicle:getZ())
     if not square then return nil end
 
-    local barrels = UBUtils.GetBarrelsNearby(square, 4, Fluid.Petrol)
+    local barrels = UBUtils.GetBarrelsNearby(square, distance, Fluid.Petrol)
 
     if #barrels == 1 then return nil end
 
-    return barrels[1]
+    return barrels
 end
 
 return UBUtils

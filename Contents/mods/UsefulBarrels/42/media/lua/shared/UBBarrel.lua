@@ -55,37 +55,39 @@ function UBBarrel:GetBarrelInfo(playerInv)
         local fluidAmount = self:getAmount()
         local fluidMax = self:getCapacity()
         local barrelFluid = self:getPrimaryFluid()
-        local addfluidContainerItems = playerInv:getAllEvalRecurse(
-            function (item) return UBUtils.predicateAnyFluid(item) and not UBBarrel:new(item) end
-        )
-        local addfluidContainerItemsTable = UBUtils.ConvertToTable(addfluidContainerItems)
-        local addallContainers = self:CanTransferFluid(addfluidContainerItemsTable)
-        local takefluidContainerItems = playerInv:getAllEvalRecurse(
-            function (item) return (UBUtils.predicateFluid(item, barrelFluid) or UBUtils.predicateHasFluidContainer(item)) and not UBBarrel:new(item) end
-        )
-        local takefluidContainerItemsTable = UBUtils.ConvertToTable(takefluidContainerItems)
-        local takeallContainers = self:CanTransferFluid(takefluidContainerItemsTable, true)
+
 
         output = output .. string.format(
             [[Fluid: %s\n
             Fluid amount: %s\n
             Fluid capacity: %s\n
-            All containers to add: %s\n
-            Valid containers to add: %s\n
-            All containers for pouring: %s\n
-            Valid containers for pouring: %s\n
             isInputLocked: %s\n
             canPlayerEmpty: %s\n]],
             tostring(barrelFluid),
             tostring(fluidAmount),
             tostring(fluidMax),
-            tostring(#addfluidContainerItemsTable),
-            tostring(#addallContainers),
-            tostring(#takefluidContainerItemsTable),
-            tostring(#takeallContainers),
             tostring(self.fluidContainer:isInputLocked()),
             tostring(self.fluidContainer:canPlayerEmpty())
         )
+
+        if playerInv ~= nil then
+            local addfluidContainerItems = UBUtils.getPlayerFluidContainers(playerInv)
+            local addfluidContainerItemsTable = UBUtils.ConvertToTable(addfluidContainerItems)
+            local addallContainers = self:CanTransferFluid(addfluidContainerItemsTable)
+            local takefluidContainerItems = UBUtils.getPlayerFluidContainersWithFluid(playerInv, barrelFluid)
+            local takefluidContainerItemsTable = UBUtils.ConvertToTable(takefluidContainerItems)
+            local takeallContainers = self:CanTransferFluid(takefluidContainerItemsTable, true)
+            output = output .. string.format(
+                [[All containers to add: %s\n
+                Valid containers to add: %s\n
+                All containers for pouring: %s\n
+                Valid containers for pouring: %s\n]],
+                tostring(#addfluidContainerItemsTable),
+                tostring(#addallContainers),
+                tostring(#takefluidContainerItemsTable),
+                tostring(#takeallContainers)
+            )
+        end
     end
 
     if self.isoObject:hasModData() then
@@ -129,6 +131,10 @@ function UBBarrel:CanTransferFluid(fluidContainers, transferToContainers)
         end
     end
     return allContainers
+end
+
+function UBBarrel:ContainsFluid(fluid)
+    return self:hasFluidContainer() and self.fluidContainer:contains(fluid)
 end
 
 function UBBarrel:hasFluidContainer()
