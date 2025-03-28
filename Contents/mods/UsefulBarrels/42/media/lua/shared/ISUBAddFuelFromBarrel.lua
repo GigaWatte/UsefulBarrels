@@ -52,7 +52,7 @@ function ISUBAddFuelFromBarrel:getDuration()
 	if self.character:isTimedActionInstant() then
 		return 1;
 	end
-	return 70 + (self.fluidCont:getAmount() * 50)
+	return 70 + (self.amount * 50)
 end
 
 function ISUBAddFuelFromBarrel:new(character, generator, barrel, maxTime)
@@ -60,6 +60,7 @@ function ISUBAddFuelFromBarrel:new(character, generator, barrel, maxTime)
     o.barrel = barrel;
 	o.fluidCont = o.barrel:getFluidContainer();
 	o.generator = generator;
+	o.amount = 10 - o.generator:getFuel() / 10
 	o.maxTime = o:getDuration();
 	return o;
 end
