@@ -60,7 +60,7 @@ function ISUBAddFuelFromBarrel:new(character, generator, barrel, maxTime)
     o.barrel = barrel;
 	o.fluidCont = o.barrel:getFluidContainer();
 	o.generator = generator;
-	o.amount = math.min(o.fluidCont:getAmount(), 100 - o.generator:getFuel())
+	o.amount = 10 - o.generator:getFuel() / 10
 	o.maxTime = o:getDuration();
 	return o;
 end
