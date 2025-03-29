@@ -68,6 +68,10 @@ function UBContextMenu.OnTransferFluid(playerObj, barrelSquare, fluidContainer, 
     end
 end
 
+function UBContextMenu.OnVehicleTransferFluid(playerObj, part, barrel)
+    ISTimedActionQueue.add(ISUBSiphonFromVehicle:new(playerObj, part, barrel))
+end
+
 function UBContextMenu.CanCreateFluidMenu(playerObj, barrelSquare)
     -- thats from vanilla method. it seems to verify target square room and current player room
     if barrelSquare:getBuilding() ~= playerObj:getBuilding() then
@@ -166,6 +170,39 @@ function UBContextMenu:DoAddFluidMenu(context, hasFunnelNearby)
     self:DoCategoryList(addMenu, allContainerTypes, true, getText("ContextMenu_AddOne"), getText("ContextMenu_AddAll"))
 end
 
+function UBContextMenu:DoSiphonFromVehicleMenu(context, hasHoseNearby)
+    if not SandboxVars.UsefulBarrels.EnableFillBarrelFromVehicles then return end
+
+    local vehicles = UBUtils.GetVehiclesNeaby(self.barrel.square, UBConst.VEHICLE_SCAN_DISTANCE)
+    if not vehicles then return end
+
+    local vehicleOption = context:addOption(getText("ContextMenu_RefuelFromVehicle"))
+
+    if SandboxVars.UsefulBarrels.UsefulBarrelsFillBarrelFromVehiclesRequiresHose and not hasHoseNearby then
+        UBUtils.DisableOptionAddTooltip(vehicleOption, getText("Tooltip_UB_HoseMissing", getItemName("Base.RubberHose")))
+        return
+    end
+    local vehicleMenu = ISContextMenu:getNew(context)
+    context:addSubMenu(vehicleOption, vehicleMenu)
+    for _,vehicle in ipairs(vehicles) do
+        --string.find(vehicle:getScriptName(), "Trailer") ~= nil
+        for i=1,vehicle:getPartCount() do
+            local part = vehicle:getPartByIndex(i-1)
+            local partCategory = part:getCategory()
+            if part and partCategory and part:isContainer() and string.find(partCategory, "gastank")~=nil and part:getContainerContentAmount() > 0 then
+                local carName = vehicle:getScript():getCarModelName() or vehicle:getScript():getName()
+                local vehicle_option = vehicleMenu:addOption(getText("IGUI_VehicleName" .. carName), self.playerObj, UBContextMenu.OnVehicleTransferFluid, part, self.barrel)
+                local tooltip = ISWorldObjectContextMenu.addToolTip()
+                tooltip.maxLineWidth = 512
+                tooltip.description = getText("Fluid_UB_Show_Info", tostring(math.ceil(part:getContainerContentAmount())) .. "L")
+                vehicle_option.toolTip = tooltip
+
+            end
+        end
+    end
+
+end
+
 function UBContextMenu:DoBarrelUncap()
     if luautils.walkAdj(self.playerObj, self.barrel.square, true) then
         if SandboxVars.UsefulBarrels.RequirePipeWrench and self.isValidWrench then
@@ -176,16 +213,13 @@ function UBContextMenu:DoBarrelUncap()
 end
 
 function UBContextMenu:AddInfoOption(context)
-    local fluidAmount = self.barrel:getAmount()
-    local fluidMax = self.barrel:getCapacity()
-    local fluidName = self.barrel.GetTranslatedFluidNameOrEmpty()
+    local fluidName = self.barrel:GetTranslatedFluidNameOrEmpty()
 
     local infoOption = context:addOptionOnTop(getText("Fluid_UB_Show_Info", fluidName))
     if self.playerObj:DistToSquared(self.barrel.isoObject:getX() + 0.5, self.barrel.isoObject:getY() + 0.5) < 2 * 2 then
         local tooltip = ISWorldObjectContextMenu.addToolTip()
-        local tx = getTextManager():MeasureStringX(tooltip.font, fluidName .. ":") + 20
-        --tooltip.maxLineWidth = 512
-        tooltip.description = tooltip.description .. UBUtils.FormatFluidAmount(tx, fluidAmount, fluidMax, fluidName)
+        tooltip.maxLineWidth = 512
+        tooltip.description = self.barrel:GetTooltipText(tooltip.font)
         infoOption.toolTip = tooltip
         if self.barrelFluid and self.barrelFluid:isPoisonous() then
             infoOption.iconTexture = getTexture("media/ui/Skull2.png")
@@ -218,23 +252,47 @@ function UBContextMenu:DoDebugOption(context)
     local hasFunnelNearby = UBUtils.hasItemNearbyOrInInv(worldObjects, self.playerInv, "Base.Funnel")
 
     local description = string.format(
-        [[SVRequirePipeWrench: %s\n
-        SVRequireHose: %s\n
-        SVRequireFunnel: %s\n
-        hasHoseNearby: %s\n
-        hasFunnelNearby: %s\n
-        isValidWrench: %s\n
-        CanCreateFluidMenu: %s\n]],
+        [[
+        SVRequirePipeWrench: %s
+        SVRequireHose: %s
+        SVRequireFunnel: %s
+        hasHoseNearby: %s
+        hasFunnelNearby: %s
+        isValidWrench: %s
+        CanCreateFluidMenu: %s
+        ]],
         tostring(SandboxVars.UsefulBarrels.RequirePipeWrench),
         tostring(SandboxVars.UsefulBarrels.RequireHoseForTake),
         tostring(SandboxVars.UsefulBarrels.RequireFunnelForFill),
         tostring(hasHoseNearby),
         tostring(hasFunnelNearby),
         tostring(self.isValidWrench),
-        UBContextMenu.CanCreateFluidMenu(self.playerObj, self.barrel.square)
+        tostring(UBContextMenu.CanCreateFluidMenu(self.playerObj, self.barrel.square))
     )
 
-    tooltip.description = description .. self.barrel:GetBarrelInfo(self.playerInv)
+    description = description .. self.barrel:GetBarrelInfo()
+
+    local addfluidContainerItems = UBUtils.getPlayerFluidContainers(self.playerInv)
+    local addfluidContainerItemsTable = UBUtils.ConvertToTable(addfluidContainerItems)
+    local addallContainers = self.barrel:CanTransferFluid(addfluidContainerItemsTable)
+    local takefluidContainerItems = UBUtils.getPlayerFluidContainersWithFluid(self.playerInv, self.barrel:getPrimaryFluid())
+    local takefluidContainerItemsTable = UBUtils.ConvertToTable(takefluidContainerItems)
+    local takeallContainers = self.barrel:CanTransferFluid(takefluidContainerItemsTable, true)
+
+    description = description .. string.format(
+        [[
+        All containers to add: %s
+        Valid containers to add: %s
+        All containers for pouring: %s
+        Valid containers for pouring: %s
+        ]],
+        tostring(#addfluidContainerItemsTable),
+        tostring(#addallContainers),
+        tostring(#takefluidContainerItemsTable),
+        tostring(#takeallContainers)
+    )
+
+    tooltip.description = description
     debugOption.toolTip = tooltip
 end
 
@@ -263,6 +321,7 @@ function UBContextMenu:MainMenu(player, context, worldobjects, test)
                 local hasFunnelNearby = UBUtils.hasItemNearbyOrInInv(worldObjects, self.playerInv, "Base.Funnel")
                 self:DoAddFluidMenu(barrelMenu, hasFunnelNearby)
                 self:DoTakeFluidMenu(barrelMenu, hasHoseNearby)
+                self:DoSiphonFromVehicleMenu(barrelMenu, hasHoseNearby)
             end
         end
     end

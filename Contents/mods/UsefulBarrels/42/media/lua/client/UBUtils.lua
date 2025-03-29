@@ -35,7 +35,7 @@ function UBUtils.predicateNotBroken(item)
 end
 
 function UBUtils.hasItemNearbyOrInInv(worldObjects, playerInv, item)
-	return UBUtils.TableContainsItem(worldObjects, item) or UBUtils.playerHasItem(self.playerInv, item)
+	return UBUtils.TableContainsItem(worldObjects, item) or UBUtils.playerHasItem(playerInv, item)
 end
 
 function UBUtils.getPlayerFluidContainers(playerInv)
@@ -50,13 +50,6 @@ function UBUtils.getPlayerFluidContainersWithFluid(playerInv, fluid)
 			UBUtils.predicateFluid(item, fluid) or UBUtils.predicateHasFluidContainer(item)
 		) and not UBBarrel.validate(item) end
     )
-end
-
-function UBUtils.FormatFluidAmount(setX, amount, max, fluidName)
-    if max >= 9999 then
-        return string.format("%s: <SETX:%d> %s", getText(fluidName), setX, getText("Tooltip_WaterUnlimited"))
-    end
-    return string.format("%s: <SETX:%d> %s / %s", getText(fluidName), setX, luautils.round(amount, 2) .. "L", max .. "L")
 end
 
 function UBUtils.GetUBBarrel(worldObjects)
@@ -174,7 +167,7 @@ function UBUtils.GetSquaresInRange(square, distance, includeInitialSquare, isDia
 	local squares = {}
     for xx = -distance,distance + 1 do
         for yy = -distance,distance + 1 do
-            if isDiamondShape and math.abs(x) + math.abs(y) <= distance then
+            if isDiamondShape and math.abs(xx) + math.abs(yy) <= distance then
 				local nextSquare = cell:getGridSquare(x+xx, y+yy, z)
                 if nextSquare then table.insert(squares, nextSquare) end
             elseif not isDiamondShape then
@@ -248,9 +241,23 @@ function UBUtils.GetBarrelsNearbyVehicle(vehicle, distance)
 
     local barrels = UBUtils.GetBarrelsNearby(square, distance, Fluid.Petrol)
 
-    if #barrels == 1 then return nil end
+    if #barrels == 0 then return nil end
 
     return barrels
+end
+
+function UBUtils.GetVehiclesNeaby(square, distance)
+    if not square then return nil end
+
+    local squares = UBUtils.GetSquaresInRange(square, distance, true, false)
+
+    local vehicles = {}
+    for _,curr in ipairs(squares) do
+        local vehicle = curr:getVehicleContainer()
+        if not luautils.tableContains(vehicles, vehicle) then table.insert(vehicles, vehicle) end
+    end
+
+    return vehicles
 end
 
 return UBUtils

@@ -1,7 +1,6 @@
+-- object TTL is current context menu lifetime and recreates every time
 ---@class UBBarrel
 local UBBarrel = ISBaseObject:derive("UBBarrel")
-
--- object TTL is current context menu lifetime and recreates every time
 
 function UBBarrel.ValidateFluidCategoty(fluidContainer)
     local allowList = {
@@ -47,56 +46,57 @@ function UBBarrel:OnPlace()
     end
 end
 
-function UBBarrel:GetBarrelInfo(playerInv)
+function UBBarrel:GetTooltipText(font_size)
+    function FormatFluidAmount(setX, amount, max, fluidName)
+        if max >= 9999 then
+            return string.format("%s: <SETX:%d> %s", getText(fluidName), setX, getText("Tooltip_WaterUnlimited"))
+        end
+        return string.format("%s: <SETX:%d> %s / %s", getText(fluidName), setX, luautils.round(amount, 2) .. "L", max .. "L")
+    end
+
+    local fluidAmount = self:getAmount()
+    local fluidMax = self:getCapacity()
+    local fluidName = self:GetTranslatedFluidNameOrEmpty()
+
+    local tx = getTextManager():MeasureStringX(font_size, fluidName .. ":") + 20
+    return FormatFluidAmount(tx, fluidAmount, fluidMax, fluidName)
+end
+
+function UBBarrel:GetBarrelInfo()
     local output = string.format("Barrel object: %s\n", tostring(self.isoObject))
     output = output .. string.format("hasFluidContainer: %s\n", tostring(self:hasFluidContainer()))
 
-    if self:hasFluidContainer() then
+    if self.fluidContainer~=nil then
         local fluidAmount = self:getAmount()
         local fluidMax = self:getCapacity()
         local barrelFluid = self:getPrimaryFluid()
 
 
         output = output .. string.format(
-            [[Fluid: %s\n
-            Fluid amount: %s\n
-            Fluid capacity: %s\n
-            isInputLocked: %s\n
-            canPlayerEmpty: %s\n]],
+            [[
+            Fluid: %s
+            Fluid amount: %s
+            Fluid capacity: %s
+            isInputLocked: %s
+            canPlayerEmpty: %s
+            ]],
             tostring(barrelFluid),
             tostring(fluidAmount),
             tostring(fluidMax),
             tostring(self.fluidContainer:isInputLocked()),
             tostring(self.fluidContainer:canPlayerEmpty())
         )
-
-        if playerInv ~= nil then
-            local addfluidContainerItems = UBUtils.getPlayerFluidContainers(playerInv)
-            local addfluidContainerItemsTable = UBUtils.ConvertToTable(addfluidContainerItems)
-            local addallContainers = self:CanTransferFluid(addfluidContainerItemsTable)
-            local takefluidContainerItems = UBUtils.getPlayerFluidContainersWithFluid(playerInv, barrelFluid)
-            local takefluidContainerItemsTable = UBUtils.ConvertToTable(takefluidContainerItems)
-            local takeallContainers = self:CanTransferFluid(takefluidContainerItemsTable, true)
-            output = output .. string.format(
-                [[All containers to add: %s\n
-                Valid containers to add: %s\n
-                All containers for pouring: %s\n
-                Valid containers for pouring: %s\n]],
-                tostring(#addfluidContainerItemsTable),
-                tostring(#addallContainers),
-                tostring(#takefluidContainerItemsTable),
-                tostring(#takeallContainers)
-            )
-        end
     end
 
     if self.isoObject:hasModData() then
         local modData = self.isoObject:getModData()
 
         output = output .. string.format(
-            [[UB_Uncapped: %s\n
-            UB_Initial_fluid: %s\n
-            UB_Initial_amount: %s\n]],
+            [[
+            UB_Uncapped: %s
+            UB_Initial_fluid: %s
+            UB_Initial_amount: %s
+            ]],
             tostring(modData["UB_Uncapped"]),
             tostring(modData["UB_Initial_amount"]),
             tostring(modData["UB_Initial_amount"])
@@ -105,16 +105,19 @@ function UBBarrel:GetBarrelInfo(playerInv)
 
         if modData["modData"] then
             output = output .. string.format(
-            [[Nested modData options
-            UB_Uncapped: %s\n
-            UB_Initial_fluid: %s\n
-            UB_Initial_amount: %s\n]],
+            [[
+            Nested modData options
+            UB_Uncapped: %s
+            UB_Initial_fluid: %s
+            UB_Initial_amount: %s
+            ]],
             tostring(modData["modData"]["UB_Uncapped"]),
             tostring(modData["modData"]["UB_Initial_amount"]),
             tostring(modData["modData"]["UB_Initial_amount"])
             )
         end
     end
+    return output
 end
 
 function UBBarrel:CanTransferFluid(fluidContainers, transferToContainers)
@@ -134,7 +137,7 @@ function UBBarrel:CanTransferFluid(fluidContainers, transferToContainers)
 end
 
 function UBBarrel:ContainsFluid(fluid)
-    return self:hasFluidContainer() and self.fluidContainer:contains(fluid)
+    return self.fluidContainer~=nil and self.fluidContainer:contains(fluid)
 end
 
 function UBBarrel:hasFluidContainer()
@@ -143,15 +146,19 @@ function UBBarrel:hasFluidContainer()
 end
 
 function UBBarrel:getAmount()
-    if self.fluidContainer ~= nil then self.fluidContainer:getAmount() else return nil end  
+    if self.fluidContainer~=nil then return self.fluidContainer:getAmount() else return 0 end  
 end
 
 function UBBarrel:getCapacity()
-    return self.fluidContainer:getCapacity()
+    if self.fluidContainer~=nil then return self.fluidContainer:getCapacity() else return 0 end
 end
 
 function UBBarrel:getPrimaryFluid()
-    if self:getAmount() > 0 then return self.fluidContainer:getPrimaryFluid() else return nil end
+    if self.fluidContainer~=nil and self:getAmount() > 0 then 
+        return self.fluidContainer:getPrimaryFluid() 
+    else 
+        return nil 
+    end
 end
 
 function UBBarrel:GetTranslatedFluidNameOrEmpty()
@@ -167,7 +174,7 @@ end
 function UBBarrel:GetWeight()
     local weight = 0
 
-    if self:hasFluidContainer() then
+    if self.fluidContainer~=nil then
         weight = weight + self:getAmount()
     end
     if instanceof(self.isoObject, "Moveable") then
@@ -246,6 +253,21 @@ function UBBarrel.validate(object)
     end
 end
 
+-- ScriptManager.instance.FindItem(customItem) <---
+-- 	
+--  local scriptItem = ScriptManager.instance:getItem(seedName)
+--  option.iconTexture = getTexture("media/textures/Item_" .. scriptItem:getIcon())
+--  local icon = item.item:getIcon()
+--  if item.item:getIconsForTexture() and not item.item:getIconsForTexture():isEmpty() then
+--      icon = item.item:getIconsForTexture():get(0)
+--  end
+--  if icon then
+--      local texture = tryGetTexture("Item_" .. icon)
+--      if texture then
+--          self:drawTextureScaledAspect2(texture, self.columns[2].size + iconX, y + (self.itemheight - iconSize) / 2, iconSize, iconSize,  1, 1, 1, 1);
+--      end
+--  end
+
 function UBBarrel:new(isoObject)
     local o = {};
     setmetatable(o, self)
@@ -254,20 +276,25 @@ function UBBarrel:new(isoObject)
     if not isoObject then return nil end
     if not UBBarrel.validate(isoObject) then return nil end
 
+    
+
     -- Moveable is subclass of InventoryItem
     if instanceof(isoObject, "Moveable") then
+        local scriptItem = getScriptManager():FindItem(isoObject:getName())
+
         o.isoObject = isoObject
         o.fluidContainer = isoObject:getComponent(ComponentType.FluidContainer)
         o.square = nil
         o.objectName = nil
         o.objectLabel = nil
-        return o 
+        return o
     end
     -- IsoObject is base class for any world object
     if instanceof(isoObject, "IsoObject") then 
         local props = isoObject:getSprite():getProperties()
         if props and not props:Val("CustomItem") then return end
 
+        local scriptItem = getScriptManager():FindItem(props:Val("CustomItem"))
         -- CustomItem is Moveable item
 
         o.isoObject = isoObject
@@ -275,7 +302,8 @@ function UBBarrel:new(isoObject)
         o.square = isoObject:getSquare()
         o.objectName = props:Val("CustomName")
         o.objectLabel = UBBarrel.GetMoveableDisplayName(isoObject)
-        return o 
-
+        return o
     end
 end
+
+return UBBarrel
