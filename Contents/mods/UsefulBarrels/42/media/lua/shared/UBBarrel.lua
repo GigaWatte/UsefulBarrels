@@ -27,23 +27,52 @@ end
 function UBBarrel:OnPickup()
     self.fluidContainer:setInputLocked(true)
     self.fluidContainer:setCanPlayerEmpty(false)
+
+    if instanceof(self.isoObject, "IsoThumpable") then
+        if self:GetModData("UB_MaxHealth") then
+            self:SetModData("UB_MaxHealth", self.isoObject:getMaxHealth())
+        end
+        if self:GetModData("UB_Health") then
+            self:SetModData("UB_Health", self.isoObject:getHealth())
+        end
+    end
 end
 
 function UBBarrel:OnPlace()
     self.fluidContainer:setInputLocked(false)
     self.fluidContainer:setCanPlayerEmpty(true)
     if instanceof(self.isoObject, "IsoThumpable") then
-        --TODO restore it from modData
+        self.isoObject:setThumpDmg(2) --zeds needed to hurt obj
 
-        --obj:setMaxHealth(self:getObjectHealth());
-        --obj:setHealth(obj:getMaxHealth());
-        self.isoObject:setThumpDmg(8); --zeds needed to hurt obj
-        --obj:setIsThumpable(true);
-        --obj:setBlockAllTheSquare(true);
-        --obj:setCanPassThrough(false);
-        --obj:setHoppable(false);
-        --obj:setBreakSound(IsoThumpable.GetBreakFurnitureSound(itemSprite));
+        if self:GetModData("UB_MaxHealth") then
+            self.isoObject:setMaxHealth(tonumber(self:GetModData("UB_MaxHealth")))
+        else
+            self.isoObject:setMaxHealth(50)
+            self:SetModData("UB_MaxHealth", 50)
+        end
+
+        if self:GetModData("UB_Health") then
+            self.isoObject:setHealth(tonumber(self:GetModData("UB_Health")))
+        else
+            self.isoObject:setHealth(50)
+            self:SetModData("UB_Health", 50)
+        end
     end
+end
+
+function UBBarrel:GetModData(key)
+    local modData = self.isoObject:getModData()
+
+    if modData[key] then
+        return modData[key]
+    end
+    return nil
+end
+
+function UBBarrel:SetModData(key, value)
+    local modData = self.isoObject:getModData()
+    modData[key] = value
+    self.isoObject:setModData(modData)
 end
 
 function UBBarrel:GetTooltipText(font_size)
@@ -93,27 +122,34 @@ function UBBarrel:GetBarrelInfo()
 
         output = output .. string.format(
             [[
-            UB_Uncapped: %s
-            UB_Initial_fluid: %s
+            UB_Uncapped:       %s
+            UB_Initial_fluid:  %s
             UB_Initial_amount: %s
+            UB_Health:         %s
+            UB_MaxHealth:      %s
             ]],
             tostring(modData["UB_Uncapped"]),
             tostring(modData["UB_Initial_amount"]),
-            tostring(modData["UB_Initial_amount"])
-
+            tostring(modData["UB_Initial_amount"]),
+            tostring(modData["UB_Health"]),
+            tostring(modData["UB_MaxHealth"])
         )
 
         if modData["modData"] then
             output = output .. string.format(
             [[
             Nested modData options
-            UB_Uncapped: %s
-            UB_Initial_fluid: %s
+            UB_Uncapped:       %s
+            UB_Initial_fluid:  %s
             UB_Initial_amount: %s
+            UB_Health:         %s
+            UB_MaxHealth:      %s
             ]],
             tostring(modData["modData"]["UB_Uncapped"]),
             tostring(modData["modData"]["UB_Initial_amount"]),
-            tostring(modData["modData"]["UB_Initial_amount"])
+            tostring(modData["modData"]["UB_Initial_amount"]),
+            tostring(modData["modData"]["UB_Health"]),
+            tostring(modData["modData"]["UB_MaxHealth"])
             )
         end
     end
@@ -241,8 +277,9 @@ function UBBarrel.validate(object)
         }
         if not object:getSquare() then return end
         if not object:getSprite() then return end
+        if not object:getSprite():getProperties() then return end
         local props = object:getSprite():getProperties()
-        if props and not props:Val("CustomItem") then return end
+        if not props:Val("CustomItem") then return end
 
         for i = 1, #valid_barrel_moveable_names do
             -- CustomItem is Moveable item
@@ -253,21 +290,6 @@ function UBBarrel.validate(object)
     end
 end
 
--- ScriptManager.instance.FindItem(customItem) <---
--- 	
---  local scriptItem = ScriptManager.instance:getItem(seedName)
---  option.iconTexture = getTexture("media/textures/Item_" .. scriptItem:getIcon())
---  local icon = item.item:getIcon()
---  if item.item:getIconsForTexture() and not item.item:getIconsForTexture():isEmpty() then
---      icon = item.item:getIconsForTexture():get(0)
---  end
---  if icon then
---      local texture = tryGetTexture("Item_" .. icon)
---      if texture then
---          self:drawTextureScaledAspect2(texture, self.columns[2].size + iconX, y + (self.itemheight - iconSize) / 2, iconSize, iconSize,  1, 1, 1, 1);
---      end
---  end
-
 function UBBarrel:new(isoObject)
     local o = {};
     setmetatable(o, self)
@@ -275,33 +297,43 @@ function UBBarrel:new(isoObject)
 
     if not isoObject then return nil end
     if not UBBarrel.validate(isoObject) then return nil end
-
-    
+    if not isoObject:hasComponent(ComponentType.FluidContainer) then return nil end
 
     -- Moveable is subclass of InventoryItem
     if instanceof(isoObject, "Moveable") then
-        local scriptItem = getScriptManager():FindItem(isoObject:getName())
+        --local scriptItem = getScriptManager():FindItem(isoObject.customItem)
 
+        --object:getDisplayName()
         o.isoObject = isoObject
         o.fluidContainer = isoObject:getComponent(ComponentType.FluidContainer)
         o.square = nil
-        o.objectName = nil
-        o.objectLabel = nil
+        o.objectLabel = isoObject:getName()
+        o.icon = isoObject:getIcon()
         return o
     end
     -- IsoObject is base class for any world object
     if instanceof(isoObject, "IsoObject") then 
         local props = isoObject:getSprite():getProperties()
-        if props and not props:Val("CustomItem") then return end
-
         local scriptItem = getScriptManager():FindItem(props:Val("CustomItem"))
-        -- CustomItem is Moveable item
+        -- CustomItem is fullname Moveable item
 
         o.isoObject = isoObject
         o.fluidContainer = isoObject:getComponent(ComponentType.FluidContainer)
         o.square = isoObject:getSquare()
-        o.objectName = props:Val("CustomName")
-        o.objectLabel = UBBarrel.GetMoveableDisplayName(isoObject)
+        --o.objectLabel = Translator.getMoveableDisplayName(props:Is("CustomName"))
+        o.objectLabel = scriptItem:getDisplayName()
+        
+        local icon = scriptItem:getIcon()
+        if scriptItem:getIconsForTexture() and not scriptItem:getIconsForTexture():isEmpty() then
+            icon = scriptItem:getIconsForTexture():get(0)
+        end
+        if icon then
+            local texture = tryGetTexture("Item_" .. icon)
+            if texture then
+                o.icon = texture
+            end
+        end
+
         return o
     end
 end

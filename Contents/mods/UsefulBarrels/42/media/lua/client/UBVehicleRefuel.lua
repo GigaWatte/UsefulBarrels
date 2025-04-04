@@ -26,7 +26,7 @@ function ISVehicleMenu.FillPartMenu(playerIndex, context, slice, vehicle)
 	if vehicle:isEngineStarted() then return end
     --local typeToItem = VehicleUtils.getItems(playerIndex)
 	local part = vehicle:getPartById("GasTank")
-	local barrels = UBUtils.GetBarrelsNearbyVehicle(vehicle, 3)
+	local barrels = UBUtils.GetBarrelsNearbyVehicle(vehicle, 4)
 
 	if not barrels then return end
 
@@ -39,13 +39,13 @@ function ISVehicleMenu.FillPartMenu(playerIndex, context, slice, vehicle)
 				if SandboxVars.UsefulBarrels.CarRefuelRequiresHose and not hasHoseNearby then 
 					slice:addSlice(
 						getText("Tooltip_UB_HoseMissing", getItemName("Base.RubberHose")), 
-						getTexture("media/textures/Item_Drum_Orange.png"), 
+						barrel.icon, 
 						nil, nil
 					)
 				elseif (SandboxVars.UsefulBarrels.CarRefuelRequiresHose and hasHoseNearby) or (not SandboxVars.UsefulBarrels.CarRefuelRequiresHose) then
 					slice:addSlice(
 						getText("ContextMenu_UB_RefuelFromBarrel"), 
-						getTexture("media/textures/Item_Drum_Orange.png"), 
+						barrel.icon, 
 						onPumpFromBarrel, playerObj, part, barrel
 					)
 				end
@@ -55,6 +55,9 @@ function ISVehicleMenu.FillPartMenu(playerIndex, context, slice, vehicle)
 					playerObj, 
 					onPumpFromBarrel, part, barrel
 				)
+				if option and barrel.icon then
+					option.iconTexture = barrel.icon
+				end
 				if SandboxVars.UsefulBarrels.CarRefuelRequiresHose and not hasHoseNearby then 
 					UBUtils.DisableOptionAddTooltip(option, getText("Tooltip_UB_HoseMissing", getItemName("Base.RubberHose"))) 
 				end

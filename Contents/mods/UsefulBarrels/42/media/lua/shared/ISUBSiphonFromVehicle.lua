@@ -7,7 +7,7 @@ function ISUBSiphonFromVehicle:isValid()
 end
 
 function ISUBSiphonFromVehicle:waitToStart()
-	self.character:faceThisObject(self.vehicle)
+	self.character:faceThisObject(self.barrel.isoObject)
 	return self.character:shouldBeTurning()
 end
 
@@ -96,8 +96,9 @@ function ISUBSiphonFromVehicle:new(character, part, barrel)
 	o.vehicle = part:getVehicle()
 	o.part = part
 	o.fuelFluidContainer = barrel.fluidContainer
-	o.stopOnWalk = false
-	o.stopOnRun = false
+	o.barrel = barrel
+	--o.stopOnWalk = false
+	--o.stopOnRun = false
 	o.maxTime = o:getDuration()
 	return o
 end

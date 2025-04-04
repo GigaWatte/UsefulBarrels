@@ -95,8 +95,8 @@ function ISUBRefuelFromBarrel:new(character, part, barrel)
 	o.vehicle = part:getVehicle()
 	o.part = part
 	o.fuelFluidContainer = barrel.fluidContainer
-	o.stopOnWalk = false
-	o.stopOnRun = false
+	--o.stopOnWalk = false
+	--o.stopOnRun = false
 	o.maxTime = o:getDuration()
 	return o
 end

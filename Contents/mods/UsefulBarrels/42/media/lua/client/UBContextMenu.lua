@@ -1,6 +1,7 @@
 
 local UBUtils = require "UBUtils"
 local UBConst = require "UBConst"
+local UBBarrel = require "UBBarrel"
 local UBContextMenu = {}
 
 function UBContextMenu.OnTransferFluid(playerObj, barrelSquare, fluidContainer, fluidContainerItems, addToBarrel)
@@ -37,7 +38,7 @@ function UBContextMenu.OnTransferFluid(playerObj, barrelSquare, fluidContainer, 
 
         if addToBarrel ~= nil and addToBarrel == true then
             local worldObjects = UBUtils.GetWorldItemsNearby(barrelSquare, UBConst.TOOL_SCAN_DISTANCE)
-            local hasFunnelNearby = UBUtils.hasItemNearbyOrInInv(worldObjects, self.playerInv, "Base.Funnel")
+            local hasFunnelNearby = UBUtils.hasItemNearbyOrInInv(worldObjects, playerInv, "Base.Funnel")
             local speedModifierApply = SandboxVars.UsefulBarrels.FunnelSpeedUpFillModifier > 0 and hasFunnelNearby
             ISTimedActionQueue.add(ISUBTransferFluid:new(playerObj, item:getFluidContainer(), fluidContainer, barrelSquare, item, speedModifierApply))
         else
@@ -69,7 +70,16 @@ function UBContextMenu.OnTransferFluid(playerObj, barrelSquare, fluidContainer, 
 end
 
 function UBContextMenu.OnVehicleTransferFluid(playerObj, part, barrel)
-    ISTimedActionQueue.add(ISUBSiphonFromVehicle:new(playerObj, part, barrel))
+    if playerObj:getVehicle() then
+		ISVehicleMenu.onExit(playerObj)
+	end
+	if barrel then
+		local action = ISPathFindAction:pathToVehicleArea(playerObj, part:getVehicle(), part:getArea())
+		action:setOnFail(ISVehiclePartMenu.onPumpGasolinePathFail, playerObj)
+		ISTimedActionQueue.add(action)
+		
+        ISTimedActionQueue.add(ISUBSiphonFromVehicle:new(playerObj, part, barrel))
+	end
 end
 
 function UBContextMenu.CanCreateFluidMenu(playerObj, barrelSquare)
@@ -174,7 +184,9 @@ function UBContextMenu:DoSiphonFromVehicleMenu(context, hasHoseNearby)
     if not SandboxVars.UsefulBarrels.EnableFillBarrelFromVehicles then return end
 
     local vehicles = UBUtils.GetVehiclesNeaby(self.barrel.square, UBConst.VEHICLE_SCAN_DISTANCE)
+
     if not vehicles then return end
+    if not (#vehicles > 0) then return end
 
     local vehicleOption = context:addOption(getText("ContextMenu_RefuelFromVehicle"))
 
@@ -185,7 +197,7 @@ function UBContextMenu:DoSiphonFromVehicleMenu(context, hasHoseNearby)
     local vehicleMenu = ISContextMenu:getNew(context)
     context:addSubMenu(vehicleOption, vehicleMenu)
     for _,vehicle in ipairs(vehicles) do
-        --string.find(vehicle:getScriptName(), "Trailer") ~= nil
+        --string.find(vehicle:getScriptName(), "Trailer") ~= nild
         for i=1,vehicle:getPartCount() do
             local part = vehicle:getPartByIndex(i-1)
             local partCategory = part:getCategory()
@@ -203,12 +215,12 @@ function UBContextMenu:DoSiphonFromVehicleMenu(context, hasHoseNearby)
 
 end
 
-function UBContextMenu:DoBarrelUncap()
-    if luautils.walkAdj(self.playerObj, self.barrel.square, true) then
+function UBContextMenu:DoBarrelUncap(plain_barrel_label)
+    if luautils.walkAdj(self.playerObj, self.plainBarrel:getSquare(), true) then
         if SandboxVars.UsefulBarrels.RequirePipeWrench and self.isValidWrench then
             ISTimedActionQueue.add(ISEquipWeaponAction:new(self.playerObj, self.wrench, 25, true))
         end
-        ISTimedActionQueue.add(ISUBDoBarrelUncap:new(self.playerObj, self.barrel.isoObject, self.wrench, self.barrel.objectLabel))
+        ISTimedActionQueue.add(ISUBDoBarrelUncap:new(self.playerObj, self.plainBarrel, self.wrench, plain_barrel_label))
     end
 end
 
@@ -297,18 +309,41 @@ function UBContextMenu:DoDebugOption(context)
 end
 
 function UBContextMenu:MainMenu(player, context, worldobjects, test)
-    if not self.barrel:hasFluidContainer() then
-        local openBarrelOption = context:addOptionOnTop(getText("ContextMenu_UB_UncapBarrel", self.barrel.objectLabel), self, UBContextMenu.DoBarrelUncap);
+    if not self.plainBarrel:hasComponent(ComponentType.FluidContainer) then
+        local props = self.plainBarrel:getSprite():getProperties()
+        local name
+
+        if props:Is("CustomName") then
+            name = props:Val("CustomName")
+            if props:Is("GroupName") then
+                name = props:Val("GroupName") .. " " .. name
+            end
+        end
+
+        local plain_barrel_label = Translator.getMoveableDisplayName(name)
+        local openBarrelOption = context:addOptionOnTop(
+            getText("ContextMenu_UB_UncapBarrel", plain_barrel_label), 
+            self,
+            UBContextMenu.DoBarrelUncap,
+            plain_barrel_label
+        )
         if not self.isValidWrench and SandboxVars.UsefulBarrels.RequirePipeWrench then
             UBUtils.DisableOptionAddTooltip(openBarrelOption, getText("Tooltip_UB_WrenchMissing", getItemName("Base.PipeWrench")))
         end
+        return
     end
+
+    self.barrel = UBBarrel:new(self.plainBarrel)
+
+    if not self.barrel then return end
+
+    self.barrelFluid = self.barrel:getPrimaryFluid()
 
     if self.barrel:hasFluidContainer() then
         -- get vanilla FluidContainer object option
         local barrelOption = context:getOptionFromName(self.barrel.objectLabel)
-        if not barrelOption then
-            barrelOption = context:getOptionFromName(self.barrel.objectName)
+        if barrelOption and self.barrel.icon then
+            barrelOption.iconTexture = self.barrel.icon
         end
 
         if barrelOption then
@@ -338,11 +373,10 @@ function UBContextMenu:new(player, context, worldobjects, test)
     local o = self
     self.playerObj = getSpecificPlayer(player)
     self.playerInv = self.playerObj:getInventory()
-    self.barrel = UBUtils.GetUBBarrel(worldobjects)
+    self.plainBarrel = UBUtils.GetValidBarrel(worldobjects)
     
-    if not self.barrel then return end
+    if not self.plainBarrel then return end
 
-    self.barrelFluid = self.barrel:getPrimaryFluid()
     self.wrench = UBUtils.playerGetItem(o.playerInv, "PipeWrench")
     self.isValidWrench = self.wrench ~= nil and UBUtils.predicateNotBroken(o.wrench)
 

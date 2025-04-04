@@ -52,10 +52,10 @@ function UBUtils.getPlayerFluidContainersWithFluid(playerInv, fluid)
     )
 end
 
-function UBUtils.GetUBBarrel(worldObjects)
+function UBUtils.GetValidBarrel(worldObjects)
     for i,isoObject in ipairs(worldObjects) do
-		local obj = UBBarrel:new(isoObject)
-        if obj then return obj end
+        --print(isoObject)
+        if UBBarrel.validate(isoObject) then return isoObject end
     end
 end
 
@@ -218,7 +218,8 @@ function UBUtils.GetBarrelsNearby(square, distance, fluid)
     for _,curr in ipairs(squares) do
         local squareObjects = curr:getObjects()
         local sqTable = UBUtils.ConvertToTable(squareObjects)
-        local barrel = UBUtils.GetUBBarrel(sqTable)
+        local plainBarrel = UBUtils.GetValidBarrel(sqTable)
+        local barrel = UBBarrel:new(plainBarrel)
         if barrel and barrel:hasFluidContainer() then
             if fluid and barrel:ContainsFluid(fluid) then
                 table.insert(barrels, barrel)
