@@ -1,68 +1,66 @@
 version=1
 id=3436537035
 title=[B42] Useful Barrels
-description=[h2] Barrels can actually be more than just a sprite! [/h2]
-description=[b]B42 only![/b]
-description=[h3] Features [/h3]
-description=[list]
-description=    [*]Use your Pipe Wrench to open the lid of the barrel
-description=    [*]Store any fluid inside
-description=    [*]The amount of liquid inside the barrel affects the encumbrance
-description=    [*]Rubber Hose to take Gas from barrel
-description=    [*]Funnel for pouring Gas into the barrel
-description=    [*]Funnel may speedup pouring action
-description=    [*]Refueling generator from the Barrel
-description=    [*]Randomized initial fluid and amount
-description=    [*]Sandbox vars to control mod behaviour as you want
-description=    [*]Barrel can be plumbed when placed under Rain Collector Barrel/Crate. Unplanned feature but let it be :D
-description=    [*]Chuckleberry Finn's Mod Update and Alert System integration for ingame ChangeLog
-description=[/list]
-description=
-description=[h3] Notes [/h3]
-description=[list]
-description=    [*]Uses new FluidContainer system of B42
-description=    [*]Is safe to add in existing saves as well as removing, FuidContainer will remain.
-description=    [*]Barrels are very fragile! Walkers will break it pretty quickly.
-description=    [*]Please! Any full 800L barrels in your characters pocket or car trunk is your responsibility, there is no proper way to haul them. For now at least.
-description=[/list]
-description=
-description=[h3] WIP [/h3]
-description=[list]
-description=    [*]Be able to add fluids from items laying on floor
-description=    [*]Vehicle refuel
-description=    [*]Transfer fluid from vehicle trailers
-description=    [*]More translations
-description=[/list]
-description=
-description=[h3] Future plans [/h3]
-description=[list]
-description=[*]Add sprite and craftrecipe for rain collector.
-description=[*]Add posibility to move barrel with fluid.
-description=[/list]
-description=
-description=[h3]Mods compatibility[/h3]
-description=In general, all other mods that in any way modify vanilla context options for FluidContainers can replace UB context options and after that it leads to unpredictable behaviour.
-description=For example: [url=https://steamcommunity.com/sharedfiles/filedetails/?id=3406674803]Plumbing Expanded[/url].
-description=If you have any issues with barrels and have similar mod then try to change mod load order and move Useful Barrels mod at the bottom as much as you can. It should remain other mods functional as well as UB works as intended.
-description=
-description=[h3] Known bugs [/h3]
-description=[list]
-description=    [*]Barrel is not persisting the Gas if placed in locations located far away from vanilla (x:20000+) but I can not reproduce this issue, needs more information.
-description=    [*]Infinite Gas when pumped out all Gas. Still cant reproduce it, needs more info as well.
-description=    [*]If you used mod before B42.4 there can be an error while calling context menu on the barrel. PickUp action then Place may resolve it.Or repalce the barrel with entire new one you dont used before. (It looks like internal Java code error but I am not sure)
-description=[/list]
-description=
-description=[h3] Credits [/h3]
-description=Thanks to [url=https://steamcommunity.com/profiles/76561198022328017]????2346134[/url] for CN translation.
-description=Thanks to [url=https://steamcommunity.com/id/NopOYes]NopOYes[/url] for PTBR translation.
-description=Thanks to [url=https://steamcommunity.com/id/mainfish]MainFish[/url] for RU translation.
-description=Thanks to [url=https://steamcommunity.com/profiles/76561198062695591]Hx[/url] for KO translation.
-description=Thanks to [url=https://steamcommunity.com/profiles/76561198355106439]RedSystem[/url] for TR translation.
-description=Thanks to [url=https://steamcommunity.com/profiles/76561199781026961]Dust Runner[/url] for ES translation.
-description=Thanks to [url=https://steamcommunity.com/profiles/76561198027815009]Bobitec[/url] for FR translation.
-description=Thanks to [url=https://steamcommunity.com/id/Chuckleberry_Finn]Chuckleberry Finn[/url] for [url=https://steamcommunity.com/sharedfiles/filedetails/?id=3077900375]Mod Update and Alert System[/url].
-description=
-description=This is my first experience making a mod, so it may not be perfect.
+description=[h2] Barrels can actually be more than just a sprite! [/h2]
+description=[b]B42 only![/b]
+description=[h3] Features [/h3]
+description=[list]
+description=    [*]Use your Pipe Wrench to open the lid of the barrel
+description=    [*]Store any fluid inside
+description=    [*]The amount of liquid inside the barrel affects the encumbrance
+description=    [*]Rubber Hose to take Gas from barrel
+description=    [*]Funnel for pouring Gas into the barrel
+description=    [*]Funnel may speedup pouring action
+description=    [*]Refueling generator from the Barrel
+description=	[*]Refueling vehicle is also possible. also from mod's vehicles and trailers
+description=    [*]Randomized initial fluid and amount
+description=    [*]Sandbox vars to control mod behaviour as you want
+description=    [*]Chuckleberry Finn's Mod Update and Alert System integration for ingame ChangeLog
+description=[/list]
+description=
+description=[h3] Notes [/h3]
+description=[list]
+description=    [*]Uses new FluidContainer system of B42
+description=    [*]Is safe to add in existing saves as well as removing, FuidContainer will remain.
+description=    [*]Barrels are now less fragile! But anyway Walkers will break it pretty quickly.
+description=    [*]Please! Any full 800L barrels in your characters pocket or car trunk is your responsibility, there is no proper way to haul them. For now at least.
+description=[/list]
+description=
+description=[h3] WIP [/h3]
+description=[list]
+description=	[*]Rework plumbing to make it work again properly
+description=    [*]Be able to add fluids from items laying on floor
+description=	[*]Add sprite and craftrecipe for rain collector
+description=[/list]
+description=
+description=[h3] Future plans [/h3]
+description=[list]
+description=	[*]Add posibility to move barrel with fluid
+description=[/list]
+description=
+description=[h3]Mods compatibility[/h3]
+description=[list]
+description=	[*] Modded vehicles (and fluid trailers) should be compatible if: vehicle has part and part category contains "gastank", part contentType contains word "Gasoline".
+description=	[*] Mods that adds context options for FuidContainer may interfere UB. In that case try to re-order mods in Mod load order and move UB to bottom as possible.
+description=[/list]
+description=
+description=[h3] Known bugs [/h3]
+description=[list]
+description=    [*]In case of game crash FuidContainer may not save it's contents.
+description=[/list]
+description=
+description=[h3] Credits [/h3]
+description=Thanks to [url=https://steamcommunity.com/profiles/76561198022328017]????2346134[/url] for CN translation.
+description=Thanks to [url=https://steamcommunity.com/id/NopOYes]NopOYes[/url] for PTBR translation.
+description=Thanks to [url=https://steamcommunity.com/id/mainfish]MainFish[/url] for RU translation.
+description=Thanks to [url=https://steamcommunity.com/profiles/76561198062695591]Hx[/url] for KO translation.
+description=Thanks to [url=https://steamcommunity.com/profiles/76561198355106439]RedSystem[/url] for TR translation.
+description=Thanks to [url=https://steamcommunity.com/profiles/76561199781026961]Dust Runner[/url] for ES translation.
+description=Thanks to [url=https://steamcommunity.com/profiles/76561198027815009]Bobitec[/url] for FR translation.
+description=Thanks to [url=https://steamcommunity.com/id/Chuckleberry_Finn]Chuckleberry Finn[/url] for [url=https://steamcommunity.com/sharedfiles/filedetails/?id=3077900375]Mod Update and Alert System[/url].
+description=Thanks to [url=https://steamcommunity.com/id/Chuckleberry_Finn]Chuckleberry Finn[/url] for pz-translator tool.
+description=
+description=This is my first experience making a mod, so it may not be perfect.
 description=Feel free to report bugs and suggestions for improvement!
 tags=Build 42;Misc;Realistic;QoL;WIP
 visibility=public
