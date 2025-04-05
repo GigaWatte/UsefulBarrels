@@ -93,15 +93,25 @@ end
 function UBRefuel:DoDebugOption(player, context, worldobjects, test)
     local debugOption = context:addOptionOnTop(getText("ContextMenu_UB_DebugOption"))
     local tooltip = ISWorldObjectContextMenu.addToolTip()
-    tooltip.description = tooltip.description .. string.format("SVGeneratorRequireHose: %s", tostring(SandboxVars.UsefulBarrels.GeneratorRefuelRequiresHose)) .. "\n"
-    tooltip.description = tooltip.description .. string.format("Gen isActivated: %s", tostring(self.generator:isActivated())) .. "\n"
-    tooltip.description = tooltip.description .. string.format("Gen fuel >= 100: %s", tostring(self.generator:getFuel() >= 100)) .. "\n"
-    tooltip.description = tooltip.description .. string.format("Barrels available: %s", tostring(#self.barrels)) .. "\n"
-    tooltip.description = tooltip.description .. string.format("Can create menu: %s", tostring(UBRefuel.CanCreateRefuelMenu(self.generator:getSquare(), self.playerObj))) .. "\n"
+    debugOption.toolTip = tooltip
+    local generator = ISWorldObjectContextMenu.fetchVars.generator
+    tooltip.description = tooltip.description .. string.format("Generator: %s", tostring(generator ~= nil)) .. "\n"
+    local playerObj = getSpecificPlayer(player)
+    tooltip.description = tooltip.description .. string.format("Player vehicle: %s", tostring(playerObj:getVehicle() ~= nil)) .. "\n"
+    local playerInv = playerObj:getInventory()
 
-    for _,barrel in ipairs(self.barrels) do
+    if not generator then return end
+
+    local barrels = UBUtils.GetBarrelsNearby(generator:getSquare(), BARREL_SCAN_DISTANCE, Fluid.Petrol)
+    tooltip.description = tooltip.description .. string.format("SVGeneratorRequireHose: %s", tostring(SandboxVars.UsefulBarrels.GeneratorRefuelRequiresHose)) .. "\n"
+    tooltip.description = tooltip.description .. string.format("Gen isActivated: %s", tostring(generator:isActivated())) .. "\n"
+    tooltip.description = tooltip.description .. string.format("Gen fuel >= 100: %s", tostring(generator:getFuel() >= 100)) .. "\n"
+    tooltip.description = tooltip.description .. string.format("Barrels available: %s", tostring(#barrels)) .. "\n"
+    tooltip.description = tooltip.description .. string.format("Can create menu: %s", tostring(UBRefuel.CanCreateRefuelMenu(generator:getSquare(), playerObj))) .. "\n"
+
+    for _,barrel in ipairs(barrels) do
         local worldObjects = UBUtils.GetWorldItemsNearby(barrel:getSquare(), TOOL_SCAN_DISTANCE)
-        local hasHoseNearby = UBUtils.TableContainsItem(worldObjects, "Base.RubberHose") or UBUtils.playerHasItem(self.playerInv, "RubberHose")
+        local hasHoseNearby = UBUtils.TableContainsItem(worldObjects, "Base.RubberHose") or UBUtils.playerHasItem(playerInv, "RubberHose")
         tooltip.description = tooltip.description .. string.format("Barrel object: %s", tostring(barrel)) .. "\n"
         tooltip.description = tooltip.description .. string.format("hasHoseNearby: %s", tostring(hasHoseNearby)) .. "\n"
 
@@ -120,7 +130,6 @@ function UBRefuel:DoDebugOption(player, context, worldobjects, test)
         tooltip.description = tooltip.description .. string.format("isInputLocked: %s", tostring(barrelFluidContainer:isInputLocked())) .. "\n"
         tooltip.description = tooltip.description .. string.format("canPlayerEmpty: %s", tostring(barrelFluidContainer:canPlayerEmpty())) .. "\n"
     end
-    debugOption.toolTip = tooltip
 end
 
 function UBRefuel:new(player, context, worldobjects, test)
@@ -129,14 +138,14 @@ function UBRefuel:new(player, context, worldobjects, test)
     o.playerInv = o.playerObj:getInventory()
     o.generator = ISWorldObjectContextMenu.fetchVars.generator
 
+    if SandboxVars.UsefulBarrels.DebugMode then
+        self:DoDebugOption(player, context, worldobjects, test)
+    end
+
     if not o.generator or o.playerObj:getVehicle() then return end
     if o.generator:isActivated() or o.generator:getFuel() >= 100 then return end
 
     o.barrels = UBUtils.GetBarrelsNearby(o.generator:getSquare(), BARREL_SCAN_DISTANCE, Fluid.Petrol)
-
-    if SandboxVars.UsefulBarrels.DebugMode then
-        self:DoDebugOption(player, context, worldobjects, test)
-    end
 
     if #o.barrels == 0 then return end
     if not UBRefuel.CanCreateRefuelMenu(o.generator:getSquare(), o.playerObj) then return end

@@ -70,4 +70,8 @@
 - Fixed: barrel is now more durable. required ~5 hits to destroy
 - Translations: added many missing translations. thanks to Chuckleberry Finn for pz-translator
 [ ------ ]
+[ 06/04/2025 ]
+2.1.6:
+- Improved: generator debug option now shows without conditions
+[ ------ ]
 
