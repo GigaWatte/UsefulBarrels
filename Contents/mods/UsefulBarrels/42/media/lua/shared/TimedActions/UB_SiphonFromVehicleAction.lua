@@ -1,17 +1,17 @@
 require "TimedActions/ISBaseTimedAction"
 
-ISUBRefuelFromBarrel = ISBaseTimedAction:derive("ISUBRefuelFromBarrel")
+UB_SiphonFromVehicleAction = ISBaseTimedAction:derive("UB_SiphonFromVehicleAction")
 
-function ISUBRefuelFromBarrel:isValid()
+function UB_SiphonFromVehicleAction:isValid()
 	return self.vehicle:isInArea(self.part:getArea(), self.character)
 end
 
-function ISUBRefuelFromBarrel:waitToStart()
-	self.character:faceThisObject(self.vehicle)
+function UB_SiphonFromVehicleAction:waitToStart()
+	self.character:faceThisObject(self.barrel.isoObject)
 	return self.character:shouldBeTurning()
 end
 
-function ISUBRefuelFromBarrel:update()
+function UB_SiphonFromVehicleAction:update()
 	local litres = self.tankStart + (self.tankTarget - self.tankStart) * self:getJobDelta()
 	litres = math.floor(litres)
 	if litres ~= self.amountSent then
@@ -34,7 +34,7 @@ function ISUBRefuelFromBarrel:update()
     self.character:setMetabolicTarget(Metabolics.HeavyDomestic);
 end
 
-function ISUBRefuelFromBarrel:start()
+function UB_SiphonFromVehicleAction:start()
 	self:setActionAnim("fill_container_tap")
 	self:setOverrideHandModels(nil, nil)
 
@@ -43,12 +43,12 @@ function ISUBRefuelFromBarrel:start()
 	self.sound = self.character:playSound("VehicleAddFuelFromGasPump")
 end
 
-function ISUBRefuelFromBarrel:stop()
+function UB_SiphonFromVehicleAction:stop()
 	self.character:stopOrTriggerSound(self.sound)
 	ISBaseTimedAction.stop(self)
 end
 
-function ISUBRefuelFromBarrel:serverStop()
+function UB_SiphonFromVehicleAction:serverStop()
     local barrelLitres = self.barrelStart + (self.barrelTarget - self.barrelStart) * self.netAction:getProgress()
     self.fuelFluidContainer:adjustAmount(math.ceil(barrelLitres));
     local litres = self.tankStart + (self.tankTarget - self.tankStart) * self.netAction:getProgress()
@@ -56,19 +56,20 @@ function ISUBRefuelFromBarrel:serverStop()
     self.vehicle:transmitPartModData(self.part)
 end
 
-function ISUBRefuelFromBarrel:perform()
+function UB_SiphonFromVehicleAction:perform()
 	self.character:stopOrTriggerSound(self.sound)
 	-- needed to remove from queue / start next.
 	ISBaseTimedAction.perform(self)
 end
 
-function ISUBRefuelFromBarrel:complete()
+function UB_SiphonFromVehicleAction:complete()
     if self.vehicle then
         if not self.part then
             print('no such part ',self.part)
             return false
         end
         self.part:setContainerContentAmount(self.tankTarget)
+		self.fuelFluidContainer.setAmount(self.barrelTarget)
         self.vehicle:transmitPartModData(self.part)
     else
         print('no such vehicle id=', self.vehicle)
@@ -76,25 +77,26 @@ function ISUBRefuelFromBarrel:complete()
 	return true
 end
 
-function ISUBRefuelFromBarrel:getDuration()
+function UB_SiphonFromVehicleAction:getDuration()
     self.tankStart = self.part:getContainerContentAmount()
 	self.barrelStart = self.fuelFluidContainer:getAmount()
 
-	local tankLitresRequired = self.part:getContainerCapacity() - self.tankStart
-	local amountToTransfer = math.min(tankLitresRequired, self.barrelStart)
+	local barrelFreeSpace = self.fuelFluidContainer:getCapacity() - self.barrelStart
+	local amountToTransfer = math.min(self.tankStart, barrelFreeSpace)
 
-	self.tankTarget = self.tankStart + amountToTransfer
-	self.barrelTarget = self.barrelStart - amountToTransfer
-	self.amountSent = self.tankStart
+	self.tankTarget = self.tankStart - amountToTransfer
+	self.barrelTarget = self.barrelStart + amountToTransfer
+	self.amountSent = self.barrelStart
 
 	return amountToTransfer * 50
 end
 
-function ISUBRefuelFromBarrel:new(character, part, barrel)
+function UB_SiphonFromVehicleAction:new(character, part, barrel)
 	local o = ISBaseTimedAction.new(self, character)
 	o.vehicle = part:getVehicle()
 	o.part = part
 	o.fuelFluidContainer = barrel.fluidContainer
+	o.barrel = barrel
 	--o.stopOnWalk = false
 	--o.stopOnRun = false
 	o.maxTime = o:getDuration()

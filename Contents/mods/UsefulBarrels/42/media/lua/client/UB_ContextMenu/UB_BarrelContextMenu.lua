@@ -40,9 +40,9 @@ function UB_BarrelContextMenu.OnTransferFluid(playerObj, barrelSquare, fluidCont
             local worldObjects = UBUtils.GetWorldItemsNearby(barrelSquare, UBConst.TOOL_SCAN_DISTANCE)
             local hasFunnelNearby = UBUtils.hasItemNearbyOrInInv(worldObjects, playerInv, "Base.Funnel")
             local speedModifierApply = SandboxVars.UsefulBarrels.FunnelSpeedUpFillModifier > 0 and hasFunnelNearby
-            ISTimedActionQueue.add(ISUBTransferFluid:new(playerObj, item:getFluidContainer(), fluidContainer, barrelSquare, item, speedModifierApply))
+            ISTimedActionQueue.add(UB_TransferFluidAction:new(playerObj, item:getFluidContainer(), fluidContainer, barrelSquare, item, speedModifierApply))
         else
-            ISTimedActionQueue.add(ISUBTransferFluid:new(playerObj, fluidContainer, item:getFluidContainer(), barrelSquare, item))
+            ISTimedActionQueue.add(UB_TransferFluidAction:new(playerObj, fluidContainer, item:getFluidContainer(), barrelSquare, item))
         end
         -- return item back to container
         if returnToContainer and (returnToContainer ~= playerInv) then
@@ -78,7 +78,7 @@ function UB_BarrelContextMenu.OnVehicleTransferFluid(playerObj, part, barrel)
 		action:setOnFail(ISVehiclePartMenu.onPumpGasolinePathFail, playerObj)
 		ISTimedActionQueue.add(action)
 		
-        ISTimedActionQueue.add(ISUBSiphonFromVehicle:new(playerObj, part, barrel))
+        ISTimedActionQueue.add(UB_SiphonFromVehicleAction:new(playerObj, part, barrel))
 	end
 end
 

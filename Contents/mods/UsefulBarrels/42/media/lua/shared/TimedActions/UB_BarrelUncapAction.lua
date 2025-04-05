@@ -1,16 +1,16 @@
 
 require "TimedActions/ISBaseTimedAction"
 
-ISUBDoBarrelUncap = ISBaseTimedAction:derive("ISUBDoBarrelUncap");
+UB_BarrelUncapAction = ISBaseTimedAction:derive("UB_BarrelUncapAction");
 
-function ISUBDoBarrelUncap:getDuration()
+function UB_BarrelUncapAction:getDuration()
 	if self.character:isTimedActionInstant() then
 		return 1
 	end
 	return 40
 end
 
-function ISUBDoBarrelUncap:new(character, barrelObj, wrench, objectLabel)
+function UB_BarrelUncapAction:new(character, barrelObj, wrench, objectLabel)
 	local o = ISBaseTimedAction.new(self, character)
 	o.character = character;
     o.barrelObj = barrelObj;
@@ -20,7 +20,7 @@ function ISUBDoBarrelUncap:new(character, barrelObj, wrench, objectLabel)
 	return o;
 end
 
-function ISUBDoBarrelUncap:isValid()
+function UB_BarrelUncapAction:isValid()
 	if SandboxVars.UsefulBarrels.RequirePipeWrench then
 		return self.character:isEquipped(self.wrench)
 	else
@@ -28,32 +28,32 @@ function ISUBDoBarrelUncap:isValid()
 	end
 end
 
-function ISUBDoBarrelUncap:update()
+function UB_BarrelUncapAction:update()
 	self.wrench:setJobDelta(self:getJobDelta())
 	self.character:faceThisObject(self.barrelObj)
     self.character:setMetabolicTarget(Metabolics.MediumWork)
 end
 
-function ISUBDoBarrelUncap:start()
+function UB_BarrelUncapAction:start()
 	self.wrench:setJobType(getText("ContextMenu_UB_UncapBarrel", self.objectLabel))
 	self.wrench:setJobDelta(0.0)
 	self.sound = self.character:playSound("RepairWithWrench")
 end
 
-function ISUBDoBarrelUncap:stop()
+function UB_BarrelUncapAction:stop()
 	self.character:stopOrTriggerSound(self.sound)
 	self.wrench:setJobDelta(0.0)
     ISBaseTimedAction.stop(self);
 end
 
-function ISUBDoBarrelUncap:perform()
+function UB_BarrelUncapAction:perform()
 	self.character:stopOrTriggerSound(self.sound)
 	self.wrench:setJobDelta(0.0)
 	-- needed to remove from queue / start next.
 	ISBaseTimedAction.perform(self);
 end
 
-function ISUBDoBarrelUncap:complete()
+function UB_BarrelUncapAction:complete()
 	if self.barrelObj then
 		if not self.barrelObj:hasComponent(ComponentType.FluidContainer) then
 			local component = ComponentType.FluidContainer:CreateComponent()
@@ -91,7 +91,7 @@ function ISUBDoBarrelUncap:complete()
 	return true;
 end
 
-function ISUBDoBarrelUncap:getInitialFluid()
+function UB_BarrelUncapAction:getInitialFluid()
 	local fluidTable = {}
 	local fluids = luautils.split(SandboxVars.UsefulBarrels.InitialFluidPool)
 	for _,fluidStr in ipairs(fluids, " ") do
@@ -104,14 +104,14 @@ function ISUBDoBarrelUncap:getInitialFluid()
 	return fluidTable[index]
 end
 
-function ISUBDoBarrelUncap:getInitialFluidAmount()
+function UB_BarrelUncapAction:getInitialFluidAmount()
 	if SandboxVars.UsefulBarrels.InitialFluidMaxAmount > 0 then
 		return PZMath.clamp(ZombRand(SandboxVars.UsefulBarrels.InitialFluidMaxAmount), 0, SandboxVars.UsefulBarrels.BarrelCapacity)
 	end
 	return 0
 end
 
-function ISUBDoBarrelUncap:shouldSpawn()
+function UB_BarrelUncapAction:shouldSpawn()
 	if SandboxVars.UsefulBarrels.InitialFluidSpawnChance == 100 then return true end
 	if SandboxVars.UsefulBarrels.InitialFluidSpawnChance > 0 then
 		return ZombRand(0,100) <= SandboxVars.UsefulBarrels.InitialFluidSpawnChance

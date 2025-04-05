@@ -7,15 +7,18 @@ local UB_GeneratorContextMenu = {}
 function UB_GeneratorContextMenu.doAddFuelGenerator(worldobjects, generator, barrel, playerObj)
 	if luautils.walkAdj(playerObj, generator:getSquare()) then
         if generator:getFuel() < 100 then
-            ISTimedActionQueue.add(ISUBAddFuelFromBarrel:new(playerObj, generator, barrel));
+            ISTimedActionQueue.add(UB_RefuelGeneratorAction:new(playerObj, generator, barrel));
         end
 	end
 end
 
 function UB_GeneratorContextMenu:CreateBarrelOption(containerMenu, barrel, hasHoseNearby, player)
     local containerOption = containerMenu:addGetUpOption(
-        UBUtils.getMoveableDisplayName(barrel), nil, UB_GeneratorContextMenu.doAddFuelGenerator, self.generator, barrel, self.playerObj
+        barrel.objectLabel, nil, UB_GeneratorContextMenu.doAddFuelGenerator, self.generator, barrel, self.playerObj
     )
+    if containerOption and barrel.icon then
+        containerOption.iconTexture = barrel.icon
+    end
 
     if SandboxVars.UsefulBarrels.GeneratorRefuelRequiresHose and not hasHoseNearby then 
         UBUtils.DisableOptionAddTooltip(containerOption, getText("Tooltip_UB_HoseMissing", getItemName("Base.RubberHose")))
@@ -25,8 +28,8 @@ function UB_GeneratorContextMenu:CreateBarrelOption(containerMenu, barrel, hasHo
     local tooltip = ISToolTip:new()
     tooltip:initialise()
     tooltip.maxLineWidth = 512
-    tooltip.description = self.barrel:GetTooltipText(tooltip.font)
-    tooltip.object = barrel
+    tooltip.description = barrel:GetTooltipText(tooltip.font)
+    tooltip.object = barrel.isoObject
     containerOption.toolTip = tooltip
 end
 
@@ -54,7 +57,7 @@ function UB_GeneratorContextMenu:DoRefuelMenu(player, context)
     context:addSubMenu(fillOption, containerMenu) 
 
     for _,barrel in ipairs(self.barrels) do
-        local worldObjects = UBUtils.GetWorldItemsNearby(barrel:getSquare(), UBConst.TOOL_SCAN_DISTANCE)
+        local worldObjects = UBUtils.GetWorldItemsNearby(barrel.square, UBConst.TOOL_SCAN_DISTANCE)
         local hasHoseNearby = UBUtils.hasItemNearbyOrInInv(worldObjects, self.playerInv, "Base.RubberHose")
         self:CreateBarrelOption(containerMenu, barrel, hasHoseNearby, player)
     end
@@ -117,7 +120,7 @@ function UB_GeneratorContextMenu:new(player, context, worldobjects, test)
     if not o.generator or o.playerObj:getVehicle() then return end
     if o.generator:isActivated() or o.generator:getFuel() >= 100 then return end
 
-    o.barrels = UBUtils.GetBarrelsNearby(o.generator:getSquare(), UBConst.BARREL_SCAN_DISTANCE, Fluid.Petrol)
+    o.barrels = UBUtils.GetBarrelsNearby(o.generator:getSquare(), UBConst.GENERATOR_SCAN_DISTANCE, Fluid.Petrol)
 
     if SandboxVars.UsefulBarrels.DebugMode then
         self:DoDebugOption(player, context, worldobjects, test)

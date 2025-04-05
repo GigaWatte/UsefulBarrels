@@ -1,21 +1,21 @@
 require "TimedActions/ISBaseTimedAction"
 
-ISUBTransferFluid = ISBaseTimedAction:derive("ISUBTransferFluid");
+UB_TransferFluidAction = ISBaseTimedAction:derive("UB_TransferFluidAction");
 
-function ISUBTransferFluid:isValidStart()
+function UB_TransferFluidAction:isValidStart()
 	return FluidContainer.CanTransfer(self.sourceFluidContainer, self.destFluidContainer)
 end
 
-function ISUBTransferFluid:isValid()
+function UB_TransferFluidAction:isValid()
 	return self.character:isEquipped(self.itemToOperate)
 end
 
-function ISUBTransferFluid:waitToStart()
+function UB_TransferFluidAction:waitToStart()
 	self.character:faceLocation(self.square:getX(), self.square:getY())
 	return self.character:shouldBeTurning()
 end
 
-function ISUBTransferFluid:update()
+function UB_TransferFluidAction:update()
 	self.itemToOperate:setJobDelta(self:getJobDelta())
 	self.character:faceLocation(self.square:getX(), self.square:getY())
 	if not isClient() then
@@ -35,7 +35,7 @@ function ISUBTransferFluid:update()
     self.character:setMetabolicTarget(Metabolics.LightWork);
 end
 
-function ISUBTransferFluid:start()
+function UB_TransferFluidAction:start()
 	local o = self
 	o.destinationStart = o.destFluidContainer:getAmount()
 	o.destinationTarget = o.destinationStart + o.amount
@@ -43,7 +43,7 @@ function ISUBTransferFluid:start()
 	if not isClient() then
 		self:init()
 	end
-	self.itemToOperate:setJobType(getText("ContextMenu_UB_TransferFluid"))
+	self.itemToOperate:setJobType(getText("ContextMenu_UB_TransferFluidAction"))
 	self.itemToOperate:setJobDelta(0.0)
 	
 	self:setOverrideHandModels(nil, self.itemToOperate:getStaticModel())
@@ -52,20 +52,20 @@ function ISUBTransferFluid:start()
 	self.sound = self.character:playSound("GetWaterFromLake")
 end
 
-function ISUBTransferFluid:stop()
+function UB_TransferFluidAction:stop()
 	self.character:stopOrTriggerSound(self.sound)
 	self.itemToOperate:setJobDelta(0.0)
     ISBaseTimedAction.stop(self);
 end
 
-function ISUBTransferFluid:perform()
+function UB_TransferFluidAction:perform()
 	self.character:stopOrTriggerSound(self.sound)
 	self.itemToOperate:setJobDelta(0.0)
     -- needed to remove from queue / start next.
 	ISBaseTimedAction.perform(self);
 end
 
-function ISUBTransferFluid:complete()
+function UB_TransferFluidAction:complete()
 	local itemCurrent = self.destFluidContainer:getAmount();
 	if self.destinationTarget > itemCurrent then
 		FluidContainer.Transfer(self.sourceFluidContainer, self.destFluidContainer, self.destinationTarget - itemCurrent)
@@ -74,11 +74,11 @@ function ISUBTransferFluid:complete()
 	return true;
 end
 
-function ISUBTransferFluid:serverStart()
+function UB_TransferFluidAction:serverStart()
 
 end
 
-function ISUBTransferFluid:getDuration()
+function UB_TransferFluidAction:getDuration()
 	if self.character:isTimedActionInstant() then
 		return 1;
 	end
@@ -91,11 +91,11 @@ function ISUBTransferFluid:getDuration()
 	return (basePerLiter * self.amount) / speedModifier
 end
 
-function ISUBTransferFluid:init()
+function UB_TransferFluidAction:init()
 
 end
 
-function ISUBTransferFluid:new(character, sourceFluidContainer, destFluidContainer, lookAt, itemToOperate, speedModifierApply)
+function UB_TransferFluidAction:new(character, sourceFluidContainer, destFluidContainer, lookAt, itemToOperate, speedModifierApply)
 	local o = ISBaseTimedAction.new(self, character)
 	o.sourceFluidContainer = sourceFluidContainer
 	o.destFluidContainer = destFluidContainer

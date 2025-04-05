@@ -11,7 +11,7 @@ local onPumpFromBarrel = function(playerObj, part, barrel)
         action:setOnFail(ISVehiclePartMenu.onPumpGasolinePathFail, playerObj)
         ISTimedActionQueue.add(action)
         
-        ISTimedActionQueue.add(ISUBRefuelFromBarrel:new(playerObj, part, barrel))
+        ISTimedActionQueue.add(UB_RefuelVehicleAction:new(playerObj, part, barrel))
     end
 end
 
