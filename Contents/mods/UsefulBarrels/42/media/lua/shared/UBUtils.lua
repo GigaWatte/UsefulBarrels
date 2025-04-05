@@ -232,17 +232,14 @@ function UBUtils.GetBarrelsNearby(square, distance, fluid)
     return barrels
 end
 
-function UBUtils.GetBarrelsNearbyVehicle(vehicle, distance)
-    local part = vehicle:getPartById("GasTank")
-    if not part then return nil end
+function UBUtils.GetBarrelsNearbyVehiclePart(vehicle, part, distance)
+    local barrels = {}
     local areaCenter = vehicle:getAreaCenter(part:getArea())
-    if not areaCenter then return nil end
+    if not areaCenter then return barrels end
     local square = getCell():getGridSquare(areaCenter:getX(), areaCenter:getY(), vehicle:getZ())
-    if not square then return nil end
+    if not square then return barrels end
 
-    local barrels = UBUtils.GetBarrelsNearby(square, distance, Fluid.Petrol)
-
-    if #barrels == 0 then return nil end
+    barrels = UBUtils.GetBarrelsNearby(square, distance, Fluid.Petrol)
 
     return barrels
 end
