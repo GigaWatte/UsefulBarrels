@@ -1,0 +1,7 @@
+Tooltip_PH = {
+    Tooltip_UB_WrenchMissing = "Ang %1 ay kinakailangan upang uncap."
+    Tooltip_UB_NoProperFluidInInventory = "Walang tamang likido sa imbentaryo."
+    Tooltip_UB_NoProperFluidInBarrel = "Walang tamang likido sa bariles o lalagyan sa imbentaryo."
+    Tooltip_UB_HoseMissing = "Ang %1 ay kinakailangan upang kumuha ng likido. <Br> Ilagay ito sa loob ng pag -abot ng braso o ilagay ito sa iyong imbentaryo."
+    Tooltip_UB_FunnelMissing = "Ang %1 ay kinakailangan upang magdagdag ng likido. <Br> Ilagay ito sa loob ng pag -abot ng braso o ilagay ito sa iyong imbentaryo."
+}

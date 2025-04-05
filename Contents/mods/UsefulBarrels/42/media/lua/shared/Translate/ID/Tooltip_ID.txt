@@ -1,0 +1,7 @@
+Tooltip_ID = {
+    Tooltip_UB_WrenchMissing = "%1 Diperlukan untuk uncap."
+    Tooltip_UB_NoProperFluidInInventory = "Tidak ada cairan yang tepat dalam inventaris."
+    Tooltip_UB_NoProperFluidInBarrel = "Tidak ada cairan yang tepat dalam barel atau wadah dalam inventaris."
+    Tooltip_UB_HoseMissing = "%1 diperlukan untuk mengambil cairan. <Br> Tempatkan di dalam jangkauan lengan atau masukkan ke dalam inventaris Anda."
+    Tooltip_UB_FunnelMissing = "%1 diperlukan untuk menambahkan fluida. <Br> Tempatkan di dalam jangkauan lengan atau masukkan ke dalam inventaris Anda."
+}

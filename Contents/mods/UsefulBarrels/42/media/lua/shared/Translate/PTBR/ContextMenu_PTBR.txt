@@ -1,6 +1,8 @@
 ContextMenu_PTBR = {
     ContextMenu_UB_UncapBarrel = "Destampar %1",
-    ContextMenu_UB_AddFluid = "Adicionar Gás",
-    ContextMenu_UB_RefuelFromBarrel = "Refuel From Barrel",
-    ContextMenu_UB_TransferFluid = "Transfer fluid",
+    ContextMenu_UB_AddFluid = "Adicionar"
+    ContextMenu_UB_RefuelFromBarrel = "Reabastecer o barril"
+    ContextMenu_UB_TransferFluid = "Fluido de transferência"
+    ContextMenu_UB_DebugOption = "Informações de depuração do UB"
+    ContextMenu_UB_RefuelFromVehicle = "Adicionar do tanque de gasolina"
 }

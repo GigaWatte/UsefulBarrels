@@ -1,0 +1,8 @@
+ContextMenu_ID = {
+    ContextMenu_UB_UncapBarrel = "Uncap %1"
+    ContextMenu_UB_AddFluid = "Menambahkan"
+    ContextMenu_UB_RefuelFromBarrel = "Bahan bakar brom barel"
+    ContextMenu_UB_TransferFluid = "Transfer cairan"
+    ContextMenu_UB_DebugOption = "Info debug UB"
+    ContextMenu_UB_RefuelFromVehicle = "Tambahkan dari tangki bensin"
+}

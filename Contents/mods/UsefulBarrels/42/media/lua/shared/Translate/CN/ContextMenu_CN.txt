@@ -2,5 +2,7 @@ ContextMenu_CN = {
     ContextMenu_UB_UncapBarrel = "打开盖子 %1"
     ContextMenu_UB_AddFluid = "灌入液体"
     ContextMenu_UB_RefuelFromBarrel = "抽出液体"
-    ContextMenu_UB_TransferFluid = "Transfer fluid"
+    ContextMenu_UB_TransferFluid = "转移液体"
+    ContextMenu_UB_DebugOption = "UB调试信息"
+    ContextMenu_UB_RefuelFromVehicle = "从汽油箱中添加"
 }

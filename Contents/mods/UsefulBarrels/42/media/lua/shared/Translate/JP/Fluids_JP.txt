@@ -1,0 +1,5 @@
+Fluids_JP = {
+    Fluid_UB_Show_Info = "流体：%1"
+    Fluid_Container_UB_Barrel = "バレル"
+    Fluid_Container_UB_MetalDrum = "メタルドラム"
+}

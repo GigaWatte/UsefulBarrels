@@ -1,6 +1,8 @@
 ContextMenu_TR = {
     ContextMenu_UB_UncapBarrel = "%1 Aç",
-    ContextMenu_UB_AddFluid = "Add",
-    ContextMenu_UB_RefuelFromBarrel = "Refuel From Barrel",
-    ContextMenu_UB_TransferFluid = "Transfer fluid",
+    ContextMenu_UB_AddFluid = "Eklemek"
+    ContextMenu_UB_RefuelFromBarrel = "Varilden Yakıt İkmali"
+    ContextMenu_UB_TransferFluid = "Aktarma sıvısı"
+    ContextMenu_UB_DebugOption = "UB Hata Ayıklama Bilgisi"
+    ContextMenu_UB_RefuelFromVehicle = "Gaz deposundan ekle"
 }

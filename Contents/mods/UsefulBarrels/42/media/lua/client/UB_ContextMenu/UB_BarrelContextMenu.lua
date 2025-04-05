@@ -188,7 +188,7 @@ function UB_BarrelContextMenu:DoSiphonFromVehicleMenu(context, hasHoseNearby)
     if not vehicles then return end
     if not (#vehicles > 0) then return end
 
-    local vehicleOption = context:addOption(getText("ContextMenu_RefuelFromVehicle"))
+    local vehicleOption = context:addOption(getText("ContextMenu_UB_RefuelFromVehicle"))
 
     if SandboxVars.UsefulBarrels.UsefulBarrelsFillBarrelFromVehiclesRequiresHose and not hasHoseNearby then
         UBUtils.DisableOptionAddTooltip(vehicleOption, getText("Tooltip_UB_HoseMissing", getItemName("Base.RubberHose")))

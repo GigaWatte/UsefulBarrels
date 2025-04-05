@@ -1,0 +1,8 @@
+ContextMenu_NL = {
+    ContextMenu_UB_UncapBarrel = "Uncap %1"
+    ContextMenu_UB_AddFluid = "Toevoegen"
+    ContextMenu_UB_RefuelFromBarrel = "Tank de vat bij"
+    ContextMenu_UB_TransferFluid = "Breng vloeistof over"
+    ContextMenu_UB_DebugOption = "Ub debug info"
+    ContextMenu_UB_RefuelFromVehicle = "Voeg toe van de gastank"
+}

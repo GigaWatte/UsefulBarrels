@@ -1,0 +1,5 @@
+Fluids_DE = {
+    Fluid_UB_Show_Info = "Flüssigkeit: %1"
+    Fluid_Container_UB_Barrel = "Fass"
+    Fluid_Container_UB_MetalDrum = "Metalltrommel"
+}

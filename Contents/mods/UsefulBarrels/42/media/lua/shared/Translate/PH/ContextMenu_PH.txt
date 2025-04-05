@@ -1,0 +1,8 @@
+ContextMenu_PH = {
+    ContextMenu_UB_UncapBarrel = "Uncap %1"
+    ContextMenu_UB_AddFluid = "Idagdag"
+    ContextMenu_UB_RefuelFromBarrel = "Refuel brom ang bariles"
+    ContextMenu_UB_TransferFluid = "Ilipat ang likido"
+    ContextMenu_UB_DebugOption = "UB Debug Impormasyon"
+    ContextMenu_UB_RefuelFromVehicle = "Idagdag mula sa tangke ng gas"
+}

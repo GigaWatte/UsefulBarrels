@@ -1,0 +1,8 @@
+ContextMenu_PL = {
+    ContextMenu_UB_UncapBarrel = "Uncap %1"
+    ContextMenu_UB_AddFluid = "Dodać"
+    ContextMenu_UB_RefuelFromBarrel = "Zatankuj beczkę"
+    ContextMenu_UB_TransferFluid = "Płyn przeniesienia"
+    ContextMenu_UB_DebugOption = "Informacje o debugowaniu UB"
+    ContextMenu_UB_RefuelFromVehicle = "Dodaj ze zbiornika gazu"
+}
