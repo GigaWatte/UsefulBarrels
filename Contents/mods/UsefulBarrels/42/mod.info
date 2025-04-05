@@ -1,6 +1,6 @@
-name=[B42] Useful Barrels
-modversion=2.1.5
-id=UsefulBarrels
+name=[B42] Useful Barrels (Beta)
+modversion=3.0.0
+id=UsefulBarrelsBeta
 description=Barrels can actually be more than just a sprite!
 poster=poster.png
 icon=icon.png
