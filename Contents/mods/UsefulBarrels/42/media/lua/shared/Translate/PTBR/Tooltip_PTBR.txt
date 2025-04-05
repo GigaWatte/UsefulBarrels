@@ -1,0 +1,7 @@
+Tooltip_PTBR = {
+    Tooltip_UB_WrenchMissing = "%1 necessário para destampar.",
+    Tooltip_UB_NoProperFluidInInventory = "Sem combustível no inventário.",
+    Tooltip_UB_NoProperFluidInBarrel = "Sem combustível no barril.",
+    Tooltip_UB_HoseMissing = "%1 is required to take Gas.<br>Place it within arm's reach or put it in your inventory.",
+    Tooltip_UB_FunnelMissing = "%1 is required to add Gas.<br>Place it within arm's reach or put it in your inventory.",
+}

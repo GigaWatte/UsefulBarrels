@@ -1,0 +1,6 @@
+ContextMenu_TR = {
+    ContextMenu_UB_UncapBarrel = "%1 Aç",
+    ContextMenu_UB_AddFluid = "Add",
+    ContextMenu_UB_RefuelFromBarrel = "Refuel From Barrel",
+    ContextMenu_UB_TransferFluid = "Transfer fluid",
+}

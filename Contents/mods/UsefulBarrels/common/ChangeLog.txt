@@ -1,0 +1,65 @@
+[ 07/03/2025 ]
+2.0.0:
+- Storing any fluids in Barrel (configurable via Sandbox vars)
+- Reworked almost all code base. Should be more stable now
+- Reworked PickUp tooltip and canMickUp validations code
+- Added Metal Drum as new possible fluid container
+- Barrel detection now relies on customName instead of sprite names
+- Fixed Barrel can be disassembled with fluids inside
+- Fixed Barrel can be filled from Gas pump or other fluid sources while being in player inventory
+- Added more Sandbox options for future updates
+- Added TR translation, Thanks to @RedSystem
+- Added ES translation, Thanks to @Dust Runner
+- Added KO translation, Thanks to @Hx
+- Added Chuckleberry Finn's Mod Update and Alert System integration
+[ ------ ]
+[ 07/03/2025 ]
+2.0.1:
+- Fixed Barrel can be used via Fluid Transfer menu while being in player inventory
+[ ------ ]
+[ 07/03/2025 ]
+2.0.2:
+- Fixed bug while vanilla fluid context menu drawing with errors on barrel and prevent my context menu to appear.
+[ ------ ]
+[ 09/03/2025 ]
+2.0.3:
+- Updated KO translation, thanks to Hx.
+[ ------ ]
+[ 12/03/2025 ]
+2.0.4:
+- Updated CN translation, thanks to 浪里个浪2346134
+- Added FR translation, thanks to Bobitec
+[ ------ ]
+[ 21/03/2025 ]
+2.1.0:
+- The generator can be refueled directly from the barrel, optionally requiring a hose to be nearby.
+- Rubber hose and funnel positions are now calculated from the barrel's square, not from the player's current position.
+- Partially filled containers are now listed in the menu for "Fill" options.
+- The fluid info tooltip is displayed only if the player opens the menu near the barrel.
+- Added randomization for the initial fluid in the barrel, as well as its amount and spawn chance.
+- Replaced the job title with a more general description instead of just "Take Gas."
+- Fixed the interruption of "Fill All" and "Add All" actions in the queue.
+- The equipped fluid container is now first in the queue if it is part of an action.
+- Hand-equipped items, as well as those worn on the body, are now re-equipped at the end.
+[ ------ ]
+[ 22/03/2025 ]
+2.1.1:
+- Added debug option
+[ ------ ]
+[ 23/03/2025 ]
+2.1.2:
+- Added debug option for generator.
+- Refactor movable operations to not rely on modOption.
+[ ------ ]
+[ 23/03/2025 ]
+2.1.3:
+- Disabled pickup, scraping and info panel options temporarily
+[ ------ ]
+[ 24/03/2025 ]
+2.1.4:
+- Repaired pickup, scraping and info panel options
+[ ------ ]
+[ 28/03/2025 ]
+2.1.5:
+- Fixed: generator refuel time calculation takes all amount of barrel instead of amount left to fill up
+[ ------ ]

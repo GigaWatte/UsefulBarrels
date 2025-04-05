@@ -1,0 +1,7 @@
+Tooltip_EN = {
+    Tooltip_UB_WrenchMissing = "%1 is required to uncap."
+    Tooltip_UB_NoProperFluidInInventory = "No proper fluid in inventory."
+    Tooltip_UB_NoProperFluidInBarrel = "No proper fluid in barrel or containers in inventory."
+    Tooltip_UB_HoseMissing = "%1 is required to take fluid.<br>Place it within arm's reach or put it in your inventory."
+    Tooltip_UB_FunnelMissing = "%1 is required to add fluid.<br>Place it within arm's reach or put it in your inventory."
+}
