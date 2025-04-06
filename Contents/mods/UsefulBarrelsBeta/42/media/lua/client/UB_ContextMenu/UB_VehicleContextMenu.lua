@@ -34,7 +34,6 @@ function ISVehicleMenu.FillPartMenu(playerIndex, context, slice, vehicle)
             and part:isContainer() 
             and string.find(partCategory, "gastank")~=nil 
             and string.find(part:getContainerContentType(), "Gasoline")
-            and part:getContainerContentAmount() > 0 
             and part:getContainerContentAmount() < part:getContainerCapacity() then
                 local barrels = UBUtils.GetBarrelsNearbyVehiclePart(vehicle, part, UBConst.VEHICLE_SCAN_DISTANCE)
 

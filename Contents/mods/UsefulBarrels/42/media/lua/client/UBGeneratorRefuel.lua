@@ -95,7 +95,20 @@ function UBRefuel:DoDebugOption(player, context, worldobjects, test)
     local tooltip = ISWorldObjectContextMenu.addToolTip()
     debugOption.toolTip = tooltip
     local generator = ISWorldObjectContextMenu.fetchVars.generator
-    tooltip.description = tooltip.description .. string.format("Generator: %s", tostring(generator ~= nil)) .. "\n"
+    tooltip.description = tooltip.description .. string.format("Generator from context: %s", tostring(generator)) .. "\n"
+
+    tooltip.description = tooltip.description .. string.format("SVAlternativeGeneratorDetection: %s", tostring(SandboxVars.UsefulBarrels.AlternativeGeneratorDetection)) .. "\n"
+    local alt_generator
+    if SandboxVars.UsefulBarrels.AlternativeGeneratorDetection then
+        for i,v in ipairs(worldobjects) do
+            if instanceof(v, "IsoGenerator") then
+                alt_generator = v;
+            end
+        end
+    end
+    tooltip.description = tooltip.description .. string.format("Generator from alt method: %s", tostring(alt_generator)) .. "\n"
+    if not generator and alt_generator then generator = alt_generator end
+
     local playerObj = getSpecificPlayer(player)
     tooltip.description = tooltip.description .. string.format("Player vehicle: %s", tostring(playerObj:getVehicle() ~= nil)) .. "\n"
     local playerInv = playerObj:getInventory()
@@ -137,6 +150,14 @@ function UBRefuel:new(player, context, worldobjects, test)
     o.playerObj = getSpecificPlayer(player)
     o.playerInv = o.playerObj:getInventory()
     o.generator = ISWorldObjectContextMenu.fetchVars.generator
+
+    if SandboxVars.UsefulBarrels.AlternativeGeneratorDetection then
+        for i,v in ipairs(worldobjects) do
+            if instanceof(v, "IsoGenerator") then
+                o.generator = v;
+            end
+        end
+    end
 
     if SandboxVars.UsefulBarrels.DebugMode then
         self:DoDebugOption(player, context, worldobjects, test)
