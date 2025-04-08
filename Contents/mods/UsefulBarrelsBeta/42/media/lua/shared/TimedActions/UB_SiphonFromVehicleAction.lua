@@ -69,7 +69,7 @@ function UB_SiphonFromVehicleAction:complete()
             return false
         end
         self.part:setContainerContentAmount(self.tankTarget)
-		self.fuelFluidContainer.setAmount(self.barrelTarget)
+		self.fuelFluidContainer:setAmount(self.barrelTarget)
         self.vehicle:transmitPartModData(self.part)
     else
         print('no such vehicle id=', self.vehicle)

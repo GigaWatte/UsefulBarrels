@@ -74,3 +74,9 @@
 3.0.1:
 - Fix: removed the condition that required the gas tank to be not empty in order to be filled from a barrel.
 [ ------ ]
+[ 07/04/2025 ]
+3.0.2:
+- Improved: context menu for vehicle siphon fluid
+- Fixed: call nil at complete at vehicle siphon action
+- Fixed: localization string for fluid transfer set to correct one
+[ ------ ]

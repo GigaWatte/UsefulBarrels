@@ -197,18 +197,21 @@ function UB_BarrelContextMenu:DoSiphonFromVehicleMenu(context, hasHoseNearby)
     local vehicleMenu = ISContextMenu:getNew(context)
     context:addSubMenu(vehicleOption, vehicleMenu)
     for _,vehicle in ipairs(vehicles) do
-        --string.find(vehicle:getScriptName(), "Trailer") ~= nild
+        --string.find(vehicle:getScriptName(), "Trailer") ~= nil
         for i=1,vehicle:getPartCount() do
             local part = vehicle:getPartByIndex(i-1)
             local partCategory = part:getCategory()
-            if part and partCategory and part:isContainer() and string.find(partCategory, "gastank")~=nil and part:getContainerContentAmount() > 0 then
+            if part and partCategory and part:isContainer() and string.find(partCategory, "gastank")~=nil then
                 local carName = vehicle:getScript():getCarModelName() or vehicle:getScript():getName()
                 local vehicle_option = vehicleMenu:addOption(getText("IGUI_VehicleName" .. carName), self.playerObj, UB_BarrelContextMenu.OnVehicleTransferFluid, part, self.barrel)
-                local tooltip = ISWorldObjectContextMenu.addToolTip()
-                tooltip.maxLineWidth = 512
-                tooltip.description = getText("Fluid_UB_Show_Info", tostring(math.ceil(part:getContainerContentAmount())) .. "L")
-                vehicle_option.toolTip = tooltip
-
+                if part:getContainerContentAmount() > 0 then
+                    local tooltip = ISWorldObjectContextMenu.addToolTip()
+                    tooltip.maxLineWidth = 512
+                    tooltip.description = getText("Fluid_UB_Show_Info", tostring(math.ceil(part:getContainerContentAmount())) .. "L")
+                    vehicle_option.toolTip = tooltip
+                else
+                    UBUtils.DisableOptionAddTooltip(vehicle_option, getText("ContextMenu_Empty"))
+                end
             end
         end
     end
