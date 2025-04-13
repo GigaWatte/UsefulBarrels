@@ -80,3 +80,7 @@
 - Fixed: call nil at complete at vehicle siphon action
 - Fixed: localization string for fluid transfer set to correct one
 [ ------ ]
+[ 13/04/2025 ]
+3.0.3:
+- Fixed: call nil at DoBarrelUncap
+[ ------ ]

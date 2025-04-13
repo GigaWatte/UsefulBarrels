@@ -57,7 +57,7 @@ local function PlainBarrelContextMenu(player, context, worldobjects, test)
         getText("ContextMenu_UB_UncapBarrel", barrel_label), 
         player,
         DoBarrelUncap,
-        barrel_label, wrench, hasValidWrench
+        barrel, barrel_label, wrench, hasValidWrench
     )
     if not hasValidWrench and SandboxVars.UsefulBarrels.RequirePipeWrench then
         UBUtils.DisableOptionAddTooltip(openBarrelOption, getText("Tooltip_UB_WrenchMissing", getItemName("Base.PipeWrench")))
