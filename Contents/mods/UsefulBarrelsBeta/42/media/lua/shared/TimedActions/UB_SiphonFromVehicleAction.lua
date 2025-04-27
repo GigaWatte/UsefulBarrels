@@ -15,23 +15,31 @@ function UB_SiphonFromVehicleAction:update()
     local litres = self.tankStart + (self.tankTarget - self.tankStart) * self:getJobDelta()
     litres = math.floor(litres)
     if litres ~= self.amountSent then
-        if self.vehicle then
-            if not self.part then
-                print('no such part ',self.part)
-                return
-            end
-            self.part:setContainerContentAmount(litres)
-            self.vehicle:transmitPartModData(self.part)
-        else
+        if not self.vehicle then
             print('no such vehicle id=', self.vehicle)
+            return
         end
+        if not self.part then
+            print('no such part ', self.part)
+            return
+        end
+
+        self.part:setContainerContentAmount(litres)
+
+        local barrelUnits = self.barrelStart + (self.barrelTarget - self.barrelStart) * self:getJobDelta()
+        barrelUnits = math.ceil(barrelUnits)
+        if self.fuelFluidContainer:isEmpty() and self.fuelFluidContainer:canAddFluid(Fluid.Petrol) then
+            self.fuelFluidContainer:addFluid(Fluid.Petrol, barrelUnits)
+        else
+            self.fuelFluidContainer:adjustSpecificFluidAmount(Fluid.Petrol, barrelUnits)
+        end
+        self.vehicle:transmitPartModData(self.part)
         self.amountSent = litres
     end
 
-    local barrelUnits = self.barrelStart + (self.barrelTarget - self.barrelStart) * self:getJobDelta()
-    self.fuelFluidContainer:adjustAmount(math.ceil(barrelUnits));
 
-    self.character:setMetabolicTarget(Metabolics.HeavyDomestic);
+
+    self.character:setMetabolicTarget(Metabolics.HeavyDomestic)
 end
 
 function UB_SiphonFromVehicleAction:start()
@@ -71,7 +79,7 @@ function UB_SiphonFromVehicleAction:complete()
         local litres = self.tankStart + (self.tankTarget - self.tankStart) * self:getJobDelta()
         self.part:setContainerContentAmount(litres)
         local barrelLitres = self.barrelStart + (self.barrelTarget - self.barrelStart) * self:getJobDelta()
-        self.fuelFluidContainer:adjustAmount(math.ceil(barrelLitres));
+        self.fuelFluidContainer:adjustSpecificFluidAmount(Fluid.Petrol, math.ceil(barrelLitres))
         self.vehicle:transmitPartModData(self.part)
     else
         print('no such vehicle id=', self.vehicle)

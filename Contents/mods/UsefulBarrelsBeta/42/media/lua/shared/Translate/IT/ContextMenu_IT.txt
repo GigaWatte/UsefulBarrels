@@ -1,8 +1,8 @@
 ContextMenu_IT = {
-    ContextMenu_UB_UncapBarrel = "Uncap %1"
-    ContextMenu_UB_AddFluid = "Aggiungere"
-    ContextMenu_UB_RefuelFromBarrel = "Rifornimento di carburante Brom la canna"
-    ContextMenu_UB_TransferFluid = "Trasferimento fluido"
-    ContextMenu_UB_DebugOption = "Informazioni di debug UB"
+    ContextMenu_UB_UncapBarrel = "Apri %1"
+    ContextMenu_UB_AddFluid = "Aggiungi"
+    ContextMenu_UB_RefuelFromBarrel = "Rifornisci dal Barile"
+    ContextMenu_UB_TransferFluid = "Trasferisci fluido"
+    ContextMenu_UB_DebugOption = "Info Debug UB"
     ContextMenu_UB_RefuelFromVehicle = "Aggiungi dal serbatoio del gas"
 }

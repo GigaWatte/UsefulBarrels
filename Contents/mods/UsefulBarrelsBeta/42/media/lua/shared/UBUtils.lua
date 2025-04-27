@@ -39,17 +39,18 @@ function UBUtils.hasItemNearbyOrInInv(worldObjects, playerInv, item)
 end
 
 function UBUtils.getPlayerFluidContainers(playerInv)
-	return playerInv:getAllEvalRecurse(
-		function (item) return UBUtils.predicateAnyFluid(item) and not UBBarrel.validate(item) end
-	)
+    local itemsArray = playerInv:getAllEvalRecurse(
+        function (item) return UBUtils.predicateAnyFluid(item) and not UBBarrel.validate(item) end
+    )
+	return UBUtils.ConvertToTable(itemsArray)
 end
 
 function UBUtils.getPlayerFluidContainersWithFluid(playerInv, fluid)
-	return playerInv:getAllEvalRecurse(
-        function (item) return (
-			UBUtils.predicateFluid(item, fluid) or UBUtils.predicateHasFluidContainer(item)
-		) and not UBBarrel.validate(item) end
+	local itemsArray = playerInv:getAllEvalRecurse(
+        function (item) return (UBUtils.predicateFluid(item, fluid) or UBUtils.predicateHasFluidContainer(item)) and not UBBarrel.validate(item) end
     )
+    
+    return UBUtils.ConvertToTable(itemsArray)
 end
 
 function UBUtils.GetValidBarrel(worldObjects)
@@ -160,13 +161,13 @@ end
 
 function UBUtils.GetSquaresInRange(square, distance, includeInitialSquare, isDiamondShape)
 	if not distance then distance = 1 end
-    if not isDiamondShape then isDiamondShape = true end
+    if isDiamondShape == nil then isDiamondShape = true end
 
     local x,y,z = square:getX(), square:getY(), square:getZ()
     local cell = square:getCell()
 	local squares = {}
-    for xx = -distance,distance + 1 do
-        for yy = -distance,distance + 1 do
+    for xx = -distance,distance do
+        for yy = -distance,distance do
             if isDiamondShape and math.abs(xx) + math.abs(yy) <= distance then
 				local nextSquare = cell:getGridSquare(x+xx, y+yy, z)
                 if nextSquare then table.insert(squares, nextSquare) end
@@ -180,6 +181,7 @@ function UBUtils.GetSquaresInRange(square, distance, includeInitialSquare, isDia
     if includeInitialSquare ~= nil and includeInitialSquare then
         table.insert(squares, square)
     end
+
     return squares
 end
 
@@ -191,17 +193,17 @@ function UBUtils.TableContainsItem(table, item_name)
     return false
 end
 
-function UBUtils.GetWorldItemsNearby(square, distance)
+function UBUtils.GetWorldItemsNearby(square, distance, isDiamondShape)
     if not square then return nil end
 
-    local squares = UBUtils.GetSquaresInRange(square, distance, true)
+    local squares = UBUtils.GetSquaresInRange(square, distance, true, isDiamondShape)
 
     local worldItems = {}
     for _,curr in ipairs(squares) do
         local squareWorldItems = curr:getWorldObjects()
-        local sqTable = UBUtils.ConvertToTable(squareWorldItems)
-        for _,worldItem in ipairs(sqTable) do
-            table.insert(worldItems, worldItem)
+        for i=0, squareWorldItems:size() - 1 do
+            local item = squareWorldItems:get(i)
+            if not luautils.tableContains(worldItems, item) then table.insert(worldItems, item) end
         end
     end
 
@@ -245,9 +247,9 @@ function UBUtils.GetBarrelsNearbyVehiclePart(vehicle, part, distance)
 end
 
 function UBUtils.GetVehiclesNeaby(square, distance)
-    if not square then return nil end
+    if not square then return {} end
 
-    local squares = UBUtils.GetSquaresInRange(square, distance, true, false)
+    local squares = UBUtils.GetSquaresInRange(square, distance, false, true)
 
     local vehicles = {}
     for _,curr in ipairs(squares) do
@@ -256,6 +258,42 @@ function UBUtils.GetVehiclesNeaby(square, distance)
     end
 
     return vehicles
+end
+
+function UBUtils.GetWorldFluidContainersNearby(barrel_square, distance, containerPredicate)
+    local worldObjects = UBUtils.GetWorldItemsNearby(barrel_square, distance)
+    local fluidContainerItems = {}
+    for _,worldInventoryObject in ipairs(worldObjects) do
+        -- this is needed to update world item name to display an actual name of item
+        if worldInventoryObject:getItem() then 
+            worldInventoryObject:setName(worldInventoryObject:getItem():getName()) 
+        end
+
+        if containerPredicate then
+            table.insert(fluidContainerItems, worldInventoryObject)
+        end
+    end
+    return fluidContainerItems
+end
+
+function UBUtils.CanCreateBarrelFluidMenu(playerObj, barrelSquare, barrelOption)
+    -- thats from vanilla method. it seems to verify target square room and current player room
+    if barrelSquare:getBuilding() ~= playerObj:getBuilding() then
+        UBUtils.DisableOptionAddTooltip(barrelOption, getText("ContextMenu_UB_BuildingMismatch"))
+        return false
+    end
+    --if the player can reach the tile, populate the submenu, otherwise don't bother
+    if not barrelSquare or not AdjacentFreeTileFinder.Find(barrelSquare, playerObj) then
+        UBUtils.DisableOptionAddTooltip(barrelOption, getText("ContextMenu_UB_BarrelIsObstructed"))
+        return false
+    end
+
+    if IsoUtils.DistanceTo(playerObj:getX(), playerObj:getY(), barrelSquare:getX() + 0.5, barrelSquare:getY() + 0.5) > 4 then
+        UBUtils.DisableOptionAddTooltip(barrelOption, getText("ContextMenu_UB_BarrelTooFar"))
+        return false
+    end
+
+    return true
 end
 
 return UBUtils

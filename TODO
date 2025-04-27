@@ -1,7 +1,21 @@
-TODO crashes may not save fluidContainer
-TODO allow ineract with items on ground
-TODO cut the lid of barrel to make it water collector - can combine with tarp or trash bags
-TODO SUGGESTED - tarp or trash bags to store clean  fluids?
+
+TODO DONE allow ineract with items on ground
+TODO Rework plumbing to make it work again properly
+TODO Add sprite and craftrecipe for rain collector. SUGGESTED - tarp or trash bags to store clean  fluids? cut the lid of barrel to make it water collector - can combine with tarp or trash bags
 TODO make barrel with fluid moveable somehow
 TODO check Lifestyle: Hobbie for incompat and possible crash
 BUG - self not propagating inside self methods on 3rd step?
+TODO crashes may not save fluidContainer
+
+icons: 
+mpty barrel from fluid
+add from inv containers
+add from floor containers
+
+fill from inv containers
+fill from floor containerrs
+
+fill from vehicle gas tank
+car icon
+
+refuel from barrel

@@ -1,7 +1,7 @@
 Tooltip_DE = {
-    Tooltip_UB_WrenchMissing = "%1 ist erforderlich, um zu entfernen."
-    Tooltip_UB_NoProperFluidInInventory = "Keine ordnungsgemäße Flüssigkeit im Inventar."
-    Tooltip_UB_NoProperFluidInBarrel = "Keine ordnungsgemäße Flüssigkeit in Fass oder Behältern im Lagerbestand."
-    Tooltip_UB_HoseMissing = "%1 muss Flüssigkeit nehmen. <Br> Platzieren Sie es in die Reichweite des Arms oder legen Sie es in Ihr Inventar."
-    Tooltip_UB_FunnelMissing = "%1 muss Flüssigkeit hinzufügen. <Br> Platzieren Sie es in die Reichweite des Arms oder legen Sie es in Ihr Inventar."
+    Tooltip_UB_WrenchMissing = "Man benötigt %1 für die Öffnung der Tonne."
+    Tooltip_UB_NoProperFluidInInventory = "Es gibt keinen Treibstoff in Ausrüstungsgegenstände."
+    Tooltip_UB_NoProperFluidInBarrel = "Es gibt keinen Treibstoff in die Tonne."
+    Tooltip_UB_HoseMissing = "Es benötigt %1, um Treibstoff aus der Tonne zu entnehmen.<br>Platzieren Sie es in Ihre Ausrüstungsgegenstände oder in der Nähe."
+    Tooltip_UB_FunnelMissing = "%1 wird benötigt, um Treibstoff in das Fass zu füllen.<br>Platzieren Sie sie in Ihrem Inventar oder in der Nähe."
 }

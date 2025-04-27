@@ -157,7 +157,11 @@ function UBBarrel:GetBarrelInfo()
 end
 
 function UBBarrel:CanTransferFluid(fluidContainers, transferToContainers)
-    local toContainers = transferToContainers ~= nil
+    local toContainers = false
+    if transferToContainers ~= nil then
+        toContainers = transferToContainers
+    end
+    
     local allContainers = {}
     for _,container in pairs(fluidContainers) do
         local fluidContainer = container:getComponent(ComponentType.FluidContainer)
