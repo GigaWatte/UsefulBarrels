@@ -297,6 +297,8 @@ function UBUtils.CanCreateBarrelFluidMenu(playerObj, barrelSquare, barrelOption)
     if IsoUtils.DistanceTo(playerObj:getX(), playerObj:getY(), barrelSquare:getX() + 0.5, barrelSquare:getY() + 0.5) > 4 then
         if barrelOption then
             UBUtils.DisableOptionAddTooltip(barrelOption, getText("ContextMenu_UB_BarrelTooFar"))
+            -- TODO remove all suboptions as well
+            barrelOption.subOption = nil
         end
         return false
     end

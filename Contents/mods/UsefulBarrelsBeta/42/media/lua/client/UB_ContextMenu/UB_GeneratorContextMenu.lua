@@ -85,6 +85,7 @@ end
 function UB_GeneratorContextMenu:DoDebugOption(player, context, worldobjects, test)
     local debugOption = context:addOptionOnTop(getText("ContextMenu_UB_DebugOption"))
     local tooltip = ISWorldObjectContextMenu.addToolTip()
+    local barrels = UBUtils.GetBarrelsNearby(self.generator:getSquare(), UBConst.GENERATOR_SCAN_DISTANCE, Fluid.Petrol)
     local description = string.format(
         [[
         SVEnableGeneratorRefuel: %s
@@ -98,10 +99,10 @@ function UB_GeneratorContextMenu:DoDebugOption(player, context, worldobjects, te
         tostring(SandboxVars.UsefulBarrels.GeneratorRefuelRequiresHose),
         tostring(self.generator:isActivated()),
         tostring(self.generator:getFuel() >= 100),
-        tostring(#self.barrels),
+        tostring(#barrels),
         tostring(UB_GeneratorContextMenu.CanCreateRefuelMenu(self.generator:getSquare(), self.playerObj))
     )
-    for _,barrel in ipairs(self.barrels) do
+    for _,barrel in ipairs(barrels) do
         local worldObjects = UBUtils.GetWorldItemsNearby(barrel.square, UBConst.TOOL_SCAN_DISTANCE)
         local hasHoseNearby = UBUtils.hasItemNearbyOrInInv(worldObjects, self.playerInv, "Base.RubberHose")
         description = description .. string.format("hasHoseNearby: %s", tostring(hasHoseNearby))
@@ -117,14 +118,15 @@ function UB_GeneratorContextMenu:new(player, context, worldobjects, test)
     o.playerInv = o.playerObj:getInventory()
     o.generator = ISWorldObjectContextMenu.fetchVars.generator
 
+    if SandboxVars.UsefulBarrels.DebugMode then
+        self:DoDebugOption(player, context, worldobjects, test)
+    end
+
     if not o.generator or o.playerObj:getVehicle() then return end
     if o.generator:isActivated() or o.generator:getFuel() >= 100 then return end
 
     o.barrels = UBUtils.GetBarrelsNearby(o.generator:getSquare(), UBConst.GENERATOR_SCAN_DISTANCE, Fluid.Petrol)
 
-    if SandboxVars.UsefulBarrels.DebugMode then
-        self:DoDebugOption(player, context, worldobjects, test)
-    end
     if not SandboxVars.UsefulBarrels.EnableGeneratorRefuel then return end
 
     if #o.barrels == 0 then return end

@@ -84,3 +84,17 @@
 3.0.3:
 - Fixed: call nil at DoBarrelUncap
 [ ------ ]
+[ 28/04/2025 ]
+3.1.0:
+- New feature: add fluids from/to items on the ground
+- Changed: scan distance lowered. generator 4->2, tools 2->1, vehicles 4->3, world items ->1
+- Changed: The barrel menu don't draw if player is too far
+- Improved: Debug option for vehicles and the barrel
+- Improved: vehicle refuel now takes the closest barrel, not first found during scan
+- Fixed: mispell sandbox variable "FillBarrelFromVehiclesRequiresHose"
+- Fixed: replaced action sounds from AddFuelFromGasPump to GetWater
+- Fixed: SiphonFromVehicle not transfers fuel while in action is in progess, only at the end of the action
+- Fixed: removed extra squares outside the radius of vehicle, items and the barrel scan
+- Translations: added new keys to all languages, without translation for now
+- Translations: also updated IT and DE translations by steam workshop contributors
+[ ------ ]

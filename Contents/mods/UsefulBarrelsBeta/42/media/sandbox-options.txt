@@ -54,7 +54,6 @@ option UsefulBarrels.AllowPaint
 option UsefulBarrels.AllowPoisons
 {type = boolean, default = false, page = UsefulBarrels, translation = UsefulBarrelsAllowPoisons,}
 
-
 option UsefulBarrels.EnableGeneratorRefuel
 {type = boolean, default = true, page = UsefulBarrels, translation = UsefulBarrelsEnableGeneratorRefuel,}
 
@@ -74,7 +73,7 @@ option UsefulBarrels.FillBarrelFromVehiclesRequiresHose
 {type = boolean, default = true, page = UsefulBarrels, translation = UsefulBarrelsFillBarrelFromVehiclesRequiresHose,}
 
 option UsefulBarrels.InitialFluid
-{type = boolean, default = false, page = UsefulBarrels, translation = UsefulBarrelsInitialFluid,}
+{type = boolean, default = true, page = UsefulBarrels, translation = UsefulBarrelsInitialFluid,}
 
 option UsefulBarrels.InitialFluidPool
 {type = string, default = Acid Water TaintedWater Gasoline Gasoline Bleach PotentPoison, page = UsefulBarrels, translation = UsefulBarrelsInitialFluidPool,}
