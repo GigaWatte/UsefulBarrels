@@ -59,15 +59,17 @@ option UsefulBarrels.EnableGeneratorRefuel
 
 option UsefulBarrels.GeneratorRefuelRequiresHose
 {type = boolean, default = true, page = UsefulBarrels, translation = UsefulBarrelsGeneratorRefuelRequiresHose,}
-
-option UsefulBarrels.AlternativeGeneratorDetection
-{type = boolean, default = false, page = UsefulBarrels, translation = UsefulBarrelsAlternativeGeneratorDetection,}
-
 option UsefulBarrels.EnableCarRefuel
-{type = boolean, default = false, page = UsefulBarrels, translation = UsefulBarrelsEnableVehicleRefuel,}
+{type = boolean, default = true, page = UsefulBarrels, translation = UsefulBarrelsEnableVehicleRefuel,}
 
 option UsefulBarrels.CarRefuelRequiresHose
-{type = boolean, default = false, page = UsefulBarrels, translation = UsefulBarrelsVehicleRefuelRequiresHose,}
+{type = boolean, default = true, page = UsefulBarrels, translation = UsefulBarrelsVehicleRefuelRequiresHose,}
+
+option UsefulBarrels.EnableFillBarrelFromVehicles
+{type = boolean, default = true, page = UsefulBarrels, translation = UsefulBarrelsEnableFillBarrelFromVehicles,}
+
+option UsefulBarrels.FillBarrelFromVehiclesRequiresHose
+{type = boolean, default = true, page = UsefulBarrels, translation = UsefulBarrelsFillBarrelFromVehiclesRequiresHose,}
 
 option UsefulBarrels.InitialFluid
 {type = boolean, default = true, page = UsefulBarrels, translation = UsefulBarrelsInitialFluid,}
