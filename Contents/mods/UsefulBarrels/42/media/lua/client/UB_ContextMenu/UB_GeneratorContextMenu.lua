@@ -118,7 +118,7 @@ function UB_GeneratorContextMenu:new(player, context, worldobjects, test)
     o.playerInv = o.playerObj:getInventory()
     o.generator = ISWorldObjectContextMenu.fetchVars.generator
 
-    if SandboxVars.UsefulBarrels.DebugMode then
+    if SandboxVars.UsefulBarrels.DebugMode and o.generator ~= nil then
         self:DoDebugOption(player, context, worldobjects, test)
     end
 
