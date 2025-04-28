@@ -72,3 +72,24 @@
 - Improved: added alternative method for generator detection
 - Improved: truned on some sandbox vars by default
 [ ------ ]
+[ 05/04/2025 ]
+3.0.0:
+- New feature: vehicles can be refueled from barrel, requiring RubberHose (optionl).
+- New feature: barrel can now be filled from vehicle gas tank. should also work with mod's vehicles
+- Fixed: barrel is now more durable. required ~5 hits to destroy
+- Translations: added many missing translations. thanks to Chuckleberry Finn for pz-translator
+[ ------ ]
+[ 06/04/2025 ]
+3.0.1:
+- Fix: removed the condition that required the gas tank to be not empty in order to be filled from a barrel.
+[ ------ ]
+[ 07/04/2025 ]
+3.0.2:
+- Improved: context menu for vehicle siphon fluid
+- Fixed: call nil at complete at vehicle siphon action
+- Fixed: localization string for fluid transfer set to correct one
+[ ------ ]
+[ 13/04/2025 ]
+3.0.3:
+- Fixed: call nil at DoBarrelUncap
+[ ------ ]

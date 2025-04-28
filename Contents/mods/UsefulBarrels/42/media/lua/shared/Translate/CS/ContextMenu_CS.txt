@@ -1,0 +1,8 @@
+ContextMenu_CS = {
+    ContextMenu_UB_UncapBarrel = "Uncap %1"
+    ContextMenu_UB_AddFluid = "Přidat"
+    ContextMenu_UB_RefuelFromBarrel = "Doplňte barel"
+    ContextMenu_UB_TransferFluid = "Přeneste tekutinu"
+    ContextMenu_UB_DebugOption = "Informace o ladění UB"
+    ContextMenu_UB_RefuelFromVehicle = "Přidejte z plynové nádrže"
+}

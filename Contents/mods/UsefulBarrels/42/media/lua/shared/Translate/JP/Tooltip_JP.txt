@@ -1,0 +1,7 @@
+Tooltip_JP = {
+    Tooltip_UB_WrenchMissing = "%1 はuncapに必要です。"
+    Tooltip_UB_NoProperFluidInInventory = "在庫に適切な液体はありません。"
+    Tooltip_UB_NoProperFluidInBarrel = "バレルに適切な液体や在庫内の容器はありません。"
+    Tooltip_UB_HoseMissing = "%1 は、流体を摂取するために必要です。<br>腕の範囲内に配置するか、在庫に入れます。"
+    Tooltip_UB_FunnelMissing = "%1 は、液体を追加するために必要です。<br>腕の範囲内に配置するか、在庫に入れます。"
+}

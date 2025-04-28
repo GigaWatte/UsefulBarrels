@@ -1,0 +1,7 @@
+Tooltip_CA = {
+    Tooltip_UB_WrenchMissing = "%1 és necessari per sense parar."
+    Tooltip_UB_NoProperFluidInInventory = "No hi ha líquid adequat a l’inventari."
+    Tooltip_UB_NoProperFluidInBarrel = "No hi ha líquid adequat en barril ni envasos en inventari."
+    Tooltip_UB_HoseMissing = "%1 és necessari per prendre fluids."
+    Tooltip_UB_FunnelMissing = "%1 és necessari afegir fluid. <Br> col·locar -lo dins de l'abast del braç o posar -lo al vostre inventari."
+}

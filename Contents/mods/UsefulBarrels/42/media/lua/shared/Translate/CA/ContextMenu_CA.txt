@@ -1,0 +1,8 @@
+ContextMenu_CA = {
+    ContextMenu_UB_UncapBarrel = "Uncap %1"
+    ContextMenu_UB_AddFluid = "Addiccionar"
+    ContextMenu_UB_RefuelFromBarrel = "Roboel Brom the Barrel"
+    ContextMenu_UB_TransferFluid = "Transferència de líquid"
+    ContextMenu_UB_DebugOption = "Informació de depuració UB"
+    ContextMenu_UB_RefuelFromVehicle = "Afegiu -ho del dipòsit de gas"
+}

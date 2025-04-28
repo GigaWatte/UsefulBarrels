@@ -1,0 +1,8 @@
+ContextMenu_DE = {
+    ContextMenu_UB_UncapBarrel = "Unpapt %1"
+    ContextMenu_UB_AddFluid = "Hinzufügen"
+    ContextMenu_UB_RefuelFromBarrel = "Tank Brom das Fass"
+    ContextMenu_UB_TransferFluid = "Übertragungsflüssigkeit"
+    ContextMenu_UB_DebugOption = "UB -Debug -Info"
+    ContextMenu_UB_RefuelFromVehicle = "Fügen Sie aus dem Gastank hinzu"
+}

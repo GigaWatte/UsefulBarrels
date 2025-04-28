@@ -1,0 +1,8 @@
+ContextMenu_AR = {
+    ContextMenu_UB_UncapBarrel = "Uncap %1"
+    ContextMenu_UB_AddFluid = "Agregar"
+    ContextMenu_UB_RefuelFromBarrel = "Reabastecimiento de reabastecimiento del barril"
+    ContextMenu_UB_TransferFluid = "Fluido de transferencia"
+    ContextMenu_UB_DebugOption = "Información de depuración de UB"
+    ContextMenu_UB_RefuelFromVehicle = "Agregar del tanque de gasolina"
+}

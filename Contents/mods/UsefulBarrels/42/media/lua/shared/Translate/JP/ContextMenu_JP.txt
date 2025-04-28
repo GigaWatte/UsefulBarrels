@@ -1,0 +1,8 @@
+ContextMenu_JP = {
+    ContextMenu_UB_UncapBarrel = "Uncap %1"
+    ContextMenu_UB_AddFluid = "追加"
+    ContextMenu_UB_RefuelFromBarrel = "バレルを燃料補給します"
+    ContextMenu_UB_TransferFluid = "液体を伝達します"
+    ContextMenu_UB_DebugOption = "UBデバッグ情報"
+    ContextMenu_UB_RefuelFromVehicle = "ガソリンタンクから追加します"
+}

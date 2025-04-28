@@ -1,0 +1,8 @@
+ContextMenu_TH = {
+    ContextMenu_UB_UncapBarrel = "uncap %1"
+    ContextMenu_UB_AddFluid = "เพิ่ม"
+    ContextMenu_UB_RefuelFromBarrel = "เติมน้ำมัน"
+    ContextMenu_UB_TransferFluid = "ถ่ายโอนของเหลว"
+    ContextMenu_UB_DebugOption = "ข้อมูลการดีบัก UB"
+    ContextMenu_UB_RefuelFromVehicle = "เพิ่มจากถังแก๊ส"
+}

@@ -1,0 +1,8 @@
+ContextMenu_NO = {
+    ContextMenu_UB_UncapBarrel = "Uncap %1"
+    ContextMenu_UB_AddFluid = "Legge til"
+    ContextMenu_UB_RefuelFromBarrel = "Refuel Brom tønnen"
+    ContextMenu_UB_TransferFluid = "Overføringsvæske"
+    ContextMenu_UB_DebugOption = "UB -debuginfo"
+    ContextMenu_UB_RefuelFromVehicle = "Legg til fra bensintanken"
+}

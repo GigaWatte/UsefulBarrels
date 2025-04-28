@@ -1,0 +1,8 @@
+ContextMenu_RO = {
+    ContextMenu_UB_UncapBarrel = "Uncap %1"
+    ContextMenu_UB_AddFluid = "Adăuga"
+    ContextMenu_UB_RefuelFromBarrel = "Alimentați Brom Barilul"
+    ContextMenu_UB_TransferFluid = "Fluid de transfer"
+    ContextMenu_UB_DebugOption = "Informații de depanare UB"
+    ContextMenu_UB_RefuelFromVehicle = "Adăugați din rezervorul de gaz"
+}
