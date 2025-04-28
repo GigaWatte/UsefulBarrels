@@ -173,21 +173,21 @@ function UB_BarrelContextMenu:DoFluidMenu(subMenu, optionsTable, isGroundMenu)
         self.debugOption.toolTip.description = self.debugOption.toolTip.description .. description
     end
 
-    if #optionsTable.allContainers == 0 then
-        if isGroundMenu then
-            UBUtils.DisableOptionAddTooltip(optionsTable.menuOption, optionsTable.noGroundContainersTooltip)
-        else
-            UBUtils.DisableOptionAddTooltip(optionsTable.menuOption, optionsTable.noContainersNooltip)
-        end
+    if optionsTable.noToolPredicate == true then
+        UBUtils.DisableOptionAddTooltip(menuOption, optionsTable.noToolTooltip)
         return
     end
-    if optionsTable.noToolPredicate then
-        UBUtils.DisableOptionAddTooltip(optionsTable.menuOption, optionsTable.noToolTooltip)
+    if #allContainers == 0 then
+        if isGroundMenu then
+            UBUtils.DisableOptionAddTooltip(menuOption, optionsTable.noGroundContainersTooltip)
+        else
+            UBUtils.DisableOptionAddTooltip(menuOption, optionsTable.noContainersNooltip)
+        end
         return
     end
 
     local newSubMenu = ISContextMenu:getNew(subMenu)
-    subMenu:addSubMenu(optionsTable.menuOption, newSubMenu)
+    subMenu:addSubMenu(menuOption, newSubMenu)
     self:DoAllItemsMenu(newSubMenu, allContainers, allContainerTypes, optionsTable.addToBarrel, optionsTable.actionAllText)
     self:DoCategoryList(newSubMenu, allContainerTypes, optionsTable.addToBarrel, optionsTable.actionOneText, optionsTable.actionAllText)
 end
@@ -342,7 +342,6 @@ function UB_BarrelContextMenu:new(player, context, ub_barrel)
 
             local addMenuOpts = {
                 addToBarrel=true,
-                hasToolNearby=hasFunnelNearby,
                 containers=UBUtils.getPlayerFluidContainers(self.playerInv),
                 optionText=getText("ContextMenu_UB_AddFluid"),
                 noToolPredicate=SandboxVars.UsefulBarrels.RequireFunnelForFill == true and hasFunnelNearby == false,
@@ -351,7 +350,7 @@ function UB_BarrelContextMenu:new(player, context, ub_barrel)
                 actionAllText=getText("ContextMenu_AddAll"),
                 actionOneText=getText("ContextMenu_AddOne"),
 
-                groundOptionText=getText("ContextMenu_UB_AddFluid_OnGround"),
+                groundOptionText=getText("ContextMenu_UB_AddFluid_FromGround"),
                 groundContainers=UBUtils.GetWorldFluidContainersNearby(
                     self.barrel.square, 
                     UBConst.WORLD_ITEMS_DISTANCE,
@@ -362,16 +361,15 @@ function UB_BarrelContextMenu:new(player, context, ub_barrel)
 
             local takeMenuOpts = {
                 addToBarrel=false,
-                hasToolNearby=hasHoseNearby,
                 containers=UBUtils.getPlayerFluidContainersWithFluid(self.playerInv, self.barrelFluid),
                 optionText=getText("ContextMenu_Fill"),
                 noToolPredicate=SandboxVars.UsefulBarrels.RequireHoseForTake == true and hasHoseNearby == false,
                 noToolTooltip=getText("Tooltip_UB_HoseMissing", getItemName("Base.RubberHose")),
-                noContainersNooltip=getText("Tooltip_UB_NoProperFluidInBarrel"),
+                noContainersNooltip=getText("Tooltip_UB_NoProperContainerInInventory"),
                 actionAllText=getText("ContextMenu_FillAll"),
                 actionOneText=getText("ContextMenu_FillOne"),
                 
-                groundOptionText=getText("ContextMenu_UB_AddFluid_FromGround"),
+                groundOptionText=getText("ContextMenu_UB_AddFluid_OnGround"),
                 groundContainers=UBUtils.GetWorldFluidContainersNearby(
                     self.barrel.square, 
                     UBConst.WORLD_ITEMS_DISTANCE,
@@ -394,14 +392,14 @@ function UB_BarrelContextMenu:new(player, context, ub_barrel)
             end
 
             -- add menu
-            self.DoFluidMenu(barrelMenu, addMenuOpts)
+            self:DoFluidMenu(barrelMenu, addMenuOpts)
             -- take menu
-            self.DoFluidMenu(barrelMenu, takeMenuOpts)
+            self:DoFluidMenu(barrelMenu, takeMenuOpts)
 
             -- add from ground menu
-            self.DoFluidMenu(barrelMenu, addMenuOpts, true)
+            self:DoFluidMenu(barrelMenu, addMenuOpts, true)
             -- add to ground menu
-            self.DoFluidMenu(barrelMenu, takeMenuOpts, true)
+            self:DoFluidMenu(barrelMenu, takeMenuOpts, true)
 
             if SandboxVars.UsefulBarrels.DebugMode then
                 self.debugOption.toolTip.description = self.debugOption.toolTip.description .. string.format(

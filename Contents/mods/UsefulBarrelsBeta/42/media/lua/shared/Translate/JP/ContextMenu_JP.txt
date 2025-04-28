@@ -5,4 +5,9 @@ ContextMenu_JP = {
     ContextMenu_UB_TransferFluid = "液体を伝達します"
     ContextMenu_UB_DebugOption = "UBデバッグ情報"
     ContextMenu_UB_RefuelFromVehicle = "ガソリンタンクから追加します"
+    ContextMenu_UB_AddFluid_FromGround = "Add from the floor"
+    ContextMenu_UB_AddFluid_OnGround = "Fill on the floor"
+    ContextMenu_UB_BuildingMismatch = "Buildings are not equal"
+    ContextMenu_UB_BarrelIsObstructed = "Barrel is unreachable"
+    ContextMenu_UB_BarrelTooFar = "Barrel too far"
 }

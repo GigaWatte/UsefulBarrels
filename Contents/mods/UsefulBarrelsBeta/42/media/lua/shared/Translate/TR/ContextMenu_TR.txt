@@ -5,4 +5,9 @@ ContextMenu_TR = {
     ContextMenu_UB_TransferFluid = "Aktarma sıvısı"
     ContextMenu_UB_DebugOption = "UB Hata Ayıklama Bilgisi"
     ContextMenu_UB_RefuelFromVehicle = "Gaz deposundan ekle"
+    ContextMenu_UB_AddFluid_FromGround = "Add from the floor"
+    ContextMenu_UB_AddFluid_OnGround = "Fill on the floor"
+    ContextMenu_UB_BuildingMismatch = "Buildings are not equal"
+    ContextMenu_UB_BarrelIsObstructed = "Barrel is unreachable"
+    ContextMenu_UB_BarrelTooFar = "Barrel too far"
 }

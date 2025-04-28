@@ -48,7 +48,7 @@ function UB_SiphonFromVehicleAction:start()
 
     self.character:reportEvent("EventTakeWater");
 
-    self.sound = self.character:playSound("VehicleAddFuelFromGasPump")
+    self.sound = self.character:playSound("GetWaterFromLake")
 end
 
 function UB_SiphonFromVehicleAction:stop()

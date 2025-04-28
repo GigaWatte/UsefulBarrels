@@ -38,7 +38,8 @@ local function DoDebugOption(context, playerObj, vehicle)
             and string.find(partCategory, "gastank")~=nil 
             and string.find(part:getContainerContentType(), "Gasoline")
             and part:getContainerContentAmount() < part:getContainerCapacity() then
-                local barrels = UBUtils.GetBarrelsNearbyVehiclePart(vehicle, part, UBConst.VEHICLE_SCAN_DISTANCE)
+                local partSquare = UBUtils.GetVehiclePartSquare(vehicle, part)
+                local barrels = UBUtils.GetBarrelsNearby(partSquare, UBConst.VEHICLE_SCAN_DISTANCE, Fluid.Petrol, true)
                 part_found = true
                 description = description .. string.format(
                     [[
@@ -102,7 +103,8 @@ function ISVehicleMenu.FillPartMenu(playerIndex, context, slice, vehicle)
             and string.find(partCategory, "gastank")~=nil 
             and string.find(part:getContainerContentType(), "Gasoline")
             and part:getContainerContentAmount() < part:getContainerCapacity() then
-                local barrels = UBUtils.GetBarrelsNearbyVehiclePart(vehicle, part, UBConst.VEHICLE_SCAN_DISTANCE)
+                local partSquare = UBUtils.GetVehiclePartSquare(vehicle, part)
+                local barrels = UBUtils.GetBarrelsNearby(partSquare, UBConst.VEHICLE_SCAN_DISTANCE, Fluid.Petrol, true)
 
                 if #barrels > 0 then
                     local barrel = barrels[1]

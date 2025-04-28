@@ -5,4 +5,9 @@ ContextMenu_FR = {
     ContextMenu_UB_TransferFluid = "Fluide de transfert"
     ContextMenu_UB_DebugOption = "Informations de débogage UB"
     ContextMenu_UB_RefuelFromVehicle = "Ajouter à partir du réservoir d'essence"
+    ContextMenu_UB_AddFluid_FromGround = "Add from the floor"
+    ContextMenu_UB_AddFluid_OnGround = "Fill on the floor"
+    ContextMenu_UB_BuildingMismatch = "Buildings are not equal"
+    ContextMenu_UB_BarrelIsObstructed = "Barrel is unreachable"
+    ContextMenu_UB_BarrelTooFar = "Barrel too far"
 }

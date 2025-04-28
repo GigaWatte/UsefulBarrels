@@ -5,4 +5,9 @@ ContextMenu_CN = {
     ContextMenu_UB_TransferFluid = "转移液体"
     ContextMenu_UB_DebugOption = "UB调试信息"
     ContextMenu_UB_RefuelFromVehicle = "从汽油箱中添加"
+    ContextMenu_UB_AddFluid_FromGround = "Add from the floor"
+    ContextMenu_UB_AddFluid_OnGround = "Fill on the floor"
+    ContextMenu_UB_BuildingMismatch = "Buildings are not equal"
+    ContextMenu_UB_BarrelIsObstructed = "Barrel is unreachable"
+    ContextMenu_UB_BarrelTooFar = "Barrel too far"
 }

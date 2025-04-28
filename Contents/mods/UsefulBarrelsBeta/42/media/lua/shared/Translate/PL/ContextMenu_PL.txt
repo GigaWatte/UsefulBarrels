@@ -5,4 +5,9 @@ ContextMenu_PL = {
     ContextMenu_UB_TransferFluid = "Płyn przeniesienia"
     ContextMenu_UB_DebugOption = "Informacje o debugowaniu UB"
     ContextMenu_UB_RefuelFromVehicle = "Dodaj ze zbiornika gazu"
+    ContextMenu_UB_AddFluid_FromGround = "Add from the floor"
+    ContextMenu_UB_AddFluid_OnGround = "Fill on the floor"
+    ContextMenu_UB_BuildingMismatch = "Buildings are not equal"
+    ContextMenu_UB_BarrelIsObstructed = "Barrel is unreachable"
+    ContextMenu_UB_BarrelTooFar = "Barrel too far"
 }

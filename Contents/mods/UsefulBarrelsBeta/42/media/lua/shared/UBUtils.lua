@@ -210,9 +210,9 @@ function UBUtils.GetWorldItemsNearby(square, distance, isDiamondShape)
     return worldItems
 end
 
-function UBUtils.GetBarrelsNearby(square, distance, fluid)
+function UBUtils.GetBarrelsNearby(square, distance, fluid, sortByDistance)
     -- this function not include an initial square in searching process
-    if not square then return nil end
+    if not square then return {} end
 
     local squares = UBUtils.GetSquaresInRange(square, distance, false)
 
@@ -230,20 +230,22 @@ function UBUtils.GetBarrelsNearby(square, distance, fluid)
             end
         end
     end
+
+    if #barrels > 1 and sortByDistance ~= nil and sortByDistance then
+        table.sort(barrels, function(a,b) return IsoUtils.DistanceTo(
+            a.isoObject:getX(), a.isoObject:getY(), square:getX(), square:getY()
+        ) < IsoUtils.DistanceTo(
+            b.isoObject:getX(), b.isoObject:getY(), square:getX(), square:getY()
+        ) end)
+    end
     
     return barrels
 end
 
-function UBUtils.GetBarrelsNearbyVehiclePart(vehicle, part, distance)
-    local barrels = {}
+function UBUtils.GetVehiclePartSquare(vehicle, part)
     local areaCenter = vehicle:getAreaCenter(part:getArea())
-    if not areaCenter then return barrels end
-    local square = getCell():getGridSquare(areaCenter:getX(), areaCenter:getY(), vehicle:getZ())
-    if not square then return barrels end
-
-    barrels = UBUtils.GetBarrelsNearby(square, distance, Fluid.Petrol)
-
-    return barrels
+    if not areaCenter then return nil end
+    return getCell():getGridSquare(areaCenter:getX(), areaCenter:getY(), vehicle:getZ())
 end
 
 function UBUtils.GetVehiclesNeaby(square, distance)
@@ -279,17 +281,23 @@ end
 function UBUtils.CanCreateBarrelFluidMenu(playerObj, barrelSquare, barrelOption)
     -- thats from vanilla method. it seems to verify target square room and current player room
     if barrelSquare:getBuilding() ~= playerObj:getBuilding() then
-        UBUtils.DisableOptionAddTooltip(barrelOption, getText("ContextMenu_UB_BuildingMismatch"))
+        if barrelOption then
+            UBUtils.DisableOptionAddTooltip(barrelOption, getText("ContextMenu_UB_BuildingMismatch"))
+        end
         return false
     end
     --if the player can reach the tile, populate the submenu, otherwise don't bother
     if not barrelSquare or not AdjacentFreeTileFinder.Find(barrelSquare, playerObj) then
-        UBUtils.DisableOptionAddTooltip(barrelOption, getText("ContextMenu_UB_BarrelIsObstructed"))
+        if barrelOption then
+            UBUtils.DisableOptionAddTooltip(barrelOption, getText("ContextMenu_UB_BarrelIsObstructed"))
+        end
         return false
     end
 
     if IsoUtils.DistanceTo(playerObj:getX(), playerObj:getY(), barrelSquare:getX() + 0.5, barrelSquare:getY() + 0.5) > 4 then
-        UBUtils.DisableOptionAddTooltip(barrelOption, getText("ContextMenu_UB_BarrelTooFar"))
+        if barrelOption then
+            UBUtils.DisableOptionAddTooltip(barrelOption, getText("ContextMenu_UB_BarrelTooFar"))
+        end
         return false
     end
 
