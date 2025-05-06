@@ -2,62 +2,10 @@
 ---@class UBBarrel
 local UBBarrel = ISBaseObject:derive("UBBarrel")
 
-function UBBarrel.ValidateFluidCategoty(fluidContainer)
-    local allowList = {
-        [FluidCategory.Industrial] = SandboxVars.UsefulBarrels.AllowIndustrial,
-        [FluidCategory.Fuel]       = SandboxVars.UsefulBarrels.AllowFuel,
-        [FluidCategory.Hazardous]  = SandboxVars.UsefulBarrels.AllowHazardous,
-        [FluidCategory.Alcoholic]  = SandboxVars.UsefulBarrels.AllowAlcoholic,
-        [FluidCategory.Beverage]   = SandboxVars.UsefulBarrels.AllowBeverage,
-        [FluidCategory.Medical]    = SandboxVars.UsefulBarrels.AllowMedical,
-        [FluidCategory.Colors]     = SandboxVars.UsefulBarrels.AllowColors,
-        [FluidCategory.Dyes]       = SandboxVars.UsefulBarrels.AllowDyes,
-        [FluidCategory.HairDyes]   = SandboxVars.UsefulBarrels.AllowHairDyes,
-        [FluidCategory.Poisons]    = SandboxVars.UsefulBarrels.AllowPoisons,
-        [FluidCategory.Water]      = SandboxVars.UsefulBarrels.AllowWater,
-    }
-    local fluid = fluidContainer:getPrimaryFluid()
-    if not fluid then return true end
-    for category, allowed in pairs(allowList) do
-        if fluid:isCategory(category) and allowed then return true end
-    end
-    return false
-end
-
 function UBBarrel:OnPickup()
-    self.fluidContainer:setInputLocked(true)
-    self.fluidContainer:setCanPlayerEmpty(false)
-
-    if instanceof(self.isoObject, "IsoThumpable") then
-        if self:GetModData("UB_MaxHealth") then
-            self:SetModData("UB_MaxHealth", self.isoObject:getMaxHealth())
-        end
-        if self:GetModData("UB_Health") then
-            self:SetModData("UB_Health", self.isoObject:getHealth())
-        end
-    end
 end
 
 function UBBarrel:OnPlace()
-    self.fluidContainer:setInputLocked(false)
-    self.fluidContainer:setCanPlayerEmpty(true)
-    if instanceof(self.isoObject, "IsoThumpable") then
-        self.isoObject:setThumpDmg(2) --zeds needed to hurt obj
-
-        if self:GetModData("UB_MaxHealth") then
-            self.isoObject:setMaxHealth(tonumber(self:GetModData("UB_MaxHealth")))
-        else
-            self.isoObject:setMaxHealth(50)
-            self:SetModData("UB_MaxHealth", 50)
-        end
-
-        if self:GetModData("UB_Health") then
-            self.isoObject:setHealth(tonumber(self:GetModData("UB_Health")))
-        else
-            self.isoObject:setHealth(50)
-            self:SetModData("UB_Health", 50)
-        end
-    end
 end
 
 function UBBarrel:GetModData(key)
@@ -76,147 +24,17 @@ function UBBarrel:SetModData(key, value)
 end
 
 function UBBarrel:GetTooltipText(font_size)
-    function FormatFluidAmount(setX, amount, max, fluidName)
-        if max >= 9999 then
-            return string.format("%s: <SETX:%d> %s", getText(fluidName), setX, getText("Tooltip_WaterUnlimited"))
-        end
-        return string.format("%s: <SETX:%d> %s / %s", getText(fluidName), setX, luautils.round(amount, 2) .. "L", max .. "L")
-    end
-
-    local fluidAmount = self:getAmount()
-    local fluidMax = self:getCapacity()
-    local fluidName = self:GetTranslatedFluidNameOrEmpty()
-
-    local tx = getTextManager():MeasureStringX(font_size, fluidName .. ":") + 20
-    return FormatFluidAmount(tx, fluidAmount, fluidMax, fluidName)
+    return ""
 end
 
 function UBBarrel:GetBarrelInfo()
     local output = string.format("Barrel object: %s\n", tostring(self.isoObject))
-    output = output .. string.format("hasFluidContainer: %s\n", tostring(self:hasFluidContainer()))
-
-    if self.fluidContainer~=nil then
-        local fluidAmount = self:getAmount()
-        local fluidMax = self:getCapacity()
-        local barrelFluid = self:getPrimaryFluid()
-
-
-        output = output .. string.format(
-            [[
-            Fluid: %s
-            Fluid amount: %s
-            Fluid capacity: %s
-            isInputLocked: %s
-            canPlayerEmpty: %s
-            ]],
-            tostring(barrelFluid),
-            tostring(fluidAmount),
-            tostring(fluidMax),
-            tostring(self.fluidContainer:isInputLocked()),
-            tostring(self.fluidContainer:canPlayerEmpty())
-        )
-    end
-
-    if self.isoObject:hasModData() then
-        local modData = self.isoObject:getModData()
-
-        output = output .. string.format(
-            [[
-            UB_Uncapped:       %s
-            UB_Initial_fluid:  %s
-            UB_Initial_amount: %s
-            UB_Health:         %s
-            UB_MaxHealth:      %s
-            ]],
-            tostring(modData["UB_Uncapped"]),
-            tostring(modData["UB_Initial_amount"]),
-            tostring(modData["UB_Initial_amount"]),
-            tostring(modData["UB_Health"]),
-            tostring(modData["UB_MaxHealth"])
-        )
-
-        if modData["modData"] then
-            output = output .. string.format(
-            [[
-            Nested modData options
-            UB_Uncapped:       %s
-            UB_Initial_fluid:  %s
-            UB_Initial_amount: %s
-            UB_Health:         %s
-            UB_MaxHealth:      %s
-            ]],
-            tostring(modData["modData"]["UB_Uncapped"]),
-            tostring(modData["modData"]["UB_Initial_amount"]),
-            tostring(modData["modData"]["UB_Initial_amount"]),
-            tostring(modData["modData"]["UB_Health"]),
-            tostring(modData["modData"]["UB_MaxHealth"])
-            )
-        end
-    end
     return output
-end
-
-function UBBarrel:CanTransferFluid(fluidContainers, transferToContainers)
-    local toContainers = false
-    if transferToContainers ~= nil then
-        toContainers = transferToContainers
-    end
-    
-    local allContainers = {}
-    for _,container in pairs(fluidContainers) do
-        local fluidContainer = container:getComponent(ComponentType.FluidContainer)
-        if not toContainers and FluidContainer.CanTransfer(fluidContainer, self.fluidContainer) then
-            if UBBarrel.ValidateFluidCategoty(fluidContainer) then
-                table.insert(allContainers, container)
-            end
-        elseif toContainers and FluidContainer.CanTransfer(self.fluidContainer, fluidContainer) then
-            table.insert(allContainers, container)
-        end
-    end
-    return allContainers
-end
-
-function UBBarrel:ContainsFluid(fluid)
-    return self.fluidContainer~=nil and self.fluidContainer:contains(fluid)
-end
-
-function UBBarrel:hasFluidContainer()
-    --return self.isoObject:hasComponent(ComponentType.FluidContainer)
-    return self.fluidContainer ~= nil
-end
-
-function UBBarrel:getAmount()
-    if self.fluidContainer~=nil then return self.fluidContainer:getAmount() else return 0 end  
-end
-
-function UBBarrel:getCapacity()
-    if self.fluidContainer~=nil then return self.fluidContainer:getCapacity() else return 0 end
-end
-
-function UBBarrel:getPrimaryFluid()
-    if self.fluidContainer~=nil and self:getAmount() > 0 then 
-        return self.fluidContainer:getPrimaryFluid() 
-    else 
-        return nil 
-    end
-end
-
-function UBBarrel:GetTranslatedFluidNameOrEmpty()
-    local fluidObject = self:getPrimaryFluid()
-
-    if fluidObject then
-        return fluidObject:getTranslatedName()
-    else
-        return getText("ContextMenu_Empty")
-    end
 end
 
 function UBBarrel:GetWeight()
     local weight = 0
 
-    if self.fluidContainer~=nil then
-        weight = weight + self:getAmount()
-    end
     if instanceof(self.isoObject, "Moveable") then
         weight = weight + self.isoObject:getActualWeight()
     end
@@ -243,6 +61,12 @@ function UBBarrel:GetWeight()
     return weight
 end
 
+function UBBarrel:getSprite(type)
+    if not UBBarrel.spriteMap[self.baseName][self.facing] then return nil end
+    if not UBBarrel.spriteMap[self.baseName][self.facing][type] then return nil end
+    return UBBarrel.spriteMap[self.baseName][self.facing][type]
+end
+
 function UBBarrel.GetMoveableDisplayName(isoObject)
     if not isoObject then return nil end
     if not isoObject:getSprite() then return nil end
@@ -257,63 +81,63 @@ function UBBarrel.GetMoveableDisplayName(isoObject)
     return nil
 end
 
-function UBBarrel.validate(object)
-    if not object then return false end
-        -- Moveable is subclass of InventoryItem
+UBBarrel.VALID_BARREL_NAMES = {
+    "Base.MetalDrum",
+    "Base.Mov_LightGreenBarrel",
+    "Base.Mov_OrangeBarrel",
+    "Base.Mov_DarkGreenBarrel",
+}
+
+local function isBarrel(baseName)
+    for i = 1, #UBBarrel.VALID_BARREL_NAMES do
+        if baseName == UBBarrel.VALID_BARREL_NAMES[i] then return true end
+    end
+    return false
+end
+
+local function getObjectBaseName(object)
+    -- Moveable is subclass of InventoryItem
     if instanceof(object, "Moveable") then
-        local valid_item_names = {
-            Translator.getItemNameFromFullType("Base.MetalDrum"),
-            Translator.getItemNameFromFullType("Base.Mov_LightGreenBarrel"),
-            Translator.getItemNameFromFullType("Base.Mov_OrangeBarrel"),
-            Translator.getItemNameFromFullType("Base.Mov_DarkGreenBarrel"),
-        }
-        for i = 1, #valid_item_names do
-            if object:getName() == valid_item_names[i] then return true end
-        end
+        local scriptItem = object:getScriptItem()
+        return scriptItem:getFullName()
     end
     -- IsoObject is base class for any world object
     if instanceof(object, "IsoObject") then 
-        local valid_barrel_moveable_names = {
-            "Base.MetalDrum",
-            "Base.Mov_LightGreenBarrel",
-            "Base.Mov_OrangeBarrel",
-            "Base.Mov_DarkGreenBarrel",
-        }
         if not object:getSquare() then return end
         if not object:getSprite() then return end
         if not object:getSprite():getProperties() then return end
         local props = object:getSprite():getProperties()
         if not props:Val("CustomItem") then return end
 
-        for i = 1, #valid_barrel_moveable_names do
-            -- CustomItem is Moveable item
-            if props:Val("CustomItem") == valid_barrel_moveable_names[i] then 
-                return true
-            end
-        end
+        -- CustomItem is Moveable item name
+        return props:Val("CustomItem")
     end
+
+    error("If you read this something went wrong...")
+    return object:getName()
 end
 
-function UBBarrel:new(isoObject)
-    local o = {};
-    setmetatable(o, self)
-    self.__index = self
+function UBBarrel.validate(object)
+    if not object then return false end
+    return isBarrel(getObjectBaseName(object))
+end
 
-    if not isoObject then return nil end
-    if not UBBarrel.validate(isoObject) then return nil end
-    if not isoObject:hasComponent(ComponentType.FluidContainer) then return nil end
+function UBBarrel.construct(isoObject)
+    local o = {}
+
+    o.isoObject = isoObject
+    o.baseName = getObjectBaseName(isoObject)
 
     -- Moveable is subclass of InventoryItem
     if instanceof(isoObject, "Moveable") then
         --local scriptItem = getScriptManager():FindItem(isoObject.customItem)
 
         --object:getDisplayName()
-        o.isoObject = isoObject
-        o.fluidContainer = isoObject:getComponent(ComponentType.FluidContainer)
         o.square = nil
+        o.altLabel = nil
         o.objectLabel = isoObject:getName()
         o.icon = isoObject:getIcon()
-        return o
+        o.facing = nil
     end
     -- IsoObject is base class for any world object
     if instanceof(isoObject, "IsoObject") then 
@@ -321,10 +145,17 @@ function UBBarrel:new(isoObject)
         local scriptItem = getScriptManager():FindItem(props:Val("CustomItem"))
         -- CustomItem is fullname Moveable item
 
-        o.isoObject = isoObject
-        o.fluidContainer = isoObject:getComponent(ComponentType.FluidContainer)
         o.square = isoObject:getSquare()
-        --o.objectLabel = Translator.getMoveableDisplayName(props:Is("CustomName"))
+
+        local name
+        if props:Is("CustomName") then
+            name = props:Val("CustomName")
+            if props:Is("GroupName") then
+                name = props:Val("GroupName") .. " " .. name
+            end
+        end
+
+        o.altLabel = Translator.getMoveableDisplayName(name)
         o.objectLabel = scriptItem:getDisplayName()
         
         local icon = scriptItem:getIcon()
@@ -338,8 +169,76 @@ function UBBarrel:new(isoObject)
             end
         end
 
-        return o
+        o.facing = props:Val("Facing")
     end
+    
+    return o
 end
+
+function UBBarrel:new(isoObject)
+    if not isoObject then return nil end
+    if not UBBarrel.validate(isoObject) then return nil end
+
+    local o = UBBarrel.construct(isoObject)
+    
+    setmetatable(o, self)
+    self.__index = self
+
+    return o
+end
+
+-- sprite facing
+UBBarrel.N = "N"
+UBBarrel.S = "S"
+-- sprite type
+UBBarrel.DEFAULT = "default"
+UBBarrel.LIDLESS = "lidless"
+UBBarrel.LIDLESS_WATER = "lidless_water"
+UBBarrel.LIDLESS_RUSTY = "lidless_rusty"
+
+local spriteMap = {}
+spriteMap["Base.MetalDrum"] = {}
+spriteMap["Base.MetalDrum"][UBBarrel.N] = {
+    [UBBarrel.DEFAULT] = "crafted_01_32",
+    [UBBarrel.LIDLESS] = "crafted_01_24",
+    [UBBarrel.LIDLESS_WATER] = "crafted_01_25",
+    [UBBarrel.LIDLESS_RUSTY] = "crafted_05_56"
+}
+spriteMap["Base.MetalDrum"][UBBarrel.S] = {
+    [UBBarrel.DEFAULT] = "crafted_01_32"
+}
+
+spriteMap["Base.Mov_LightGreenBarrel"] = {}
+spriteMap["Base.Mov_LightGreenBarrel"][UBBarrel.N] = {
+    [UBBarrel.DEFAULT] = "location_military_generic_01_6",
+    [UBBarrel.LIDLESS] = nil,
+    [UBBarrel.LIDLESS_WATER] = nil,
+    [UBBarrel.LIDLESS_RUSTY] = "crafted_05_28"
+}
+spriteMap["Base.Mov_LightGreenBarrel"][UBBarrel.S] = {
+    [UBBarrel.DEFAULT] = "location_military_generic_01_7"
+}
+
+spriteMap["Base.Mov_OrangeBarrel"] = {}
+spriteMap["Base.Mov_OrangeBarrel"][UBBarrel.N] = {
+    [UBBarrel.DEFAULT] = "industry_01_22",
+    [UBBarrel.LIDLESS] = "crafted_01_28",
+    [UBBarrel.LIDLESS_WATER] = "crafted_01_29",
+    [UBBarrel.LIDLESS_RUSTY] = "crafted_05_60"
+}
+spriteMap["Base.Mov_OrangeBarrel"][UBBarrel.S] = {
+    [UBBarrel.DEFAULT] = "industry_01_23"
+}
+
+spriteMap["Base.Mov_DarkGreenBarrel"] = {}
+spriteMap["Base.Mov_DarkGreenBarrel"][UBBarrel.N] = {
+    [UBBarrel.DEFAULT] = "location_military_generic_01_14",
+    [UBBarrel.LIDLESS] = nil,
+    [UBBarrel.LIDLESS_WATER] = nil,
+    [UBBarrel.LIDLESS_RUSTY] = "crafted_05_65"
+}
+spriteMap["Base.Mov_DarkGreenBarrel"][UBBarrel.S] = {
+    [UBBarrel.DEFAULT] = "location_military_generic_01_15"
+}
 
 return UBBarrel

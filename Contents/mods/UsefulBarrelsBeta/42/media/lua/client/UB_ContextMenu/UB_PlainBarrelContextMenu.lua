@@ -1,5 +1,6 @@
 
 local UBUtils = require "UBUtils"
+local UBBarrel = require "UBBarrel"
 
 local function DoDebugOption(player, context, hasValidWrench, barrel)
     local debugOption = context:addOptionOnTop(getText("ContextMenu_UB_DebugOption"))
@@ -33,31 +34,22 @@ end
 
 local function PlainBarrelContextMenu(player, context, worldobjects, test)
     local barrel = UBUtils.GetValidBarrel(worldobjects)
-    
+
     if not barrel then return end
-    if barrel:hasComponent(ComponentType.FluidContainer) then return end
 
-    local props = barrel:getSprite():getProperties()
-    local name
+    if not barrel.Type == UBBarrel.Type then return end
 
-    if props:Is("CustomName") then
-        name = props:Val("CustomName")
-        if props:Is("GroupName") then
-            name = props:Val("GroupName") .. " " .. name
-        end
-    end
     local playerObj = getSpecificPlayer(player)
     local playerInv = playerObj:getInventory()
 
     local wrench = UBUtils.playerGetItem(playerInv, "PipeWrench")
     local hasValidWrench = wrench ~= nil and UBUtils.predicateNotBroken(wrench)
 
-    local barrel_label = Translator.getMoveableDisplayName(name)
     local openBarrelOption = context:addOptionOnTop(
-        getText("ContextMenu_UB_UncapBarrel", barrel_label), 
+        getText("ContextMenu_UB_UncapBarrel", barrel.altLabel), 
         player,
         DoBarrelUncap,
-        barrel, barrel_label, wrench, hasValidWrench
+        barrel, barrel.altLabel, wrench, hasValidWrench
     )
     if not hasValidWrench and SandboxVars.UsefulBarrels.RequirePipeWrench then
         UBUtils.DisableOptionAddTooltip(openBarrelOption, getText("Tooltip_UB_WrenchMissing", getItemName("Base.PipeWrench")))

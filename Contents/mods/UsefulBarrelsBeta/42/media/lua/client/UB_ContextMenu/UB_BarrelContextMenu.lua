@@ -2,6 +2,7 @@
 local UBUtils = require "UBUtils"
 local UBConst = require "UBConst"
 local UBBarrel = require "UBBarrel"
+local UBFluidBarrel = require "UBFluidBarrel"
 local UB_BarrelContextMenu = {}
 
 function UB_BarrelContextMenu.OnTransferFluid(playerObj, barrelSquare, fluidContainer, fluidContainerItems, addToBarrel)
@@ -419,13 +420,10 @@ local function BarrelContextMenu(player, context, worldobjects, test)
     local barrel = UBUtils.GetValidBarrel(worldobjects)
     
     if not barrel then return end
-    if not barrel:hasComponent(ComponentType.FluidContainer) then return end
+    
+    if not barrel.Type == UBFluidBarrel.Type then return end--"UBFluidBarrel" then return end
 
-    local ub_barrel = UBBarrel:new(barrel)
-
-    if not ub_barrel then return end
-
-    return UB_BarrelContextMenu:new(player, context, ub_barrel)
+    return UB_BarrelContextMenu:new(player, context, barrel)
 end
 
 Events.OnFillWorldObjectContextMenu.Add(BarrelContextMenu)
