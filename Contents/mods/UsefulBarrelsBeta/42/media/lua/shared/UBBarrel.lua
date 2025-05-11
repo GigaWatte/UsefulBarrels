@@ -1,6 +1,96 @@
+require "ISBaseObject"
+
 -- object TTL is current context menu lifetime and recreates every time
----@class UBBarrel
 local UBBarrel = ISBaseObject:derive("UBBarrel")
+
+function UBBarrel:AddFluidContainerToBarrel()
+    if self.isoObject:hasComponent(ComponentType.FluidContainer) then
+        return true
+    end
+
+    local function getInitialFluid()
+        local fluidTable = {}
+        local fluids = luautils.split(SandboxVars.UsefulBarrels.InitialFluidPool)
+        for _,fluidStr in ipairs(fluids, " ") do
+            if Fluid.Get(fluidStr) then table.insert(fluidTable, Fluid.Get(fluidStr)) end
+        end
+    
+        if #fluidTable == 1 then return nil end
+        local index = ZombRand(#fluidTable) + 1
+    
+        return fluidTable[index]
+    end
+    
+    local function getInitialFluidAmount()
+        if SandboxVars.UsefulBarrels.InitialFluidMaxAmount > 0 then
+            return PZMath.clamp(ZombRand(SandboxVars.UsefulBarrels.InitialFluidMaxAmount), 0, SandboxVars.UsefulBarrels.BarrelCapacity)
+        end
+        return 0
+    end
+    
+    local function shouldSpawn()
+        if SandboxVars.UsefulBarrels.InitialFluidSpawnChance == 100 then return true end
+        if SandboxVars.UsefulBarrels.InitialFluidSpawnChance > 0 then
+            return ZombRand(0,100) <= SandboxVars.UsefulBarrels.InitialFluidSpawnChance
+        end
+        return false
+    end
+
+    local component = ComponentType.FluidContainer:CreateComponent()
+    local barrelCapacity = SandboxVars.UsefulBarrels.BarrelCapacity
+    component:setCapacity(barrelCapacity)
+    component:setContainerName("UB_Barrel")
+    
+    local shouldSpawn = shouldSpawn()
+    if SandboxVars.UsefulBarrels.InitialFluid and shouldSpawn then
+        local fluid = getInitialFluid()
+        if fluid then
+            local amount = getInitialFluidAmount()
+            component:addFluid(fluid, amount)
+            self:SetModData("UB_Initial_fluid", tostring(fluid))
+            self:SetModData("UB_Initial_amount", tostring(amount))
+        end
+    end
+
+    GameEntityFactory.AddComponent(self.isoObject, true, component)
+
+    self:SetModData("UB_Uncapped", true)
+
+    buildUtil.setHaveConstruction(self.square, true)
+
+    return true
+end
+
+function UBBarrel:EnableRainFactor()
+    if self.isoObject:hasComponent(ComponentType.FluidContainer) then
+        local component = self.isoObject:getComponent(ComponentType.FluidContainer)
+        component:setRainCatcher(0.4)
+    end
+end
+
+function UBBarrel:CutLid()
+    local addFluidContainerSuccess = self:AddFluidContainerToBarrel()
+    if not addFluidContainerSuccess then return false end
+
+    local newSprite = self:getSprite(UBBarrel.LIDLESS)
+
+    if newSprite then
+        self:SetModData("UB_OriginalSprite", self.isoObject:getSprite():getName())
+        self:SetModData("UB_CurrentSprite", newSprite)
+        self:setSprite(newSprite)
+
+        self:EnableRainFactor()
+    else
+        print(string.format("Missing sprite %s for %s", UBBarrel.LIDLESS), self.isoObject:getSprite():getName())
+        return false
+    end
+
+    self:SetModData("UB_CutLid", true)
+    
+    buildUtil.setHaveConstruction(self.square, true)
+
+    return true
+end
 
 function UBBarrel:OnPickup()
 end
@@ -61,10 +151,69 @@ function UBBarrel:GetWeight()
     return weight
 end
 
+-- sprite facing
+UBBarrel.N = "N"
+UBBarrel.S = "S"
+-- sprite type
+UBBarrel.DEFAULT = "default"
+UBBarrel.LIDLESS = "lidless"
+UBBarrel.LIDLESS_WATER = "lidless_water"
+UBBarrel.LIDLESS_RUSTY = "lidless_rusty"
+
+local SPRITE_MAP = {}
+SPRITE_MAP["Base.MetalDrum"] = {}
+SPRITE_MAP["Base.MetalDrum"][UBBarrel.N] = {
+    [UBBarrel.DEFAULT] = "crafted_01_32",
+    [UBBarrel.LIDLESS] = "crafted_01_24",
+    [UBBarrel.LIDLESS_WATER] = "crafted_01_25",
+    [UBBarrel.LIDLESS_RUSTY] = "crafted_05_56"
+}
+SPRITE_MAP["Base.MetalDrum"][UBBarrel.S] = {
+    [UBBarrel.DEFAULT] = "crafted_01_32"
+}
+
+SPRITE_MAP["Base.Mov_LightGreenBarrel"] = {}
+SPRITE_MAP["Base.Mov_LightGreenBarrel"][UBBarrel.N] = {
+    [UBBarrel.DEFAULT] = "location_military_generic_01_6",
+    [UBBarrel.LIDLESS] = nil,
+    [UBBarrel.LIDLESS_WATER] = nil,
+    [UBBarrel.LIDLESS_RUSTY] = "crafted_05_28"
+}
+SPRITE_MAP["Base.Mov_LightGreenBarrel"][UBBarrel.S] = {
+    [UBBarrel.DEFAULT] = "location_military_generic_01_7"
+}
+
+SPRITE_MAP["Base.Mov_OrangeBarrel"] = {}
+SPRITE_MAP["Base.Mov_OrangeBarrel"][UBBarrel.N] = {
+    [UBBarrel.DEFAULT] = "industry_01_22",
+    [UBBarrel.LIDLESS] = "crafted_01_28",
+    [UBBarrel.LIDLESS_WATER] = "crafted_01_29",
+    [UBBarrel.LIDLESS_RUSTY] = "crafted_05_60"
+}
+SPRITE_MAP["Base.Mov_OrangeBarrel"][UBBarrel.S] = {
+    [UBBarrel.DEFAULT] = "industry_01_23"
+}
+
+SPRITE_MAP["Base.Mov_DarkGreenBarrel"] = {}
+SPRITE_MAP["Base.Mov_DarkGreenBarrel"][UBBarrel.N] = {
+    [UBBarrel.DEFAULT] = "location_military_generic_01_14",
+    [UBBarrel.LIDLESS] = nil,
+    [UBBarrel.LIDLESS_WATER] = nil,
+    [UBBarrel.LIDLESS_RUSTY] = "crafted_05_65"
+}
+SPRITE_MAP["Base.Mov_DarkGreenBarrel"][UBBarrel.S] = {
+    [UBBarrel.DEFAULT] = "location_military_generic_01_15"
+}
+
 function UBBarrel:getSprite(type)
-    if not UBBarrel.spriteMap[self.baseName][self.facing] then return nil end
-    if not UBBarrel.spriteMap[self.baseName][self.facing][type] then return nil end
-    return UBBarrel.spriteMap[self.baseName][self.facing][type]
+    if not SPRITE_MAP[self.baseName] then return end
+    if not SPRITE_MAP[self.baseName][self.facing] then return nil end
+    if not SPRITE_MAP[self.baseName][self.facing][type] then return nil end
+    return SPRITE_MAP[self.baseName][self.facing][type]
+end
+
+function UBBarrel:setSprite(sprite)
+    self.isoObject:setSprite(sprite)
 end
 
 function UBBarrel.GetMoveableDisplayName(isoObject)
@@ -89,6 +238,7 @@ UBBarrel.VALID_BARREL_NAMES = {
 }
 
 local function isBarrel(baseName)
+    if not baseName then return false end
     for i = 1, #UBBarrel.VALID_BARREL_NAMES do
         if baseName == UBBarrel.VALID_BARREL_NAMES[i] then return true end
     end
@@ -100,9 +250,8 @@ local function getObjectBaseName(object)
     if instanceof(object, "Moveable") then
         local scriptItem = object:getScriptItem()
         return scriptItem:getFullName()
-    end
     -- IsoObject is base class for any world object
-    if instanceof(object, "IsoObject") then 
+    elseif instanceof(object, "IsoObject") then 
         if not object:getSquare() then return end
         if not object:getSprite() then return end
         if not object:getSprite():getProperties() then return end
@@ -111,10 +260,9 @@ local function getObjectBaseName(object)
 
         -- CustomItem is Moveable item name
         return props:Val("CustomItem")
+    else
+        return nil
     end
-
-    error("If you read this something went wrong...")
-    return object:getName()
 end
 
 function UBBarrel.validate(object)
@@ -122,30 +270,27 @@ function UBBarrel.validate(object)
     return isBarrel(getObjectBaseName(object))
 end
 
-function UBBarrel.construct(isoObject)
-    local o = {}
-
-    o.isoObject = isoObject
-    o.baseName = getObjectBaseName(isoObject)
+function UBBarrel:init()
+    self.baseName = getObjectBaseName(self.isoObject)
 
     -- Moveable is subclass of InventoryItem
-    if instanceof(isoObject, "Moveable") then
+    if instanceof(self.isoObject, "Moveable") then
         --local scriptItem = getScriptManager():FindItem(isoObject.customItem)
 
         --object:getDisplayName()
-        o.square = nil
-        o.altLabel = nil
-        o.objectLabel = isoObject:getName()
-        o.icon = isoObject:getIcon()
-        o.facing = nil
+        self.square = nil
+        self.altLabel = nil
+        self.objectLabel = self.isoObject:getName()
+        self.icon = self.isoObject:getIcon()
+        self.facing = nil
     end
     -- IsoObject is base class for any world object
-    if instanceof(isoObject, "IsoObject") then 
-        local props = isoObject:getSprite():getProperties()
+    if instanceof(self.isoObject, "IsoObject") then 
+        local props = self.isoObject:getSprite():getProperties()
         local scriptItem = getScriptManager():FindItem(props:Val("CustomItem"))
         -- CustomItem is fullname Moveable item
 
-        o.square = isoObject:getSquare()
+        self.square = self.isoObject:getSquare()
 
         local name
         if props:Is("CustomName") then
@@ -155,8 +300,8 @@ function UBBarrel.construct(isoObject)
             end
         end
 
-        o.altLabel = Translator.getMoveableDisplayName(name)
-        o.objectLabel = scriptItem:getDisplayName()
+        self.altLabel = Translator.getMoveableDisplayName(name)
+        self.objectLabel = scriptItem:getDisplayName()
         
         local icon = scriptItem:getIcon()
         if scriptItem:getIconsForTexture() and not scriptItem:getIconsForTexture():isEmpty() then
@@ -165,80 +310,26 @@ function UBBarrel.construct(isoObject)
         if icon then
             local texture = tryGetTexture("Item_" .. icon)
             if texture then
-                o.icon = texture
+                self.icon = texture
             end
         end
 
-        o.facing = props:Val("Facing")
+        self.facing = props:Val("Facing")
     end
-    
-    return o
 end
 
 function UBBarrel:new(isoObject)
-    if not isoObject then return nil end
-    if not UBBarrel.validate(isoObject) then return nil end
-
-    local o = UBBarrel.construct(isoObject)
-    
+    local o = {}
     setmetatable(o, self)
     self.__index = self
 
+    if not isoObject then return nil end
+    if not UBBarrel.validate(isoObject) then return nil end
+
+    o.isoObject = isoObject
+    o:init()
+
     return o
 end
-
--- sprite facing
-UBBarrel.N = "N"
-UBBarrel.S = "S"
--- sprite type
-UBBarrel.DEFAULT = "default"
-UBBarrel.LIDLESS = "lidless"
-UBBarrel.LIDLESS_WATER = "lidless_water"
-UBBarrel.LIDLESS_RUSTY = "lidless_rusty"
-
-local spriteMap = {}
-spriteMap["Base.MetalDrum"] = {}
-spriteMap["Base.MetalDrum"][UBBarrel.N] = {
-    [UBBarrel.DEFAULT] = "crafted_01_32",
-    [UBBarrel.LIDLESS] = "crafted_01_24",
-    [UBBarrel.LIDLESS_WATER] = "crafted_01_25",
-    [UBBarrel.LIDLESS_RUSTY] = "crafted_05_56"
-}
-spriteMap["Base.MetalDrum"][UBBarrel.S] = {
-    [UBBarrel.DEFAULT] = "crafted_01_32"
-}
-
-spriteMap["Base.Mov_LightGreenBarrel"] = {}
-spriteMap["Base.Mov_LightGreenBarrel"][UBBarrel.N] = {
-    [UBBarrel.DEFAULT] = "location_military_generic_01_6",
-    [UBBarrel.LIDLESS] = nil,
-    [UBBarrel.LIDLESS_WATER] = nil,
-    [UBBarrel.LIDLESS_RUSTY] = "crafted_05_28"
-}
-spriteMap["Base.Mov_LightGreenBarrel"][UBBarrel.S] = {
-    [UBBarrel.DEFAULT] = "location_military_generic_01_7"
-}
-
-spriteMap["Base.Mov_OrangeBarrel"] = {}
-spriteMap["Base.Mov_OrangeBarrel"][UBBarrel.N] = {
-    [UBBarrel.DEFAULT] = "industry_01_22",
-    [UBBarrel.LIDLESS] = "crafted_01_28",
-    [UBBarrel.LIDLESS_WATER] = "crafted_01_29",
-    [UBBarrel.LIDLESS_RUSTY] = "crafted_05_60"
-}
-spriteMap["Base.Mov_OrangeBarrel"][UBBarrel.S] = {
-    [UBBarrel.DEFAULT] = "industry_01_23"
-}
-
-spriteMap["Base.Mov_DarkGreenBarrel"] = {}
-spriteMap["Base.Mov_DarkGreenBarrel"][UBBarrel.N] = {
-    [UBBarrel.DEFAULT] = "location_military_generic_01_14",
-    [UBBarrel.LIDLESS] = nil,
-    [UBBarrel.LIDLESS_WATER] = nil,
-    [UBBarrel.LIDLESS_RUSTY] = "crafted_05_65"
-}
-spriteMap["Base.Mov_DarkGreenBarrel"][UBBarrel.S] = {
-    [UBBarrel.DEFAULT] = "location_military_generic_01_15"
-}
 
 return UBBarrel

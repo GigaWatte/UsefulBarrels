@@ -1,7 +1,5 @@
-require "UBBarrel"
+local UBBarrel = require "UBBarrel"
 
--- object TTL is current context menu lifetime and recreates every time
----@class UBBarrel
 local UBFluidBarrel = UBBarrel:derive("UBFluidBarrel")
 
 function UBFluidBarrel.ValidateFluidCategoty(fluidContainer)
@@ -231,15 +229,13 @@ function UBFluidBarrel:GetWeight()
 end
 
 function UBFluidBarrel:new(isoObject)
-    if not isoObject then return nil end
+    local o = UBBarrel.new(self, isoObject)
+    if not o then return nil end
     if not isoObject:hasComponent(ComponentType.FluidContainer) then return nil end
-    if not UBFluidBarrel.validate(isoObject) then return nil end
-    local o = UBFluidBarrel.construct(isoObject)
-
-    setmetatable(o, self)
-    self.__index = self
 
     o.fluidContainer = isoObject:getComponent(ComponentType.FluidContainer)
 
     return o
 end
+
+return UBFluidBarrel

@@ -296,8 +296,6 @@ function UB_BarrelContextMenu:RemoveVanillaOptions(context, subcontext)
 end
 
 function UB_BarrelContextMenu:new(player, context, ub_barrel)
-    local o = self
-
     self.barrel = ub_barrel
     self.playerObj = getSpecificPlayer(player)
     self.playerInv = self.playerObj:getInventory()
@@ -420,8 +418,7 @@ local function BarrelContextMenu(player, context, worldobjects, test)
     local barrel = UBUtils.GetValidBarrel(worldobjects)
     
     if not barrel then return end
-    
-    if not barrel.Type == UBFluidBarrel.Type then return end--"UBFluidBarrel" then return end
+    if barrel.Type ~= UBFluidBarrel.Type then return end
 
     return UB_BarrelContextMenu:new(player, context, barrel)
 end

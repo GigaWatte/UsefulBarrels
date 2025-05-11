@@ -21,23 +21,20 @@ local function DoDebugOption(player, context, hasValidWrench, barrel)
     debugOption.toolTip = tooltip
 end
 
-local function DoBarrelUncap(player, barrel, plain_barrel_label, wrench, hasValidWrench)
-    local playerObj = getSpecificPlayer(player)
-
-    if luautils.walkAdj(playerObj, barrel:getSquare(), true) then
+local function DoBarrelUncap(playerObj, ub_barrel, wrench, hasValidWrench)
+    if luautils.walkAdj(playerObj, ub_barrel.square, true) then
         if SandboxVars.UsefulBarrels.RequirePipeWrench and hasValidWrench then
             ISTimedActionQueue.add(ISEquipWeaponAction:new(playerObj, wrench, 25, true))
         end
-        ISTimedActionQueue.add(UB_BarrelUncapAction:new(playerObj, barrel, wrench, plain_barrel_label))
+        ISTimedActionQueue.add(UB_BarrelUncapAction:new(playerObj, ub_barrel, wrench))
     end
 end
 
 local function PlainBarrelContextMenu(player, context, worldobjects, test)
-    local barrel = UBUtils.GetValidBarrel(worldobjects)
+    local ub_barrel = UBUtils.GetValidBarrel(worldobjects)
 
-    if not barrel then return end
-
-    if not barrel.Type == UBBarrel.Type then return end
+    if not ub_barrel then return end
+    if ub_barrel.Type ~= UBBarrel.Type then return end
 
     local playerObj = getSpecificPlayer(player)
     local playerInv = playerObj:getInventory()
@@ -46,17 +43,17 @@ local function PlainBarrelContextMenu(player, context, worldobjects, test)
     local hasValidWrench = wrench ~= nil and UBUtils.predicateNotBroken(wrench)
 
     local openBarrelOption = context:addOptionOnTop(
-        getText("ContextMenu_UB_UncapBarrel", barrel.altLabel), 
-        player,
+        getText("ContextMenu_UB_UncapBarrel", ub_barrel.altLabel), 
+        playerObj,
         DoBarrelUncap,
-        barrel, barrel.altLabel, wrench, hasValidWrench
+        ub_barrel, wrench, hasValidWrench
     )
     if not hasValidWrench and SandboxVars.UsefulBarrels.RequirePipeWrench then
         UBUtils.DisableOptionAddTooltip(openBarrelOption, getText("Tooltip_UB_WrenchMissing", getItemName("Base.PipeWrench")))
     end
 
     if SandboxVars.UsefulBarrels.DebugMode then
-        DoDebugOption(player, context, hasValidWrench, barrel)
+        DoDebugOption(player, context, hasValidWrench, ub_barrel)
     end
 end
 

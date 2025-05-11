@@ -3,14 +3,14 @@ local UBUtils = require "UBUtils"
 local UBConst = require "UBConst"
 local UBBarrel = require "UBBarrel"
 
-local function onCutBarrelLid(player, barrel, barrelLabel, wrench, hasValidWrench)
-	if luautils.walkAdj(player, barrel:getSquare()) then
+local function onCutBarrelLid(player, barrel, blowTorch)
+	if luautils.walkAdj(player, barrel.square, true) then
 		--ISWorldObjectContextMenu.equip(player, player:getPrimaryHandItem(), predicateBlowTorch, true);
 		--local mask = player:getInventory():getFirstEvalRecurse(predicateWeldingMask);
 		--if mask then
 		--	ISInventoryPaneContextMenu.wearItem(mask, player:getPlayerNum());
 		--end
-		ISTimedActionQueue.add(UB_CutBarrelLidAction:new(player, barrel));
+		ISTimedActionQueue.add(UB_CutBarrelLidAction:new(player, barrel, blowTorch, UBConst.BlowTorchUses));
 	end
 end
 
@@ -28,9 +28,9 @@ local function CutLidBarrelContextMenu(player, context, worldobjects, test)
 
     local cutLidBarrelOption = context:addOptionOnTop(
         getText("ContextMenu_UB_CutLid", barrel.altLabel), 
-        player,
+        playerObj,
         onCutBarrelLid,
-        barrel, barrel.altLabel, blowTorch, hasBlowTorch
+        barrel, blowTorch
     )
 
     if not hasWeldingMask and SandboxVars.UsefulBarrels.RequireWeldingMask then
@@ -40,10 +40,10 @@ local function CutLidBarrelContextMenu(player, context, worldobjects, test)
     if SandboxVars.UsefulBarrels.RequireBlowTorch then
         if hasBlowTorch then
             if not UBUtils.itemHasUses(blowTorch, UBConst.BlowTorchUses) then
-                UBUtils.DisableOptionAddTooltip(cutLidBarrelOption, "<RGB:1,0,0> " .. getItemNameFromFullType("Base.WeldingMask") .. " < 2 uses")
+                UBUtils.DisableOptionAddTooltip(cutLidBarrelOption, "<RGB:1,0,0> " .. getItemNameFromFullType("Base.BlowTorch") .. " < 2 uses")
             end
         else
-            UBUtils.DisableOptionAddTooltip(cutLidBarrelOption, "<RGB:1,0,0> " .. getItemNameFromFullType("Base.WeldingMask") .. " is required")
+            UBUtils.DisableOptionAddTooltip(cutLidBarrelOption, "<RGB:1,0,0> " .. getItemNameFromFullType("Base.BlowTorch") .. " is required")
         end
     end
 
