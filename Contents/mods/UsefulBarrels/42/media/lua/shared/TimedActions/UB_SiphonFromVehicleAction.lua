@@ -29,9 +29,15 @@ function UB_SiphonFromVehicleAction:update()
     end
 
     local barrelUnits = self.barrelStart + (self.barrelTarget - self.barrelStart) * self:getJobDelta()
-    self.fuelFluidContainer:adjustAmount(math.ceil(barrelUnits));
+    barrelUnits = math.ceil(barrelUnits)
 
-    self.character:setMetabolicTarget(Metabolics.HeavyDomestic);
+    if self.fuelFluidContainer:isEmpty() and self.fuelFluidContainer:canAddFluid(Fluid.Petrol) then
+        self.fuelFluidContainer:addFluid(Fluid.Petrol, barrelUnits)
+    else
+        self.fuelFluidContainer:adjustAmount(barrelUnits)
+    end
+
+    self.character:setMetabolicTarget(Metabolics.HeavyDomestic)
 end
 
 function UB_SiphonFromVehicleAction:start()
@@ -50,7 +56,8 @@ end
 
 function UB_SiphonFromVehicleAction:serverStop()
     local barrelLitres = self.barrelStart + (self.barrelTarget - self.barrelStart) * self.netAction:getProgress()
-    self.fuelFluidContainer:adjustAmount(math.ceil(barrelLitres));
+    self.fuelFluidContainer:adjustAmount(math.ceil(barrelLitres))
+
     local litres = self.tankStart + (self.tankTarget - self.tankStart) * self.netAction:getProgress()
     self.part:setContainerContentAmount(math.floor(litres))
     self.vehicle:transmitPartModData(self.part)
@@ -70,8 +77,16 @@ function UB_SiphonFromVehicleAction:complete()
         end
         local litres = self.tankStart + (self.tankTarget - self.tankStart) * self:getJobDelta()
         self.part:setContainerContentAmount(litres)
-        local barrelLitres = self.barrelStart + (self.barrelTarget - self.barrelStart) * self:getJobDelta()
-        self.fuelFluidContainer:adjustAmount(math.ceil(barrelLitres));
+
+        local barrelUnits = self.barrelStart + (self.barrelTarget - self.barrelStart) * self:getJobDelta()
+        barrelUnits = math.ceil(barrelUnits)
+
+        if self.fuelFluidContainer:isEmpty() and self.fuelFluidContainer:canAddFluid(Fluid.Petrol) then
+            self.fuelFluidContainer:addFluid(Fluid.Petrol, barrelUnits)
+        else
+            self.fuelFluidContainer:adjustAmount(barrelUnits)
+        end
+        
         self.vehicle:transmitPartModData(self.part)
     else
         print('no such vehicle id=', self.vehicle)
