@@ -1,6 +1,8 @@
 ContextMenu_ES = {
-    ContextMenu_UB_UncapBarrel = "%1 Abrir",
-    ContextMenu_UB_AddFluid = "Agregar combustible",
-    ContextMenu_UB_RefuelFromBarrel = "Refuel From Barrel",
-    ContextMenu_UB_TransferFluid = "Transfer fluid",
+    ContextMenu_UB_UncapBarrel = "%1 Abrir"
+    ContextMenu_UB_AddFluid = "Agregar combustible"
+    ContextMenu_UB_RefuelFromBarrel = "Repostar desde el barril"
+    ContextMenu_UB_TransferFluid = "Transferir fluido"
+    ContextMenu_UB_DebugOption = "Información de depuración de UB"
+    ContextMenu_UB_RefuelFromVehicle = "Añadir desde el tanque de gasolina"
 } 

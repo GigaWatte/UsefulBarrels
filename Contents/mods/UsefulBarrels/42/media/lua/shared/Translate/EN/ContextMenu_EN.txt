@@ -1,7 +1,8 @@
 ContextMenu_EN = {
     ContextMenu_UB_UncapBarrel = "Uncap %1"
     ContextMenu_UB_AddFluid = "Add"
-    ContextMenu_UB_RefuelFromBarrel = "Refuel From Barrel"
+    ContextMenu_UB_RefuelFromBarrel = "Refuel from barrel"
     ContextMenu_UB_TransferFluid = "Transfer fluid"
     ContextMenu_UB_DebugOption = "UB Debug Info"
+    ContextMenu_UB_RefuelFromVehicle = "Add from gas tank"
 }

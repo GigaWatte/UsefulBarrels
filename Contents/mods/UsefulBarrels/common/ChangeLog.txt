@@ -93,3 +93,9 @@
 3.0.3:
 - Fixed: call nil at DoBarrelUncap
 [ ------ ]
+[ 11/05/2025 ]
+3.0.4:
+- Fixed: missing translation for some languages
+- Fixed: mispell sandbox variable "FillBarrelFromVehiclesRequiresHose" (again...)
+- Fixed: transferring fuel from a vehicle to an empty barrel causes the fuel to disappear
+[ ------ ]

@@ -190,7 +190,7 @@ function UB_BarrelContextMenu:DoSiphonFromVehicleMenu(context, hasHoseNearby)
 
     local vehicleOption = context:addOption(getText("ContextMenu_UB_RefuelFromVehicle"))
 
-    if SandboxVars.UsefulBarrels.UsefulBarrelsFillBarrelFromVehiclesRequiresHose and not hasHoseNearby then
+    if SandboxVars.UsefulBarrels.FillBarrelFromVehiclesRequiresHose and not hasHoseNearby then
         UBUtils.DisableOptionAddTooltip(vehicleOption, getText("Tooltip_UB_HoseMissing", getItemName("Base.RubberHose")))
         return
     end
@@ -203,7 +203,12 @@ function UB_BarrelContextMenu:DoSiphonFromVehicleMenu(context, hasHoseNearby)
             local partCategory = part:getCategory()
             if part and partCategory and part:isContainer() and string.find(partCategory, "gastank")~=nil then
                 local carName = vehicle:getScript():getCarModelName() or vehicle:getScript():getName()
-                local vehicle_option = vehicleMenu:addOption(getText("IGUI_VehicleName" .. carName), self.playerObj, UB_BarrelContextMenu.OnVehicleTransferFluid, part, self.barrel)
+                local vehicle_option = vehicleMenu:addOption(
+                    getText("IGUI_VehicleName" .. carName), 
+                    self.playerObj, 
+                    UB_BarrelContextMenu.OnVehicleTransferFluid, 
+                    part, self.barrel
+                )
                 if part:getContainerContentAmount() > 0 then
                     local tooltip = ISWorldObjectContextMenu.addToolTip()
                     tooltip.maxLineWidth = 512
