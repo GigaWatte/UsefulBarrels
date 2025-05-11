@@ -242,7 +242,12 @@ function UB_BarrelContextMenu:DoSiphonFromVehicleMenu(context, hasHoseNearby)
                     tostring(math.ceil(part:getContainerContentAmount()))
                 )
                 vehicle_gas_part_found = true
-                local vehicle_option = vehicleMenu:addOption(getText("IGUI_VehicleName" .. carName), self.playerObj, UB_BarrelContextMenu.OnVehicleTransferFluid, part, self.barrel)
+                local vehicle_option = vehicleMenu:addOption(
+                    getText("IGUI_VehicleName" .. carName), 
+                    self.playerObj, 
+                    UB_BarrelContextMenu.OnVehicleTransferFluid, 
+                    part, self.barrel
+                )
                 if part:getContainerContentAmount() > 0 then
                     local tooltip = ISWorldObjectContextMenu.addToolTip()
                     tooltip.maxLineWidth = 512
