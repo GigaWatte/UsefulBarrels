@@ -1,5 +1,5 @@
 require "ISBaseObject"
-
+local UBConst = require "UBConst"
 -- object TTL is current context menu lifetime and recreates every time
 local UBBarrel = ISBaseObject:derive("UBBarrel")
 
@@ -64,7 +64,7 @@ end
 function UBBarrel:EnableRainFactor()
     if self.isoObject:hasComponent(ComponentType.FluidContainer) then
         local component = self.isoObject:getComponent(ComponentType.FluidContainer)
-        component:setRainCatcher(0.4)
+        component:setRainCatcher(UBConst.RAIN_CATCHER_FACTOR)
     end
 end
 
@@ -191,7 +191,9 @@ SPRITE_MAP["Base.Mov_OrangeBarrel"][UBBarrel.N] = {
     [UBBarrel.LIDLESS_RUSTY] = "crafted_05_60"
 }
 SPRITE_MAP["Base.Mov_OrangeBarrel"][UBBarrel.S] = {
-    [UBBarrel.DEFAULT] = "industry_01_23"
+    [UBBarrel.DEFAULT] = "industry_01_23",
+    [UBBarrel.LIDLESS] = "crafted_01_28",
+    [UBBarrel.LIDLESS_WATER] = "crafted_01_29",
 }
 
 SPRITE_MAP["Base.Mov_DarkGreenBarrel"] = {}

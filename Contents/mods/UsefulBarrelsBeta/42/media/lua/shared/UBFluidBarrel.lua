@@ -93,12 +93,14 @@ function UBFluidBarrel:GetBarrelInfo()
             Fluid capacity: %s
             isInputLocked: %s
             canPlayerEmpty: %s
+            rainCatcherFactor: %s
             ]],
             tostring(barrelFluid),
             tostring(fluidAmount),
             tostring(fluidMax),
             tostring(self.fluidContainer:isInputLocked()),
-            tostring(self.fluidContainer:canPlayerEmpty())
+            tostring(self.fluidContainer:canPlayerEmpty()),
+            tostring(self.fluidContainer:getRainCatcher())
         )
     end
 
@@ -112,12 +114,18 @@ function UBFluidBarrel:GetBarrelInfo()
             UB_Initial_amount: %s
             UB_Health:         %s
             UB_MaxHealth:      %s
+            UB_OriginalSprite: %s
+            UB_CurrentSprite:  %s
+            UB_CutLid:         %s
             ]],
             tostring(modData["UB_Uncapped"]),
             tostring(modData["UB_Initial_amount"]),
             tostring(modData["UB_Initial_amount"]),
             tostring(modData["UB_Health"]),
-            tostring(modData["UB_MaxHealth"])
+            tostring(modData["UB_MaxHealth"]),
+            tostring(modData["UB_OriginalSprite"]),
+            tostring(modData["UB_CurrentSprite"]),
+            tostring(modData["UB_CutLid"])
         )
 
         if modData["modData"] then
@@ -129,12 +137,18 @@ function UBFluidBarrel:GetBarrelInfo()
             UB_Initial_amount: %s
             UB_Health:         %s
             UB_MaxHealth:      %s
+            UB_OriginalSprite: %s
+            UB_CurrentSprite:  %s
+            UB_CutLid:         %s
             ]],
             tostring(modData["modData"]["UB_Uncapped"]),
             tostring(modData["modData"]["UB_Initial_amount"]),
             tostring(modData["modData"]["UB_Initial_amount"]),
             tostring(modData["modData"]["UB_Health"]),
-            tostring(modData["modData"]["UB_MaxHealth"])
+            tostring(modData["modData"]["UB_MaxHealth"]),
+            tostring(modData["modData"]["UB_OriginalSprite"]),
+            tostring(modData["modData"]["UB_CurrentSprite"]),
+            tostring(modData["modData"]["UB_CutLid"])
             )
         end
     end
@@ -239,3 +253,6 @@ function UBFluidBarrel:new(isoObject)
 end
 
 return UBFluidBarrel
+
+-- overlay sprite for water
+--    self.wall:setOverlaySprite("constructedobjects_signs_01_" .. self.sign, self.r,self.g,self.b,1);

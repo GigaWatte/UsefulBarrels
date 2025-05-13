@@ -11,4 +11,6 @@ UBConst.WORLD_ITEMS_DISTANCE = 1
 
 UBConst.BlowTorchUses = 2
 
+UBConst.RAIN_CATCHER_FACTOR = 0.3
+
 return UBConst

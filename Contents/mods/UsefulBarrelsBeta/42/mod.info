@@ -3,6 +3,7 @@ modversion=3.1.0
 id=UsefulBarrelsBeta
 description=Barrels can actually be more than just a sprite!
 poster=poster.png
+tiledef=UB_tiledefinitions 8897
 icon=icon.png
 author=GigaWatte
 versionMin=42.3.1

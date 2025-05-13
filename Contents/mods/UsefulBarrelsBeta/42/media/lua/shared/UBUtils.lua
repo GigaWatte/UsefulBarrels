@@ -3,6 +3,25 @@ local UBUtils = {}
 local UBBarrel = require("UBBarrel")
 local UBFluidBarrel = require("UBFluidBarrel")
 
+--local mod = 'EtherHammerX';
+
+--local printf = function(message, ...)
+--    print(string.format(message, ...));
+--end
+--
+----- @param message? string
+--local info = function(message, ...)
+--    if not message then
+--        print('[' .. mod .. '] :: ');
+--    else
+--        if not ... then
+--            print('[' .. mod .. '] :: ' .. tostring(message));
+--        else
+--            printf('[' .. mod .. '] :: ' .. tostring(message), ...);
+--        end
+--    end
+--end
+
 function UBUtils.predicateFluid(item, fluid)
     return item:getFluidContainer() and item:getFluidContainer():contains(fluid) and (item:getFluidContainer():getAmount() >= 0.5)
 end

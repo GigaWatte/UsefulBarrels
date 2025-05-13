@@ -1,0 +1,26 @@
+version = 1
+tileset
+{
+    file = industry_01
+    size = 8,8
+    id = 95
+    // crafted_01_28
+    tile
+    {
+        xy = 4,3
+        BlocksPlacement = 
+        CanScrap = 
+        CustomItem = Base.Mov_OrangeBarrel
+        CustomName = Barrel
+        Facing = N
+        GroupName = Orange
+        IsLow = 
+        IsMoveAble = 
+        IsTable = 
+        Material = MetalPlates
+        Material2 = MetalScrap
+        PickUpWeight = 150
+        Surface = 33
+        solidtrans = 
+    }
+}

@@ -1,43 +1,51 @@
 
 require "TimedActions/ISBaseTimedAction"
 
-UB_CutBarrelLidAction = ISBaseTimedAction:derive("UB_CutBarrelLidAction");
+UB_BarrelLidCutAction = ISBaseTimedAction:derive("UB_BarrelLidCutAction");
 
-function UB_CutBarrelLidAction:isValid()
-	if SandboxVars.UsefulBarrels.RequireWeldingMask then
-		--return self.character:isEquipped(self.blowTorch)
-		return true
+function UB_BarrelLidCutAction:isValid()
+	if SandboxVars.UsefulBarrels.RequireBlowTorch then
+		return self.character:isEquipped(self.blowTorch)
 	else
 		return true
 	end
 end
 
-function UB_CutBarrelLidAction:update()
+function UB_BarrelLidCutAction:update()
 	self.blowTorch:setJobDelta(self:getJobDelta())
 	self.character:faceThisObject(self.barrelObj)
-    self.character:setMetabolicTarget(Metabolics.MediumWork)
+    self.character:setMetabolicTarget(Metabolics.HeavyWork)
+	if self.sound ~= 0 and not self.character:getEmitter():isPlaying(self.sound) then
+		self.sound = self.character:playSound("BlowTorch")
+	end
 end
 
-function UB_CutBarrelLidAction:start()
-	self.blowTorch:setJobType(getText("ContextMenu_UB_UncapBarrel", self.objectLabel))
+function UB_BarrelLidCutAction:start()
+	self.blowTorch:setJobType(getText("ContextMenu_UB_BarrelCutLid", self.objectLabel))
 	self.blowTorch:setJobDelta(0.0)
-	self.sound = self.character:playSound("RepairWithWrench")
+	self:setActionAnim("BlowTorch")
+	self:setOverrideHandModels(self.blowTorch, nil)
+	self.sound = self.character:playSound("BlowTorch")
 end
 
-function UB_CutBarrelLidAction:stop()
-	self.character:stopOrTriggerSound(self.sound)
+function UB_BarrelLidCutAction:stop()
+	if self.sound ~= 0 then
+		self.character:getEmitter():stopSound(self.sound)
+	end
 	self.blowTorch:setJobDelta(0.0)
     ISBaseTimedAction.stop(self);
 end
 
-function UB_CutBarrelLidAction:perform()
-	self.character:stopOrTriggerSound(self.sound)
+function UB_BarrelLidCutAction:perform()
+	if self.sound ~= 0 then
+		self.character:getEmitter():stopSound(self.sound)
+	end
 	self.blowTorch:setJobDelta(0.0)
 	-- needed to remove from queue / start next.
 	ISBaseTimedAction.perform(self);
 end
 
-function UB_CutBarrelLidAction:complete()
+function UB_BarrelLidCutAction:complete()
     local totalXP = 5
 	if self.barrelObj then
 
@@ -56,14 +64,14 @@ function UB_CutBarrelLidAction:complete()
 	return true
 end
 
-function UB_CutBarrelLidAction:getDuration()
+function UB_BarrelLidCutAction:getDuration()
 	if self.character:isMechanicsCheat() or self.character:isTimedActionInstant() then
 		return 10
 	end
     return 150 - (self.character:getPerkLevel(Perks.MetalWelding) * 10)
 end
 
-function UB_CutBarrelLidAction:new(character, barrel, blowTorch, uses)
+function UB_BarrelLidCutAction:new(character, barrel, blowTorch, uses)
 	local o = ISBaseTimedAction.new(self, character)
 	o.character = character
 	o.ub_barrel = barrel

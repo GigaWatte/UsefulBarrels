@@ -4,9 +4,11 @@ local UBBarrel = require "UBBarrel"
 
 local function DoDebugOption(player, context, hasValidWrench, barrel)
     local debugOption = context:addOptionOnTop(getText("ContextMenu_UB_DebugOption"))
-    local tooltip = ISWorldObjectContextMenu.addToolTip()
+    debugOption.toolTip = ISWorldObjectContextMenu.addToolTip()
 
-    local description = string.format(
+    local description = barrel:GetBarrelInfo()
+
+    description = description .. string.format(
         [[
         SVRequirePipeWrench: %s
         hasValidWrench: %s
@@ -17,8 +19,7 @@ local function DoDebugOption(player, context, hasValidWrench, barrel)
         tostring(barrel)
     )
 
-    tooltip.description = description
-    debugOption.toolTip = tooltip
+    debugOption.toolTip.description = description
 end
 
 local function DoBarrelUncap(playerObj, ub_barrel, wrench, hasValidWrench)
@@ -41,6 +42,7 @@ local function PlainBarrelContextMenu(player, context, worldobjects, test)
 
     local wrench = UBUtils.playerGetItem(playerInv, "PipeWrench")
     local hasValidWrench = wrench ~= nil and UBUtils.predicateNotBroken(wrench)
+    local icon = wrench:getIcon()
 
     local openBarrelOption = context:addOptionOnTop(
         getText("ContextMenu_UB_UncapBarrel", ub_barrel.altLabel), 
@@ -48,12 +50,16 @@ local function PlainBarrelContextMenu(player, context, worldobjects, test)
         DoBarrelUncap,
         ub_barrel, wrench, hasValidWrench
     )
-    if not hasValidWrench and SandboxVars.UsefulBarrels.RequirePipeWrench then
-        UBUtils.DisableOptionAddTooltip(openBarrelOption, getText("Tooltip_UB_WrenchMissing", getItemName("Base.PipeWrench")))
+    if openBarrelOption and icon then
+        openBarrelOption.iconTexture = icon
     end
 
     if SandboxVars.UsefulBarrels.DebugMode then
         DoDebugOption(player, context, hasValidWrench, ub_barrel)
+    end
+
+    if not hasValidWrench and SandboxVars.UsefulBarrels.RequirePipeWrench then
+        UBUtils.DisableOptionAddTooltip(openBarrelOption, "<RGB:1,0,0> " .. getItemNameFromFullType("Base.PipeWrench") .. " 0/1")
     end
 end
 
