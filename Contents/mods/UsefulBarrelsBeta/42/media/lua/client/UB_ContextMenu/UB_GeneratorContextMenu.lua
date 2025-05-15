@@ -82,45 +82,11 @@ function UB_GeneratorContextMenu:DoRefuelMenu(player, context)
     end
 end
 
-function UB_GeneratorContextMenu:DoDebugOption(player, context, worldobjects, test)
-    local debugOption = context:addOptionOnTop(getText("ContextMenu_UB_DebugOption"))
-    local tooltip = ISWorldObjectContextMenu.addToolTip()
-    local barrels = UBUtils.GetBarrelsNearby(self.generator:getSquare(), UBConst.GENERATOR_SCAN_DISTANCE, Fluid.Petrol)
-    local description = string.format(
-        [[
-        SVEnableGeneratorRefuel: %s
-        SVGeneratorRequireHose: %s
-        Gen isActivated: %s
-        Gen fuel >= 100: %s
-        Barrels available: %s
-        CanCreateMenu: %s
-        ]],
-        tostring(SandboxVars.UsefulBarrels.EnableGeneratorRefuel),
-        tostring(SandboxVars.UsefulBarrels.GeneratorRefuelRequiresHose),
-        tostring(self.generator:isActivated()),
-        tostring(self.generator:getFuel() >= 100),
-        tostring(#barrels),
-        tostring(UB_GeneratorContextMenu.CanCreateRefuelMenu(self.generator:getSquare(), self.playerObj))
-    )
-    for _,barrel in ipairs(barrels) do
-        local worldObjects = UBUtils.GetWorldItemsNearby(barrel.square, UBConst.TOOL_SCAN_DISTANCE)
-        local hasHoseNearby = UBUtils.hasItemNearbyOrInInv(worldObjects, self.playerInv, "Base.RubberHose")
-        description = description .. string.format("hasHoseNearby: %s", tostring(hasHoseNearby))
-        description = description .. barrel:GetBarrelInfo()
-    end
-    tooltip.description = description
-    debugOption.toolTip = tooltip
-end
-
 function UB_GeneratorContextMenu:new(player, context, worldobjects, test)
     local o = self
     o.playerObj = getSpecificPlayer(player)
     o.playerInv = o.playerObj:getInventory()
     o.generator = ISWorldObjectContextMenu.fetchVars.generator
-
-    if SandboxVars.UsefulBarrels.DebugMode and o.generator ~= nil then
-        self:DoDebugOption(player, context, worldobjects, test)
-    end
 
     if not o.generator or o.playerObj:getVehicle() then return end
     if o.generator:isActivated() or o.generator:getFuel() >= 100 then return end

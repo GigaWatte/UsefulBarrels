@@ -2,26 +2,6 @@
 local UBUtils = require "UBUtils"
 local UBBarrel = require "UBBarrel"
 
-local function DoDebugOption(player, context, hasValidWrench, barrel)
-    local debugOption = context:addOptionOnTop(getText("ContextMenu_UB_DebugOption"))
-    debugOption.toolTip = ISWorldObjectContextMenu.addToolTip()
-
-    local description = barrel:GetBarrelInfo()
-
-    description = description .. string.format(
-        [[
-        SVRequirePipeWrench: %s
-        hasValidWrench: %s
-        isoObject: %s
-        ]],
-        tostring(SandboxVars.UsefulBarrels.RequirePipeWrench),
-        tostring(hasValidWrench),
-        tostring(barrel)
-    )
-
-    debugOption.toolTip.description = description
-end
-
 local function DoBarrelUncap(playerObj, ub_barrel, wrench, hasValidWrench)
     if luautils.walkAdj(playerObj, ub_barrel.square, true) then
         if SandboxVars.UsefulBarrels.RequirePipeWrench and hasValidWrench then
@@ -52,10 +32,6 @@ local function PlainBarrelContextMenu(player, context, worldobjects, test)
     )
     if openBarrelOption and icon then
         openBarrelOption.iconTexture = icon
-    end
-
-    if SandboxVars.UsefulBarrels.DebugMode then
-        DoDebugOption(player, context, hasValidWrench, ub_barrel)
     end
 
     if not hasValidWrench and SandboxVars.UsefulBarrels.RequirePipeWrench then

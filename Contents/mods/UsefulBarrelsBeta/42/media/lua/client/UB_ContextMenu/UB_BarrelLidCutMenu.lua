@@ -3,28 +3,6 @@ local UBUtils = require "UBUtils"
 local UBConst = require "UBConst"
 local UBBarrel = require "UBBarrel"
 
-local function DoDebugOption(player, context, hasWeldingMask, hasBlowTorch)
-    local debugOption = context:addOptionOnTop(getText("ContextMenu_UB_DebugOption"))
-    debugOption.toolTip = ISWorldObjectContextMenu.addToolTip()
-
-    local description = barrel:GetBarrelInfo()
-
-    description = description .. string.format(
-        [[
-        SVRequireWeldingMask: %s
-        SVRequireBlowTorch: %s
-        hasWeldingMask: %s
-        hasBlowTorch: %s
-        ]],
-        tostring(SandboxVars.UsefulBarrels.RequireWeldingMask),
-        tostring(SandboxVars.UsefulBarrels.RequireBlowTorch),
-        tostring(hasWeldingMask),
-        tostring(hasBlowTorch)
-    )
-
-    debugOption.toolTip.description = description
-end
-
 local function DuBarrelLidCut(playerObj, barrel, blowTorch, weldingMask)
 	if luautils.walkAdj(playerObj, barrel.square, true) then
         if SandboxVars.UsefulBarrels.RequireWeldingMask and weldingMask ~= nil then
@@ -42,6 +20,8 @@ local function DuBarrelLidCut(playerObj, barrel, blowTorch, weldingMask)
 end
 
 local function BarrelLidCutContextMenu(player, context, worldobjects, test)
+    -- maybe move it under existing barrel option
+    -- also debug show be one and not two
     local ub_barrel = UBUtils.GetValidBarrel(worldobjects)
     -- UBBarrel or UBFluidBarrel is valid here in context
     if not ub_barrel then return end
@@ -55,28 +35,34 @@ local function BarrelLidCutContextMenu(player, context, worldobjects, test)
     local blowTorch = UBUtils.playerGetBestItem(playerInv, "BlowTorch", function (a,b) return a:getCurrentUses() - b:getCurrentUses() end)
     local hasBlowTorch = blowTorch ~= nil
 
-    local barrelCutLidOption = context:addOptionOnTop(
-        getText("ContextMenu_UB_CutLid", ub_barrel.altLabel), 
-        playerObj,
-        DuBarrelLidCut,
-        ub_barrel, blowTorch, weldingMask
-    )
-
-    if SandboxVars.UsefulBarrels.DebugMode then
-        DoDebugOption(player, context, hasWeldingMask, hasBlowTorch)
+    -- get vanilla FluidContainer object option
+    local barrelOption = context:getOptionFromName(self.barrel.objectLabel)
+    if barrelOption and self.barrel.icon then
+        barrelOption.iconTexture = self.barrel.icon
     end
 
-    if not hasWeldingMask and SandboxVars.UsefulBarrels.RequireWeldingMask then
-        UBUtils.DisableOptionAddTooltip(barrelCutLidOption, "<RGB:1,0,0> " .. getItemNameFromFullType("Base.WeldingMask") .. " 0/1")
-    end
+    if barrelOption then
+        local barrelMenu = context:getSubMenu(barrelOption.subOption)
 
-    if SandboxVars.UsefulBarrels.RequireBlowTorch then
-        if hasBlowTorch then
-            if not UBUtils.itemHasUses(blowTorch, UBConst.BlowTorchUses) then
-                UBUtils.DisableOptionAddTooltip(barrelCutLidOption, "<RGB:1,0,0> " .. getItemNameFromFullType("Base.BlowTorch") .. " < 2 uses")
+        local barrelLidCutOption = barrelMenu:addOption(
+            getText("ContextMenu_UB_BarrelLidCut", ub_barrel.altLabel), 
+            playerObj,
+            DuBarrelLidCut,
+            ub_barrel, blowTorch, weldingMask
+        )
+
+        if not hasWeldingMask and SandboxVars.UsefulBarrels.RequireWeldingMask then
+            UBUtils.DisableOptionAddTooltip(barrelLidCutOption, "<RGB:1,0,0> " .. getItemNameFromFullType("Base.WeldingMask") .. " 0/1")
+        end
+
+        if SandboxVars.UsefulBarrels.RequireBlowTorch then
+            if hasBlowTorch then
+                if not UBUtils.itemHasUses(blowTorch, UBConst.BlowTorchUses) then
+                    UBUtils.DisableOptionAddTooltip(barrelLidCutOption, "<RGB:1,0,0> " .. getItemNameFromFullType("Base.BlowTorch") .. " < 2 uses")
+                end
+            else
+                UBUtils.DisableOptionAddTooltip(barrelLidCutOption, "<RGB:1,0,0> " .. getItemNameFromFullType("Base.BlowTorch") .. " is required")
             end
-        else
-            UBUtils.DisableOptionAddTooltip(barrelCutLidOption, "<RGB:1,0,0> " .. getItemNameFromFullType("Base.BlowTorch") .. " is required")
         end
     end
 end
