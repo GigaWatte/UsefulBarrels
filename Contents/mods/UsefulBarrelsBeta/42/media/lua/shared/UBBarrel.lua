@@ -3,6 +3,8 @@ local UBConst = require "UBConst"
 -- object TTL is current context menu lifetime and recreates every time
 local UBBarrel = ISBaseObject:derive("UBBarrel")
 
+-- NOTE: 'self' seems to be not propagating in methods on 3rd step and further
+
 function UBBarrel:AddFluidContainerToBarrel()
     if self.isoObject:hasComponent(ComponentType.FluidContainer) then
         return true
@@ -72,16 +74,16 @@ function UBBarrel:CutLid()
     local addFluidContainerSuccess = self:AddFluidContainerToBarrel()
     if not addFluidContainerSuccess then return false end
 
-    local newSprite = self:getSprite(UBBarrel.LIDLESS)
+    local newSprite = self:getSpriteType(UBBarrel.LIDLESS)
 
     if newSprite then
-        self:SetModData("UB_OriginalSprite", self.isoObject:getSprite():getName())
+        self:SetModData("UB_OriginalSprite", self:getSprite())
         self:SetModData("UB_CurrentSprite", newSprite)
         self:setSprite(newSprite)
 
         self:EnableRainFactor()
     else
-        print(string.format("Missing sprite %s for %s", UBBarrel.LIDLESS), self.isoObject:getSprite():getName())
+        print(string.format("Missing sprite %s for %s", UBBarrel.LIDLESS), self:getSprite())
         return false
     end
 
@@ -207,11 +209,15 @@ SPRITE_MAP["Base.Mov_DarkGreenBarrel"][UBBarrel.S] = {
     [UBBarrel.DEFAULT] = "location_military_generic_01_15"
 }
 
-function UBBarrel:getSprite(type)
+function UBBarrel:getSpriteType(type)
     if not SPRITE_MAP[self.baseName] then return end
     if not SPRITE_MAP[self.baseName][self.facing] then return nil end
     if not SPRITE_MAP[self.baseName][self.facing][type] then return nil end
     return SPRITE_MAP[self.baseName][self.facing][type]
+end
+
+function UBBarrel:getSprite()
+    return self.isoObject:getSpriteName()
 end
 
 function UBBarrel:setSprite(sprite)
@@ -316,7 +322,7 @@ function UBBarrel:init()
             end
         end
 
-        self.facing = props:Val("Facing")
+        self.facing = props:Val("Facing") or UBBarrel.N
     end
 end
 

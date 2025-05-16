@@ -22,7 +22,6 @@ local function PlainBarrelContextMenu(player, context, worldobjects, test)
 
     local wrench = UBUtils.playerGetItem(playerInv, "PipeWrench")
     local hasValidWrench = wrench ~= nil and UBUtils.predicateNotBroken(wrench)
-    local icon = wrench:getIcon()
 
     local openBarrelOption = context:addOptionOnTop(
         getText("ContextMenu_UB_UncapBarrel", ub_barrel.altLabel), 
@@ -30,8 +29,8 @@ local function PlainBarrelContextMenu(player, context, worldobjects, test)
         DoBarrelUncap,
         ub_barrel, wrench, hasValidWrench
     )
-    if openBarrelOption and icon then
-        openBarrelOption.iconTexture = icon
+    if openBarrelOption and hasValidWrench then
+        openBarrelOption.iconTexture = wrench:getIcon()
     end
 
     if not hasValidWrench and SandboxVars.UsefulBarrels.RequirePipeWrench then

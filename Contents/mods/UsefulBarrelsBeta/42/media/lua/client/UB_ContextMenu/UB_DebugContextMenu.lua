@@ -72,6 +72,7 @@ end
 
 local function GeneratorDebugContextMenu(player, context, worldobjects, test)
     if not SandboxVars.UsefulBarrels.DebugMode then return end
+    if not ISWorldObjectContextMenu.fetchVars.generator then return end
 
     local debugOption = context:addOptionOnTop(getText("ContextMenu_UB_DebugOption"))
     debugOption.toolTip = ISWorldObjectContextMenu.addToolTip()
@@ -107,28 +108,6 @@ local function GeneratorDebugContextMenu(player, context, worldobjects, test)
     debugOption.toolTip.description = description
 end
 
-local addMenuOpts = {
-    addToBarrel=true,
-    containers=UBUtils.getPlayerFluidContainers(self.playerInv),
-    noToolPredicate=SandboxVars.UsefulBarrels.RequireFunnelForFill == true and hasFunnelNearby == false,
-    groundContainers=UBUtils.GetWorldFluidContainersNearby(
-        self.barrel.square, 
-        UBConst.WORLD_ITEMS_DISTANCE,
-        function(worldInventoryObject) return UBUtils.predicateAnyFluid(worldInventoryObject) end
-    ),
-}
-
-local takeMenuOpts = {
-    addToBarrel=false,
-    containers=UBUtils.getPlayerFluidContainersWithFluid(self.playerInv, self.barrelFluid),
-    noToolPredicate=SandboxVars.UsefulBarrels.RequireHoseForTake == true and hasHoseNearby == false,
-    groundContainers=UBUtils.GetWorldFluidContainersNearby(
-        self.barrel.square, 
-        UBConst.WORLD_ITEMS_DISTANCE,
-        function(worldInventoryObject) return UBUtils.predicateFluid(worldInventoryObject, self.barrelFluid) or UBUtils.predicateHasFluidContainer(worldInventoryObject) end
-    ),
-}
-
 local function GetFluidTransferDebugText(optionsTable, isGroundMenu, ub_barrel)
     local containers
     if isGroundMenu then
@@ -154,8 +133,11 @@ end
 
 local function BarrelDebugContextMenu(player, context, worldobjects, test)
     if not SandboxVars.UsefulBarrels.DebugMode then return end
+    if ISWorldObjectContextMenu.fetchVars.generator then return end
 
     local ub_barrel = UBUtils.GetValidBarrel(worldobjects)
+
+    if not ub_barrel then return end
 
     local playerObj = getSpecificPlayer(player)
     local playerInv = playerObj:getInventory()
@@ -166,9 +148,9 @@ local function BarrelDebugContextMenu(player, context, worldobjects, test)
     local description = ub_barrel:GetBarrelInfo()
 
     local barrelOption = context:getOptionFromName(ub_barrel.objectLabel)
-    if barrelOption and ub_barrel.icon then
-        barrelOption.iconTexture = ub_barrel.icon
-    end
+    --if barrelOption and ub_barrel.icon then
+    --    barrelOption.iconTexture = ub_barrel.icon
+    --end
     
     local worldObjects = UBUtils.GetWorldItemsNearby(ub_barrel.square, UBConst.TOOL_SCAN_DISTANCE)
     local hasHoseNearby = UBUtils.hasItemNearbyOrInInv(worldObjects, playerInv, "Base.RubberHose")
@@ -255,14 +237,78 @@ local function BarrelDebugContextMenu(player, context, worldobjects, test)
         end
     end
 
+    if ub_barrel.Type == UBFluidBarrel.Type then
+        local addMenuOpts = {
+            addToBarrel=true,
+            containers=UBUtils.getPlayerFluidContainers(playerInv),
+            noToolPredicate=SandboxVars.UsefulBarrels.RequireFunnelForFill == true and hasFunnelNearby == false,
+            groundContainers=UBUtils.GetWorldFluidContainersNearby(
+                ub_barrel.square, 
+                UBConst.WORLD_ITEMS_DISTANCE,
+                function(worldInventoryObject) return UBUtils.predicateAnyFluid(worldInventoryObject) end
+            ),
+        }
 
-    description = description .. GetFluidTransferDebugText(addMenuOpts, false, ub_barrel)
-    description = description .. GetFluidTransferDebugText(takeMenuOpts, false, ub_barrel)
-    description = description .. GetFluidTransferDebugText(addMenuOpts, true, ub_barrel)
-    description = description .. GetFluidTransferDebugText(takeMenuOpts, true, ub_barrel)
+        local takeMenuOpts = {
+            addToBarrel=false,
+            containers=UBUtils.getPlayerFluidContainersWithFluid(playerInv, ub_barrel:getPrimaryFluid()),
+            noToolPredicate=SandboxVars.UsefulBarrels.RequireHoseForTake == true and hasHoseNearby == false,
+            groundContainers=UBUtils.GetWorldFluidContainersNearby(
+                ub_barrel.square, 
+                UBConst.WORLD_ITEMS_DISTANCE,
+                function(worldInventoryObject) return UBUtils.predicateFluid(worldInventoryObject, ub_barrel:getPrimaryFluid()) or UBUtils.predicateHasFluidContainer(worldInventoryObject) end
+            ),
+        }
+
+        description = description .. GetFluidTransferDebugText(addMenuOpts, false, ub_barrel)
+        description = description .. GetFluidTransferDebugText(takeMenuOpts, false, ub_barrel)
+        description = description .. GetFluidTransferDebugText(addMenuOpts, true, ub_barrel)
+        description = description .. GetFluidTransferDebugText(takeMenuOpts, true, ub_barrel)
+    end
 
     debugOption.toolTip.description = description
 end
 
 Events.OnFillWorldObjectContextMenu.Add(BarrelDebugContextMenu)
 Events.OnFillWorldObjectContextMenu.Add(GeneratorDebugContextMenu)
+
+
+local function TilesTest(player, context, worldobjects, test)
+    --local instance = getTileOverlays()
+
+    -- SpriteConfigManager
+    -- SpriteConfigManager.TileInfo
+    -- SpriteConfigScript.TileScript
+
+    -- local room = adjacentSquare:getRoom()
+    -- if room then
+    --     local roomDef = room:getRoomDef()
+    --     local roomId = roomDef:getID()
+    --     newSquare:setRoom(room)
+    --     newSquare:setRoomID(roomId)
+    --     room:addSquare(newSquare)
+    -- end
+
+    -- local IsoBarricade_addPlank = {}
+    -- function IsoBarricade_addPlank.GetClass()
+    --     local class, methodName = IsoBarricade.class, "addPlank"
+    --     local metatable = __classmetatables[class]
+    --     local metatable__index = metatable.__index
+    --     local original_function = metatable__index[methodName]
+    --     metatable__index[methodName] = IsoBarricade_addPlank.PatchClass(original_function)
+    -- end
+
+    -- local index = __classmetatables[IsoBarricade.class].__index
+
+    -- local old_addPlank = index.addPlank
+    -- index.addPlank = function(...)
+    --     
+    --     return old_addPlank(...)
+    -- end
+
+    --IsoPushableObject pushableObject = new IsoPushableObject(
+    --    IsoWorld.instance.getCell(), IsoPlayer.getInstance().getCurrentSquare(), IsoSpriteManager.instance.getSprite("trashcontainers_01_16")
+    --);
+    --WorldSimulation.instance.physicsObjectMap.put(int0, pushableObject);
+end
+Events.OnFillWorldObjectContextMenu.Add(TilesTest)
