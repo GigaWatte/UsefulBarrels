@@ -95,6 +95,8 @@ function UBBarrel:CutLid()
 end
 
 function UBBarrel:OnPickup()
+    --TODO urgent!
+    -- fix pickup and place sprite!
 end
 
 function UBBarrel:OnPlace()
