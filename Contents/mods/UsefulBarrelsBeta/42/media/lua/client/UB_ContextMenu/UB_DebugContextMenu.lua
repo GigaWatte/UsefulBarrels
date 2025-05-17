@@ -7,10 +7,12 @@ local ISVehicleMenu_FillPartMenu = ISVehicleMenu.FillPartMenu
 function ISVehicleMenu.FillPartMenu(playerIndex, context, slice, vehicle)
     ISVehicleMenu_FillPartMenu(playerIndex, context, slice, vehicle)
     if not SandboxVars.UsefulBarrels.DebugMode then return end
+    if not context then return end
 
     local debugOption = context:addOptionOnTop(getText("ContextMenu_UB_DebugOption"))
     debugOption.toolTip = ISWorldObjectContextMenu.addToolTip()
 
+    local playerObj = getSpecificPlayer(playerIndex)
     local description = string.format(
         [[
         distance: %s
