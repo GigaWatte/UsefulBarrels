@@ -49,4 +49,6 @@ Sandbox_RO = {
     Sandbox_UsefulBarrelsInitialFluidMaxAmount_tooltip = "Cantitatea maximă de fluid inițial. <Br> nu va fi mai mare decât capacitatea butoiului."
     Sandbox_UsefulBarrelsInitialFluidSpawnChance = "Chance Spawn"
     Sandbox_UsefulBarrelsInitialFluidSpawnChance_tooltip = "Chance de lichid inițial."
+    Sandbox_UsefulBarrelsRequireWeldingMask = "Require Welding Mask for cut lid"
+    Sandbox_UsefulBarrelsRequireBlowTorch = "Require Blow Torch for cut lid"
 }

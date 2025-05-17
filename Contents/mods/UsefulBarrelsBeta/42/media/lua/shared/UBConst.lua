@@ -9,7 +9,7 @@ UBConst.VEHICLE_SCAN_DISTANCE = 3
 -- radius from the barrel which player can add from ground
 UBConst.WORLD_ITEMS_DISTANCE = 1
 
-UBConst.BlowTorchUses = 2
+UBConst.BLOW_TORCH_USES = 2
 
 UBConst.RAIN_CATCHER_FACTOR = 0.3
 

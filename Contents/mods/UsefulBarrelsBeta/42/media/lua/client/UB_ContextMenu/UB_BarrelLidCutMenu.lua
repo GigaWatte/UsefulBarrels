@@ -15,13 +15,11 @@ local function DuBarrelLidCut(playerObj, barrel, blowTorch, weldingMask)
         if SandboxVars.UsefulBarrels.RequirePipeWrench and blowTorch ~= nil then
             ISTimedActionQueue.add(ISEquipWeaponAction:new(playerObj, blowTorch, 25, true))
         end
-		ISTimedActionQueue.add(UB_BarrelLidCutAction:new(playerObj, barrel, blowTorch, UBConst.BlowTorchUses));
+		ISTimedActionQueue.add(UB_BarrelLidCutAction:new(playerObj, barrel, blowTorch, UBConst.BLOW_TORCH_USES));
 	end
 end
 
 local function BarrelLidCutContextMenu(player, context, worldobjects, test)
-    -- maybe move it under existing barrel option
-    -- also debug show be one and not two
     local ub_barrel = UBUtils.GetValidBarrel(worldobjects)
     -- UBBarrel or UBFluidBarrel is valid here in context
     if not ub_barrel then return end
@@ -73,7 +71,7 @@ local function BarrelLidCutContextMenu(player, context, worldobjects, test)
 
         if SandboxVars.UsefulBarrels.RequireBlowTorch then
             if hasBlowTorch then
-                if not UBUtils.itemHasUses(blowTorch, UBConst.BlowTorchUses) then
+                if not UBUtils.itemHasUses(blowTorch, UBConst.BLOW_TORCH_USES) then
                     UBUtils.DisableOptionAddTooltip(barrelLidCutOption, "<RGB:1,0,0> " .. getItemNameFromFullType("Base.BlowTorch") .. " < 2 uses")
                 end
             else

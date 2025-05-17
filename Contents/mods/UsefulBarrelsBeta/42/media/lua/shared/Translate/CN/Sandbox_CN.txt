@@ -45,4 +45,6 @@ Sandbox_CN = {
     Sandbox_UsefulBarrelsInitialFluidMaxAmount_tooltip = "初始液体的最大值.<br>不能大于桶的最大容量."
     Sandbox_UsefulBarrelsInitialFluidSpawnChance = "生成概率"
     Sandbox_UsefulBarrelsInitialFluidSpawnChance_tooltip = "桶在一开始就存储液体的概率."
+    Sandbox_UsefulBarrelsRequireWeldingMask = "Require Welding Mask for cut lid"
+    Sandbox_UsefulBarrelsRequireBlowTorch = "Require Blow Torch for cut lid"
 }
