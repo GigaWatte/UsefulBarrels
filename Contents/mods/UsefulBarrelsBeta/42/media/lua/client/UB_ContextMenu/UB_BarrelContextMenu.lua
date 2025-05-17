@@ -325,12 +325,12 @@ function UB_BarrelContextMenu:new(player, context, ub_barrel)
 end
 
 local function BarrelContextMenu(player, context, worldobjects, test)
-    local barrel = UBUtils.GetValidBarrel(worldobjects)
+    local ub_barrel = UBUtils.GetValidBarrel(worldobjects)
     
-    if not barrel then return end
-    if barrel.Type ~= UBFluidBarrel.Type then return end
+    if not ub_barrel then return end
+    if ub_barrel.Type ~= UBFluidBarrel.Type then return end
 
-    return UB_BarrelContextMenu:new(player, context, barrel)
+    return UB_BarrelContextMenu:new(player, context, ub_barrel)
 end
 
 Events.OnFillWorldObjectContextMenu.Add(BarrelContextMenu)
