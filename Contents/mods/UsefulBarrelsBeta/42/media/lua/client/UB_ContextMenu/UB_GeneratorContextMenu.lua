@@ -33,15 +33,6 @@ function UB_GeneratorContextMenu:CreateBarrelOption(containerMenu, barrel, hasHo
     containerOption.toolTip = tooltip
 end
 
-function UB_GeneratorContextMenu.CanCreateRefuelMenu(generatorSquare, playerObj)
-    if not generatorSquare or not AdjacentFreeTileFinder.Find(generatorSquare, playerObj) then
-        -- if the player can reach the tile, populate the submenu, otherwise don't bother
-        return false
-    end
-
-    return true
-end
-
 function UB_GeneratorContextMenu:DoRefuelMenu(player, context)
     local fillOption
 
@@ -96,7 +87,7 @@ function UB_GeneratorContextMenu:new(player, context, worldobjects, test)
     if not SandboxVars.UsefulBarrels.EnableGeneratorRefuel then return end
 
     if #o.barrels == 0 then return end
-    if not UB_GeneratorContextMenu.CanCreateRefuelMenu(o.generator:getSquare(), o.playerObj) then return end
+    if not UBUtils.CanCreateGeneratorMenu(o.generator:getSquare(), o.playerObj) then return end
     return self:DoRefuelMenu(player, context)
 end
 

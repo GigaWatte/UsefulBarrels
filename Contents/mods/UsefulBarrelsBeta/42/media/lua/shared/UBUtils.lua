@@ -3,7 +3,7 @@ local UBUtils = {}
 local UBBarrel = require("UBBarrel")
 local UBFluidBarrel = require("UBFluidBarrel")
 
---local mod = 'EtherHammerX';
+--local mod = 'mod';
 
 --local printf = function(message, ...)
 --    print(string.format(message, ...));
@@ -333,6 +333,15 @@ function UBUtils.CanCreateBarrelFluidMenu(playerObj, barrelSquare, barrelOption)
             -- TODO remove all suboptions as well
             barrelOption.subOption = nil
         end
+        return false
+    end
+
+    return true
+end
+
+function UBUtils.CanCreateGeneratorMenu(square, playerObj)
+    if not square or not AdjacentFreeTileFinder.Find(square, playerObj) then
+        -- if the player can reach the tile, populate the submenu, otherwise don't bother
         return false
     end
 

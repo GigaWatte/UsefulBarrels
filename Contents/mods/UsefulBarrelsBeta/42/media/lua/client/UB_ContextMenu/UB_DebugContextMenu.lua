@@ -96,7 +96,7 @@ local function GeneratorDebugContextMenu(player, context, worldobjects, test)
         tostring(generator:isActivated()),
         tostring(generator:getFuel() >= 100),
         tostring(#barrels),
-        tostring(UB_GeneratorContextMenu.CanCreateRefuelMenu(generator:getSquare(), playerObj))
+        tostring(UBUtils.CanCreateGeneratorMenu(generator:getSquare(), playerObj))
     )
     for _,barrel in ipairs(barrels) do
         local worldObjects = UBUtils.GetWorldItemsNearby(barrel.square, UBConst.TOOL_SCAN_DISTANCE)
