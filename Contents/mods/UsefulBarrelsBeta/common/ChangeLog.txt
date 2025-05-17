@@ -98,3 +98,11 @@
 - Translations: added new keys to all languages, without translation for now
 - Translations: also updated IT and DE translations by steam workshop contributors
 [ ------ ]
+[ 17/05/2025 ]
+3.2.0:
+- New feature: Orange Barrel and Metal Drum now can be turned into Rain Collectors
+- Improved: all debug options moved to separate file
+- Improved: add icons to some context options
+- Fixed: fuel not appear in the barrel after transfer from vehicle to the empty barrel
+- Translations: added new keys to all languages, without translation for now
+[ ------ ]

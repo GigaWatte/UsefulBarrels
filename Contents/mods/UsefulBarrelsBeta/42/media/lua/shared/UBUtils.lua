@@ -1,6 +1,26 @@
 
 local UBUtils = {}
 local UBBarrel = require("UBBarrel")
+local UBFluidBarrel = require("UBFluidBarrel")
+
+--local mod = 'mod';
+
+--local printf = function(message, ...)
+--    print(string.format(message, ...));
+--end
+--
+----- @param message? string
+--local info = function(message, ...)
+--    if not message then
+--        print('[' .. mod .. '] :: ');
+--    else
+--        if not ... then
+--            print('[' .. mod .. '] :: ' .. tostring(message));
+--        else
+--            printf('[' .. mod .. '] :: ' .. tostring(message), ...);
+--        end
+--    end
+--end
 
 function UBUtils.predicateFluid(item, fluid)
     return item:getFluidContainer() and item:getFluidContainer():contains(fluid) and (item:getFluidContainer():getAmount() >= 0.5)
@@ -34,6 +54,10 @@ function UBUtils.predicateNotBroken(item)
     return not item:isBroken()
 end
 
+function UBUtils.itemHasUses(item, uses)
+    return item:getCurrentUses() >= uses
+end
+
 function UBUtils.hasItemNearbyOrInInv(worldObjects, playerInv, item)
 	return UBUtils.TableContainsItem(worldObjects, item) or UBUtils.playerHasItem(playerInv, item)
 end
@@ -56,13 +80,21 @@ end
 function UBUtils.GetValidBarrel(worldObjects)
     for i,isoObject in ipairs(worldObjects) do
         --print(isoObject)
-        if UBBarrel.validate(isoObject) then return isoObject end
+        local isValid = UBBarrel.validate(isoObject)
+        if isValid then
+            local ubFluidBarrel = UBFluidBarrel:new(isoObject)
+            if ubFluidBarrel then return ubFluidBarrel end
+            local ubBarrel = UBBarrel:new(isoObject)
+            if ubBarrel then return ubBarrel end
+        end
     end
 end
 
 function UBUtils.playerHasItem(playerInv, itemName) return playerInv:containsTypeEvalRecurse(itemName, UBUtils.predicateNotBroken) or playerInv:containsTagEvalRecurse(itemName, UBUtils.predicateNotBroken) end
 
 function UBUtils.playerGetItem(playerInv, itemName) return playerInv:getFirstTypeEvalRecurse(itemName, UBUtils.predicateNotBroken) or playerInv:getFirstTagEvalRecurse(itemName, UBUtils.predicateNotBroken) end
+
+function UBUtils.playerGetBestItem(playerInv, itemName, comparator) return playerInv:getBestTypeEvalRecurse(itemName, comparator) end
 
 function UBUtils.ConvertToTable(list)
     local tbl = {}
@@ -220,13 +252,14 @@ function UBUtils.GetBarrelsNearby(square, distance, fluid, sortByDistance)
     for _,curr in ipairs(squares) do
         local squareObjects = curr:getObjects()
         local sqTable = UBUtils.ConvertToTable(squareObjects)
-        local plainBarrel = UBUtils.GetValidBarrel(sqTable)
-        local barrel = UBBarrel:new(plainBarrel)
-        if barrel and barrel:hasFluidContainer() then
-            if fluid and barrel:ContainsFluid(fluid) then
-                table.insert(barrels, barrel)
-            elseif fluid == nil then
-                table.insert(barrels, barrel)
+        local barrel = UBUtils.GetValidBarrel(sqTable)
+        if barrel and barrel.Type == UBFluidBarrel.Type then
+            if barrel:hasFluidContainer() then
+                if fluid and barrel:ContainsFluid(fluid) then
+                    table.insert(barrels, barrel)
+                elseif fluid == nil then
+                    table.insert(barrels, barrel)
+                end
             end
         end
     end
@@ -300,6 +333,15 @@ function UBUtils.CanCreateBarrelFluidMenu(playerObj, barrelSquare, barrelOption)
             -- TODO remove all suboptions as well
             barrelOption.subOption = nil
         end
+        return false
+    end
+
+    return true
+end
+
+function UBUtils.CanCreateGeneratorMenu(square, playerObj)
+    if not square or not AdjacentFreeTileFinder.Find(square, playerObj) then
+        -- if the player can reach the tile, populate the submenu, otherwise don't bother
         return false
     end
 

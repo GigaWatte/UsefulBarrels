@@ -45,4 +45,6 @@ Sandbox_ES = {
     Sandbox_UsefulBarrelsInitialFluidMaxAmount_tooltip = "Max amount of initial fluid.<br>Won't be greater than the barrel capacity."
     Sandbox_UsefulBarrelsInitialFluidSpawnChance = "Spawn chance"
     Sandbox_UsefulBarrelsInitialFluidSpawnChance_tooltip = "Spawn chance of initial fluid."
+    Sandbox_UsefulBarrelsRequireWeldingMask = "Require Welding Mask for cut lid"
+    Sandbox_UsefulBarrelsRequireBlowTorch = "Require Blow Torch for cut lid"
 }

@@ -49,4 +49,6 @@ Sandbox_JP = {
     Sandbox_UsefulBarrelsInitialFluidMaxAmount_tooltip = "初期流体の最大量。<br>は、バレル容量よりも大きくなりません。"
     Sandbox_UsefulBarrelsInitialFluidSpawnChance = "スポーンチャンス"
     Sandbox_UsefulBarrelsInitialFluidSpawnChance_tooltip = "初期流体の可能性を産みます。"
+    Sandbox_UsefulBarrelsRequireWeldingMask = "Require Welding Mask for cut lid"
+    Sandbox_UsefulBarrelsRequireBlowTorch = "Require Blow Torch for cut lid"
 }

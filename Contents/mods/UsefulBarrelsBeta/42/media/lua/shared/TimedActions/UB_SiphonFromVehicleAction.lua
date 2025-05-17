@@ -28,11 +28,13 @@ function UB_SiphonFromVehicleAction:update()
 
         local barrelUnits = self.barrelStart + (self.barrelTarget - self.barrelStart) * self:getJobDelta()
         barrelUnits = math.ceil(barrelUnits)
+
         if self.fuelFluidContainer:isEmpty() and self.fuelFluidContainer:canAddFluid(Fluid.Petrol) then
             self.fuelFluidContainer:addFluid(Fluid.Petrol, barrelUnits)
         else
             self.fuelFluidContainer:adjustSpecificFluidAmount(Fluid.Petrol, barrelUnits)
         end
+        
         self.vehicle:transmitPartModData(self.part)
         self.amountSent = litres
     end
@@ -78,8 +80,16 @@ function UB_SiphonFromVehicleAction:complete()
         end
         local litres = self.tankStart + (self.tankTarget - self.tankStart) * self:getJobDelta()
         self.part:setContainerContentAmount(litres)
-        local barrelLitres = self.barrelStart + (self.barrelTarget - self.barrelStart) * self:getJobDelta()
-        self.fuelFluidContainer:adjustSpecificFluidAmount(Fluid.Petrol, math.ceil(barrelLitres))
+
+        local barrelUnits = self.barrelStart + (self.barrelTarget - self.barrelStart) * self:getJobDelta()
+        barrelUnits = math.ceil(barrelUnits)
+
+        if self.fuelFluidContainer:isEmpty() and self.fuelFluidContainer:canAddFluid(Fluid.Petrol) then
+            self.fuelFluidContainer:addFluid(Fluid.Petrol, barrelUnits)
+        else
+            self.fuelFluidContainer:adjustSpecificFluidAmount(Fluid.Petrol, barrelUnits)
+        end
+        
         self.vehicle:transmitPartModData(self.part)
     else
         print('no such vehicle id=', self.vehicle)

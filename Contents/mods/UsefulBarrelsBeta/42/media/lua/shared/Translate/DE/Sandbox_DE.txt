@@ -36,8 +36,8 @@ Sandbox_DE = {
     Sandbox_UsefulBarrelsAllowBeverage_tooltip = "Blut, Bier, Kaffee, Milch, Honig, Soda..."
     Sandbox_UsefulBarrelsEnableGeneratorRefuel = "Generatorbetankung aktivieren"
     Sandbox_UsefulBarrelsGeneratorRefuelRequiresHose = "Generatorbetankung benötigt Gummischlauch"
-    Sandbox_UsefulBarrelsEnableVehicleRefuel = "TBD: Autobetankung erlaubt"
-    Sandbox_UsefulBarrelsVehicleRefuelRequiresHose = "TBD: Betanken von Fahrzeugen erfordert einen Gummischlauch."
+    Sandbox_UsefulBarrelsEnableVehicleRefuel = "Autobetankung erlaubt"
+    Sandbox_UsefulBarrelsVehicleRefuelRequiresHose = "Betanken von Fahrzeugen erfordert einen Gummischlauch."
     Sandbox_UsefulBarrelsInitialFluid = "Ausgangsflüssigkeit"
     Sandbox_UsefulBarrelsInitialFluidPool = "Flüssigkeitsreservoir"
     Sandbox_UsefulBarrelsInitialFluidPool_tooltip = "Durch Leerzeichen getrennte Liste spawnbarer Fass-Flüssigkeiten."
@@ -45,4 +45,6 @@ Sandbox_DE = {
     Sandbox_UsefulBarrelsInitialFluidMaxAmount_tooltip = "Maximale Menge für Ausgangsflüssigkeit.<br>Darf das Fassvolumen nicht überschreiten"
     Sandbox_UsefulBarrelsInitialFluidSpawnChance = "Spawn-Chance"
     Sandbox_UsefulBarrelsInitialFluidSpawnChance_tooltip = "Spawn-Chance für Ausgangsflüssigkeit."
+    Sandbox_UsefulBarrelsRequireWeldingMask = "Require Welding Mask for cut lid"
+    Sandbox_UsefulBarrelsRequireBlowTorch = "Require Blow Torch for cut lid"
 }

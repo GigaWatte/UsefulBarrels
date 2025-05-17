@@ -2,6 +2,7 @@
 local UBUtils = require "UBUtils"
 local UBConst = require "UBConst"
 local UBBarrel = require "UBBarrel"
+local UBFluidBarrel = require "UBFluidBarrel"
 local UB_BarrelContextMenu = {}
 
 function UB_BarrelContextMenu.OnTransferFluid(playerObj, barrelSquare, fluidContainer, fluidContainerItems, addToBarrel)
@@ -156,23 +157,6 @@ function UB_BarrelContextMenu:DoFluidMenu(subMenu, optionsTable, isGroundMenu)
 
     local menuOption = subMenu:addOption(optionText)
 
-    if SandboxVars.UsefulBarrels.DebugMode then
-        local description = string.format(
-            [[
-            action: %s from %s
-            containers: %s
-            valid conteiners: %s
-            --------------------
-            ]],
-            tostring(optionsTable.addToBarrel and "add" or "fill"),
-            tostring(isGroundMenu and "ground" or "inventory"),
-            tostring(#containers),
-            tostring(#allContainers)
-        )
-    
-        self.debugOption.toolTip.description = self.debugOption.toolTip.description .. description
-    end
-
     if optionsTable.noToolPredicate == true then
         UBUtils.DisableOptionAddTooltip(menuOption, optionsTable.noToolTooltip)
         return
@@ -197,17 +181,6 @@ function UB_BarrelContextMenu:DoSiphonFromVehicleMenu(context, hasHoseNearby)
 
     local vehicles = UBUtils.GetVehiclesNeaby(self.barrel.square, UBConst.VEHICLE_SCAN_DISTANCE)
 
-    local description = string.format(
-        [[
-        SVFillBarrelFromVehiclesRequiresHose: %s
-        hasHoseNearby: %s
-        vehicles: %s
-        ]],
-        tostring(SandboxVars.UsefulBarrels.FillBarrelFromVehiclesRequiresHose),
-        tostring(hasHoseNearby),
-        tostring(#vehicles)
-    )
-
     if not (#vehicles > 0) then return end
 
     local vehicleOption = context:addOption(getText("ContextMenu_UB_RefuelFromVehicle"))
@@ -222,26 +195,16 @@ function UB_BarrelContextMenu:DoSiphonFromVehicleMenu(context, hasHoseNearby)
     for _,vehicle in ipairs(vehicles) do
         --string.find(vehicle:getScriptName(), "Trailer") ~= nil
         local carName = vehicle:getScript():getCarModelName() or vehicle:getScript():getName()
-        description = description .. string.format(
-            [[
-            vehicle: %s (%s)
-            ]], 
-            tostring(carName), 
-            tostring(vehicle:getPartCount())
-        )
-        local vehicle_gas_part_found = false
         for i=1,vehicle:getPartCount() do
             local part = vehicle:getPartByIndex(i-1)
             local partCategory = part:getCategory()
             if part and partCategory and part:isContainer() and string.find(partCategory, "gastank")~=nil then
-                description = description .. string.format(
-                    [[
-                    gas amount: %sL
-                    ]], 
-                    tostring(math.ceil(part:getContainerContentAmount()))
+                local vehicle_option = vehicleMenu:addOption(
+                    getText("IGUI_VehicleName" .. carName), 
+                    self.playerObj, 
+                    UB_BarrelContextMenu.OnVehicleTransferFluid, 
+                    part, self.barrel
                 )
-                vehicle_gas_part_found = true
-                local vehicle_option = vehicleMenu:addOption(getText("IGUI_VehicleName" .. carName), self.playerObj, UB_BarrelContextMenu.OnVehicleTransferFluid, part, self.barrel)
                 if part:getContainerContentAmount() > 0 then
                     local tooltip = ISWorldObjectContextMenu.addToolTip()
                     tooltip.maxLineWidth = 512
@@ -252,15 +215,6 @@ function UB_BarrelContextMenu:DoSiphonFromVehicleMenu(context, hasHoseNearby)
                 end
             end
         end
-        if not vehicle_gas_part_found then
-            description = description .. string.format([[
-                no proper gas part found
-            ]])
-        end
-    end
-
-    if SandboxVars.UsefulBarrels.DebugMode then
-        self.debugOption.toolTip.description = self.debugOption.toolTip.description .. description
     end
 end
 
@@ -295,8 +249,6 @@ function UB_BarrelContextMenu:RemoveVanillaOptions(context, subcontext)
 end
 
 function UB_BarrelContextMenu:new(player, context, ub_barrel)
-    local o = self
-
     self.barrel = ub_barrel
     self.playerObj = getSpecificPlayer(player)
     self.playerInv = self.playerObj:getInventory()
@@ -306,28 +258,6 @@ function UB_BarrelContextMenu:new(player, context, ub_barrel)
     local barrelOption = context:getOptionFromName(self.barrel.objectLabel)
     if barrelOption and self.barrel.icon then
         barrelOption.iconTexture = self.barrel.icon
-    end
-
-    if SandboxVars.UsefulBarrels.DebugMode then
-        self.debugOption = context:addOptionOnTop(getText("ContextMenu_UB_DebugOption"))
-        self.debugOption.toolTip = ISWorldObjectContextMenu.addToolTip()
-
-        local description = self.barrel:GetBarrelInfo()
-        
-        description = description .. string.format(
-            [[
-            SVRequireHose: %s
-            SVRequireFunnel: %s
-            contextMenuHasOption: %s
-            CanCreateFluidMenu: %s
-            ]],
-            tostring(SandboxVars.UsefulBarrels.RequireHoseForTake),
-            tostring(SandboxVars.UsefulBarrels.RequireFunnelForFill),
-            tostring(barrelOption ~= nil),
-            tostring(UBUtils.CanCreateBarrelFluidMenu(self.playerObj, self.barrel.square))
-        )
-    
-        self.debugOption.toolTip.description = description
     end
 
     if barrelOption then
@@ -378,19 +308,6 @@ function UB_BarrelContextMenu:new(player, context, ub_barrel)
                 noGroundContainersTooltip=getText("Tooltip_UB_NoProperContainerOnGround"),
             }
             
-            if SandboxVars.UsefulBarrels.DebugMode then
-                local description = string.format(
-                    [[
-                    hasHoseNearby: %s
-                    hasFunnelNearby: %s
-                    ]],
-                    tostring(hasHoseNearby),
-                    tostring(hasFunnelNearby)
-                )
-            
-                self.debugOption.toolTip.description = self.debugOption.toolTip.description .. description
-            end
-
             -- add menu
             self:DoFluidMenu(barrelMenu, addMenuOpts)
             -- take menu
@@ -401,29 +318,17 @@ function UB_BarrelContextMenu:new(player, context, ub_barrel)
             -- add to ground menu
             self:DoFluidMenu(barrelMenu, takeMenuOpts, true)
 
-            if SandboxVars.UsefulBarrels.DebugMode then
-                self.debugOption.toolTip.description = self.debugOption.toolTip.description .. string.format(
-                [[
-                SVEnableFillBarrelFromVehicles: %s
-                ]],
-                tostring(SandboxVars.UsefulBarrels.EnableFillBarrelFromVehicles)
-                )
-            end
-
+            -- transfer fuel from vehicle menu
             self:DoSiphonFromVehicleMenu(barrelMenu, hasHoseNearby)
         end
     end
 end
 
 local function BarrelContextMenu(player, context, worldobjects, test)
-    local barrel = UBUtils.GetValidBarrel(worldobjects)
+    local ub_barrel = UBUtils.GetValidBarrel(worldobjects)
     
-    if not barrel then return end
-    if not barrel:hasComponent(ComponentType.FluidContainer) then return end
-
-    local ub_barrel = UBBarrel:new(barrel)
-
     if not ub_barrel then return end
+    if ub_barrel.Type ~= UBFluidBarrel.Type then return end
 
     return UB_BarrelContextMenu:new(player, context, ub_barrel)
 end

@@ -1,11 +1,12 @@
 
-TODO DONE allow ineract with items on ground
 TODO Rework plumbing to make it work again properly
-TODO Add sprite and craftrecipe for rain collector. SUGGESTED - tarp or trash bags to store clean  fluids? cut the lid of barrel to make it water collector - can combine with tarp or trash bags
+TODO Add sprite and craftrecipe for rain collector
 TODO make barrel with fluid moveable somehow
-TODO check Lifestyle: Hobbie for incompat and possible crash
-BUG - self not propagating inside self methods on 3rd step?
 TODO crashes may not save fluidContainer
+TODO get pipe wrench from nested inventory container
+TODO fill from gas station and sinks directly
+TODO Connect the barrel to the generator with a hose and refuel it over time
+
 
 icons: 
 mpty barrel from fluid
@@ -19,3 +20,7 @@ fill from vehicle gas tank
 car icon
 
 refuel from barrel
+
+
+
+

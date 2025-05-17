@@ -49,4 +49,6 @@ Sandbox_PH = {
     Sandbox_UsefulBarrelsInitialFluidMaxAmount_tooltip = "Max na halaga ng paunang likido. <Br> ay hindi mas malaki kaysa sa kapasidad ng bariles."
     Sandbox_UsefulBarrelsInitialFluidSpawnChance = "Pagkakataon ng Spawn"
     Sandbox_UsefulBarrelsInitialFluidSpawnChance_tooltip = "Pagkakataon ng spawn ng paunang likido."
+    Sandbox_UsefulBarrelsRequireWeldingMask = "Require Welding Mask for cut lid"
+    Sandbox_UsefulBarrelsRequireBlowTorch = "Require Blow Torch for cut lid"
 }
