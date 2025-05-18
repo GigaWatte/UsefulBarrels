@@ -77,7 +77,7 @@ function UBFluidBarrel:GetTooltipText(font_size)
 end
 
 function UBFluidBarrel:GetBarrelInfo()
-    local output = string.format("Barrel object: %s\n", tostring(self.isoObject))
+    local output = UBBarrel.GetBarrelInfo(self)
     output = output .. string.format("hasFluidContainer: %s\n", tostring(self:hasFluidContainer()))
 
     if self.fluidContainer~=nil then

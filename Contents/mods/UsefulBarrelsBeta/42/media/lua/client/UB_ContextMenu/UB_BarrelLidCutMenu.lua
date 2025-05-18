@@ -23,7 +23,9 @@ local function BarrelLidCutContextMenu(player, context, worldobjects, test)
     local ub_barrel = UBUtils.GetValidBarrel(worldobjects)
     -- UBBarrel or UBFluidBarrel is valid here in context
     if not ub_barrel then return end
+    -- if barrel has not lidless sprite
     if not ub_barrel:getSpriteType(UBBarrel.LIDLESS) then return end
+    -- if barrel already lidless
     if ub_barrel:getSprite() == ub_barrel:getSpriteType(UBBarrel.LIDLESS) then return end
     
     local playerObj = getSpecificPlayer(player)

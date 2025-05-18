@@ -122,7 +122,24 @@ function UBBarrel:GetTooltipText(font_size)
 end
 
 function UBBarrel:GetBarrelInfo()
-    local output = string.format("Barrel object: %s\n", tostring(self.isoObject))
+    local output = string.format([[
+    Barrel object: %s
+    Base name: %s
+    Label: %s (%s)
+    Current sprite: %s
+    Facing: %s
+    Default: sprite: %s
+    Lidless sprite: %s
+    ]], 
+    tostring(self.isoObject),
+    tostring(self.baseName),
+    tostring(self.objectLabel),
+    tostring(self.altLabel),
+    tostring(self:getSprite()),
+    tostring(self.facing),
+    tostring(self:getSpriteType(UBBarrel.DEFAULT)),
+    tostring(self:getSpriteType(UBBarrel.LIDLESS))
+)
     return output
 end
 
