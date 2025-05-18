@@ -245,7 +245,9 @@ function UB_BarrelContextMenu:RemoveVanillaOptions(context, subcontext)
     -- vanilla fill is to silly, I will recreate it
     if subcontext:getOptionFromName(getText("ContextMenu_Fill")) then subcontext:removeOptionByName(getText("ContextMenu_Fill")) end
     -- the same as above
-    if subcontext:getOptionFromName(getText("ContextMenu_Wash")) then subcontext:removeOptionByName(getText("ContextMenu_Wash")) end
+    if  self.barrel:getSprite() ~= self.barrel:getSpriteType(UBBarrel.LIDLESS) then
+        if subcontext:getOptionFromName(getText("ContextMenu_Wash")) then subcontext:removeOptionByName(getText("ContextMenu_Wash")) end
+    end
 end
 
 function UB_BarrelContextMenu:new(player, context, ub_barrel)

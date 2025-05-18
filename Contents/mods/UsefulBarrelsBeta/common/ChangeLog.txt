@@ -110,3 +110,8 @@
 3.2.1:
 - Improved: add more debug option info related to cutting lid 
 [ ------ ]
+[ 18/05/2025 ]
+3.2.2:
+- New feature: able to wash from the lidless barrel
+[ ------ ]
+
