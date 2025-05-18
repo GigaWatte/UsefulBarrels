@@ -275,6 +275,56 @@ function UBUtils.GetBarrelsNearby(square, distance, fluid, sortByDistance)
     return barrels
 end
 
+local function isPuddleOrRiver(object)
+	if not object or not object:getSprite() then return false end
+	if not object:hasWater() then return false end
+	return object:getSprite():getProperties():Is(IsoFlagType.solidfloor)
+end
+
+function UBUtils.GetSinksNearby(square, distance, sortByDistance, requireLOSClear)
+    if not square then return {} end
+
+    local squares = UBUtils.GetSquaresInRange(square, distance, false)
+    
+    local sinks = {}
+
+    for _,curr in ipairs(squares) do
+        local squareObjects = curr:getObjects()
+        local sqTable = UBUtils.ConvertToTable(squareObjects)
+        for i,isoObject in ipairs(sqTable) do
+            if isoObject:hasWater() 
+                and not isPuddleOrRiver(isoObject)
+                and not instanceof(isoObject, "IsoClothingDryer")
+                and not instanceof(isoObject, "IsoClothingWasher")
+                and not instanceof(isoObject, "IsoCombinationWasherDryer") 
+                then -- TODO does it react to barrel? local isValid = UBBarrel.validate(isoObject)
+                
+                if requireLOSClear == true then
+                    local cell = square:getCell()
+                    local x1, y1, z1 = square:getX(), square:getY(), square:getZ()
+                    local x2, y2, z2 = isoObject:getX(), isoObject:getY(), isoObject:getZ()
+                    local state = tostring(LosUtil.lineClear(cell, x1, y1, z1, x2, y2, z2, false))
+                    if state == "Clear" then
+                        table.insert(sinks, isoObject)
+                    end
+                else
+                    table.insert(sinks, isoObject)
+                end
+            end
+        end
+    end
+
+    if #sinks > 1 and sortByDistance ~= nil and sortByDistance then
+        table.sort(sinks, function(a,b) return IsoUtils.DistanceTo(
+            a:getX(), a:getY(), square:getX(), square:getY()
+        ) < IsoUtils.DistanceTo(
+            b:getX(), b:getY(), square:getX(), square:getY()
+        ) end)
+    end
+
+    return sinks
+end
+
 function UBUtils.GetVehiclePartSquare(vehicle, part)
     local areaCenter = vehicle:getAreaCenter(part:getArea())
     if not areaCenter then return nil end

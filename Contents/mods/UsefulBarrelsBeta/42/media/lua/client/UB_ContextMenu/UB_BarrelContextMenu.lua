@@ -218,6 +218,70 @@ function UB_BarrelContextMenu:DoSiphonFromVehicleMenu(context, hasHoseNearby)
     end
 end
 
+local items_cache = {}
+
+function UB_BarrelContextMenu:CreateSinkOption(containerMenu, sink, hasHoseNearby)
+    local props = sink:getSprite():getProperties()
+
+    local name
+    if props:Is("CustomName") then
+        name = props:Val("CustomName")
+        if props:Is("GroupName") then
+            name = props:Val("GroupName") .. " " .. name
+        end
+    end
+
+    local item = instanceItem("Moveables." .. sink:getSpriteName())
+
+    local containerOption = containerMenu:addGetUpOption(
+        Translator.getMoveableDisplayName(name), nil, function() end, sink, self.barrel
+    )
+    if containerOption then
+        containerOption.iconTexture = item:getIcon()
+    end
+
+    local tooltip = ISToolTip:new()
+    tooltip:initialise()
+    tooltip.maxLineWidth = 512
+    tooltip.description = "water"--sink:GetTooltipText(tooltip.font)
+    tooltip.object = sink
+    containerOption.toolTip = tooltip
+end
+
+function UB_BarrelContextMenu:DoFillFromSinkMenu(context, hasHoseNearby)
+    local sinks = UBUtils.GetSinksNearby(self.barrel.square, 3, true, true)
+
+    local fillOption = context:addOption(getText("ContextMenu_AddFromFixture"))
+
+    -- todo disable if no sinks
+
+    local containerMenu = ISContextMenu:getNew(context)
+    context:addSubMenu(fillOption, containerMenu) 
+
+    for _,sink in ipairs(sinks) do
+        self:CreateSinkOption(containerMenu, sink, hasHoseNearby)
+    end
+
+    local hc = getCore():getObjectHighlitedColor()
+    --highlight the object on tile while the tooltip is showing
+    containerMenu.showTooltip = function(_subMenu, _option)
+        ISContextMenu.showTooltip(_subMenu, _option)
+        if _subMenu.toolTip.object ~= nil then
+            _option.toolTip:setVisible(false)
+            _option.toolTip.object:setHighlightColor(hc)
+            _option.toolTip.object:setHighlighted(true, false)
+        end
+    end
+
+    --stop highlighting the object when the tooltip is not showing
+    containerMenu.hideToolTip = function(_subMenu)
+        if _subMenu.toolTip and _subMenu.toolTip.object then
+            _subMenu.toolTip.object:setHighlighted(false)
+        end
+        ISContextMenu.hideToolTip(_subMenu)
+    end
+end
+
 function UB_BarrelContextMenu:AddInfoOption(context)
     local fluidName = self.barrel:GetTranslatedFluidNameOrEmpty()
 
@@ -268,7 +332,6 @@ function UB_BarrelContextMenu:new(player, context, ub_barrel)
             local worldObjects = UBUtils.GetWorldItemsNearby(self.barrel.square, UBConst.TOOL_SCAN_DISTANCE)
             local hasHoseNearby = UBUtils.hasItemNearbyOrInInv(worldObjects, self.playerInv, "Base.RubberHose")
             local hasFunnelNearby = UBUtils.hasItemNearbyOrInInv(worldObjects, self.playerInv, "Base.Funnel")
-            -- TODO if too far from barrel - red all options
 
             local addMenuOpts = {
                 addToBarrel=true,
@@ -320,6 +383,9 @@ function UB_BarrelContextMenu:new(player, context, ub_barrel)
 
             -- transfer fuel from vehicle menu
             self:DoSiphonFromVehicleMenu(barrelMenu, hasHoseNearby)
+
+            -- transfer water from sink menu
+            self:DoFillFromSinkMenu(barrelMenu, hasHoseNearby)
         end
     end
 end

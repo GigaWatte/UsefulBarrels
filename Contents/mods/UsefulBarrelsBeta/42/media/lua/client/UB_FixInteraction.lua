@@ -89,13 +89,12 @@ local function OnObjectPlaced(_object)
 end
 Events.OnObjectAdded.Add(OnObjectPlaced)
 
--- TODO verify this!
---local function UB_OnGameBoot()
---    local instance = ScriptManager.instance
---    instance:getItem("Base.MetalDrum"):DoParam("Weight = 10")
---    instance:getItem("Base.Mov_LightGreenBarrel"):DoParam("Weight = 10")
---    instance:getItem("Base.Mov_OrangeBarrel"):DoParam("Weight = 10")
---    instance:getItem("Base.Mov_DarkGreenBarrel"):DoParam("Weight = 10")
---end
---
---Events.OnGameBoot.Add(UB_OnGameBoot) 
+local function UB_OnGameBoot()
+    local instance = ScriptManager.instance
+    instance:getItem("Base.MetalDrum"):DoParam("Weight = 10")
+    instance:getItem("Base.Mov_LightGreenBarrel"):DoParam("Weight = 10")
+    instance:getItem("Base.Mov_OrangeBarrel"):DoParam("Weight = 10")
+    instance:getItem("Base.Mov_DarkGreenBarrel"):DoParam("Weight = 10")
+end
+
+Events.OnGameBoot.Add(UB_OnGameBoot) 
