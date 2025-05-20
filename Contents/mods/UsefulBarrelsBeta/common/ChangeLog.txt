@@ -114,4 +114,9 @@
 3.2.2:
 - New feature: able to wash from the lidless barrel
 [ ------ ]
+[ 21/05/2025 ]
+3.2.3:
+- New feature: able to add water from fixtures (including sinks, bathrooms, toilets or even other barrels)
+- New feature: increased barrel encumbrance from 0.5 to 10 units
+[ ------ ]
 
