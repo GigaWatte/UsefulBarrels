@@ -39,8 +39,6 @@ function UB_SiphonFromVehicleAction:update()
         self.amountSent = litres
     end
 
-
-
     self.character:setMetabolicTarget(Metabolics.HeavyDomestic)
 end
 

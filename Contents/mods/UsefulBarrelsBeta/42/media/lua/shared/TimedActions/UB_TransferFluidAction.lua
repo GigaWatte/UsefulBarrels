@@ -36,9 +36,8 @@ function UB_TransferFluidAction:update()
 end
 
 function UB_TransferFluidAction:start()
-	local o = self
-	o.destinationStart = o.destFluidContainer:getAmount()
-	o.destinationTarget = o.destinationStart + o.amount
+	self.destinationStart = self.destFluidContainer:getAmount()
+	self.destinationTarget = self.destinationStart + self.amount
 
 	if not isClient() then
 		self:init()
@@ -66,9 +65,9 @@ function UB_TransferFluidAction:perform()
 end
 
 function UB_TransferFluidAction:complete()
-	local itemCurrent = self.destFluidContainer:getAmount();
-	if self.destinationTarget > itemCurrent then
-		FluidContainer.Transfer(self.sourceFluidContainer, self.destFluidContainer, self.destinationTarget - itemCurrent)
+	local destCurrentAmount = self.destFluidContainer:getAmount();
+	if self.destinationTarget > destCurrentAmount then
+		FluidContainer.Transfer(self.sourceFluidContainer, self.destFluidContainer, self.destinationTarget - destCurrentAmount)
 	end
 
 	return true;
@@ -80,7 +79,7 @@ end
 
 function UB_TransferFluidAction:getDuration()
 	if self.character:isTimedActionInstant() then
-		return 1;
+		return 1
 	end
 
 	local basePerLiter = 50

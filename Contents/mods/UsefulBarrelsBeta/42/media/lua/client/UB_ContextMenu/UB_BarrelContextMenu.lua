@@ -97,6 +97,11 @@ function UB_BarrelContextMenu.OnVehicleTransferFluid(playerObj, part, barrel)
 	end
 end
 
+function UB_BarrelContextMenu.OnTransferFluidFromSink(playerObj, sink, barrel)
+    if not luautils.walkAdj(playerObj, sink:getSquare(), true) then return end
+    ISTimedActionQueue.add(UB_TransferFluidFromSinkAction:new(playerObj, sink, barrel))
+end
+
 function UB_BarrelContextMenu:DoCategoryList(subMenu, allContainerTypes, addToBarrel, oneOptionText, allOptionText)
     for _,containerType in pairs(allContainerTypes) do
         local destItem = containerType[1]
@@ -234,7 +239,10 @@ function UB_BarrelContextMenu:CreateSinkOption(containerMenu, sink, hasHoseNearb
     local item = instanceItem("Moveables." .. sink:getSpriteName())
 
     local containerOption = containerMenu:addGetUpOption(
-        Translator.getMoveableDisplayName(name), nil, function() end, sink, self.barrel
+        Translator.getMoveableDisplayName(name), 
+        self.playerObj, 
+        UB_BarrelContextMenu.OnTransferFluidFromSink, 
+        sink, self.barrel
     )
     if containerOption then
         containerOption.iconTexture = item:getIcon()
@@ -243,17 +251,20 @@ function UB_BarrelContextMenu:CreateSinkOption(containerMenu, sink, hasHoseNearb
     local tooltip = ISToolTip:new()
     tooltip:initialise()
     tooltip.maxLineWidth = 512
-    tooltip.description = "water"--sink:GetTooltipText(tooltip.font)
+    tooltip.description = sink:getFluidUiName() --sink:GetTooltipText(tooltip.font)
     tooltip.object = sink
     containerOption.toolTip = tooltip
 end
 
-function UB_BarrelContextMenu:DoFillFromSinkMenu(context, hasHoseNearby)
+function UB_BarrelContextMenu:DoFillFromFixtureMenu(context, hasHoseNearby)
     local sinks = UBUtils.GetSinksNearby(self.barrel.square, 3, true, true)
 
-    local fillOption = context:addOption(getText("ContextMenu_AddFromFixture"))
+    local fillOption = context:addOption(getText("ContextMenu_UB_AddFromFixture"))
 
-    -- todo disable if no sinks
+    if #sinks == 0 then
+        UBUtils.DisableOptionAddTooltip(fillOption, getText("ContextMenu_UB_NoFixturesAvailable"))
+        return
+    end
 
     local containerMenu = ISContextMenu:getNew(context)
     context:addSubMenu(fillOption, containerMenu) 
@@ -361,7 +372,7 @@ function UB_BarrelContextMenu:new(player, context, ub_barrel)
                 noContainersNooltip=getText("Tooltip_UB_NoProperContainerInInventory"),
                 actionAllText=getText("ContextMenu_FillAll"),
                 actionOneText=getText("ContextMenu_FillOne"),
-                
+
                 groundOptionText=getText("ContextMenu_UB_AddFluid_OnGround"),
                 groundContainers=UBUtils.GetWorldFluidContainersNearby(
                     self.barrel.square, 
@@ -384,8 +395,8 @@ function UB_BarrelContextMenu:new(player, context, ub_barrel)
             -- transfer fuel from vehicle menu
             self:DoSiphonFromVehicleMenu(barrelMenu, hasHoseNearby)
 
-            -- transfer water from sink menu
-            self:DoFillFromSinkMenu(barrelMenu, hasHoseNearby)
+            -- transfer water from fixtures menu
+            self:DoFillFromFixtureMenu(barrelMenu, hasHoseNearby)
         end
     end
 end
