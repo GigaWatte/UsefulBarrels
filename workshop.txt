@@ -57,8 +57,9 @@ description=Stable is polished and works well. Receives an update from beta as s
 description=Beta gets new features early and may be buggy but don't worry, i'm here to fix them asap.
 description=[h3]Beta features[/h3]
 description=[list]
-description=    [*]Be able to add fluid from items on the ground 
-description=    [*]Cut the barrel lid and turn it into a rain collector
+description=    [*]Be able to add fluid from items on the ground
+description=    [*]Cut the barrel lid and turn it into a rain collector. I'd also recommend checking out the [url=https://steamcommunity.com/sharedfiles/filedetails/?id=3439305933]Functional Gutters[/url] mod.
+description=    [*]Be able to add fluid from other world objects such as: sink, bath, toilet or even other Useful Barrel.
 description=[/list]
 description=
 description=[h2] WIP [/h2]
@@ -71,7 +72,7 @@ description=[h2] Future plans [/h2]
 description=[list]
 description=    [*]Add the ability to move barrel with fluid
 description=    [*]Connect the barrel to the generator with a hose and refuel it over time
-description=    [*]Add the ability to fill the barrel directly from gas stations and water sinks.
+description=    [*]Add the ability to fill the barrel directly from gas stations.
 description=[/list]
 description=
 description=[h2]Mods compatibility[/h2]
@@ -107,7 +108,6 @@ description=Thanks to [url=https://steamcommunity.com/id/Chuckleberry_Finn]Chuck
 description=Thanks to [url=https://steamcommunity.com/id/Chuckleberry_Finn]Chuckleberry Finn[/url] for pz-translator tool.
 description=
 description=This is my first experience making a mod, so it may not be perfect.
-description=Feel free to report bugs and suggestions for improvement!
-description=
+description=Feel free to report bugs and suggestions for improvement!
 tags=Build 42;Misc;Realistic;QoL;WIP
 visibility=public
