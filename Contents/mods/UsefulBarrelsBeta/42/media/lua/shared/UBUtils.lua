@@ -195,12 +195,17 @@ function UBUtils.GetSquaresInRange(square, distance, includeInitialSquare, isDia
 	if not distance then distance = 1 end
     if isDiamondShape == nil then isDiamondShape = true end
 
-    local x,y,z = square:getX(), square:getY(), square:getZ()
+    local x = square:getX()
+    local y = square:getY()
+    local z = square:getZ()
     local cell = square:getCell()
 	local squares = {}
     for xx = -distance,distance do
         for yy = -distance,distance do
-            if isDiamondShape and math.abs(xx) + math.abs(yy) <= distance then
+            if (xx == 0) and (yy == 0) then
+                local nextSquare = cell:getGridSquare(x+xx, y+yy, z)
+                if nextSquare and includeInitialSquare == true then table.insert(squares, nextSquare) end
+            elseif isDiamondShape and math.abs(xx) + math.abs(yy) <= distance then
 				local nextSquare = cell:getGridSquare(x+xx, y+yy, z)
                 if nextSquare then table.insert(squares, nextSquare) end
             elseif not isDiamondShape then
@@ -208,10 +213,6 @@ function UBUtils.GetSquaresInRange(square, distance, includeInitialSquare, isDia
                 if nextSquare then table.insert(squares, nextSquare) end
             end
         end 
-    end
-
-    if includeInitialSquare ~= nil and includeInitialSquare then
-        table.insert(squares, square)
     end
 
     return squares
@@ -273,6 +274,58 @@ function UBUtils.GetBarrelsNearby(square, distance, fluid, sortByDistance)
     end
     
     return barrels
+end
+
+local function isPuddleOrRiver(object)
+	if not object or not object:getSprite() then return false end
+	if not object:hasWater() then return false end
+	return object:getSprite():getProperties():Is(IsoFlagType.solidfloor)
+end
+
+function UBUtils.GetSinksNearby(square, distance, sortByDistance, requireLOSClear)
+    if not square then return {} end
+
+    local squares = UBUtils.GetSquaresInRange(square, distance, false)
+    
+    local sinks = {}
+
+    for _,curr in ipairs(squares) do
+        local current_square = curr
+        local squareObjects = current_square:getObjects()
+        local sqTable = UBUtils.ConvertToTable(squareObjects)
+        for i,isoObject in ipairs(sqTable) do
+            if isoObject:hasWater() 
+                and not isPuddleOrRiver(isoObject)
+                and not instanceof(isoObject, "IsoClothingDryer")
+                and not instanceof(isoObject, "IsoClothingWasher")
+                and not instanceof(isoObject, "IsoCombinationWasherDryer") 
+                and not instanceof(isoObject, "IsoWorldInventoryObject")
+                then -- TODO does it react to barrel? local isValid = UBBarrel.validate(isoObject)
+                
+                if requireLOSClear == true then
+                    local cell = square:getCell()
+                    local x1, y1, z1 = square:getX(), square:getY(), square:getZ()
+                    local x2, y2, z2 = isoObject:getX(), isoObject:getY(), isoObject:getZ()
+                    local state = tostring(LosUtil.lineClear(cell, x1, y1, z1, x2, y2, z2, false))
+                    if state == "Clear" then
+                        table.insert(sinks, isoObject)
+                    end
+                else
+                    table.insert(sinks, isoObject)
+                end
+            end
+        end
+    end
+
+    if #sinks > 1 and sortByDistance ~= nil and sortByDistance then
+        table.sort(sinks, function(a,b) return IsoUtils.DistanceTo(
+            a:getX(), a:getY(), square:getX(), square:getY()
+        ) < IsoUtils.DistanceTo(
+            b:getX(), b:getY(), square:getX(), square:getY()
+        ) end)
+    end
+
+    return sinks
 end
 
 function UBUtils.GetVehiclePartSquare(vehicle, part)
