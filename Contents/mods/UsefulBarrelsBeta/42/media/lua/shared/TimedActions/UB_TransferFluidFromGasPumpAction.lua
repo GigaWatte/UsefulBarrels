@@ -1,25 +1,26 @@
 require "TimedActions/ISBaseTimedAction"
 
-UB_TransferFluidFromSinkAction = ISBaseTimedAction:derive("UB_TransferFluidFromSinkAction")
+UB_TransferFluidFromGasPumpAction = ISBaseTimedAction:derive("UB_TransferFluidFromGasPumpAction")
 
-function UB_TransferFluidFromSinkAction:isValid()
-    return self.sourceObject:getFluidAmount() > 0
+function UB_TransferFluidFromGasPumpAction:isValid()
+    return self.sourceObject:getPipedFuelAmount() > 0
 end
 
-function UB_TransferFluidFromSinkAction:waitToStart()
+function UB_TransferFluidFromGasPumpAction:waitToStart()
     self.character:faceThisObject(self.sourceObject)
     return self.character:shouldBeTurning()
 end
 
-function UB_TransferFluidFromSinkAction:update()
-    local sourceAmount = self.sourceObject:getFluidAmount()
+function UB_TransferFluidFromGasPumpAction:update()
+    local sourceAmount = self.sourceObject:getPipedFuelAmount()
     if sourceAmount > 0 then
         local actionCurrent = math.floor(self.amountToTransfer * self:getJobDelta() + 0.001)
         local destinationAmount = self.destFluidContainer:getAmount()
         local desiredAmount = (self.destinationStart + actionCurrent)
         if desiredAmount > destinationAmount then
             local amountToTransfer = desiredAmount - destinationAmount
-            self.sourceObject:transferFluidTo(self.destFluidContainer, amountToTransfer)
+            self.sourceObject:setPipedFuelAmount(sourceAmount - (amountToTransfer))
+            self.destFluidContainer:addFluid(Fluid.Petrol, amountToTransfer)
         end
     else
         self.action:forceComplete()
@@ -28,7 +29,7 @@ function UB_TransferFluidFromSinkAction:update()
     self.character:setMetabolicTarget(Metabolics.LightWork)
 end
 
-function UB_TransferFluidFromSinkAction:start()
+function UB_TransferFluidFromGasPumpAction:start()
     self.destinationStart = self.destFluidContainer:getAmount()
 	self.destinationTarget = self.destinationStart + self.amountToTransfer
 
@@ -40,28 +41,30 @@ function UB_TransferFluidFromSinkAction:start()
     self.sound = self.character:playSound("GetWaterFromLake")
 end
 
-function UB_TransferFluidFromSinkAction:stop()
+function UB_TransferFluidFromGasPumpAction:stop()
     self.character:stopOrTriggerSound(self.sound)
     ISBaseTimedAction.stop(self)
 end
 
-function UB_TransferFluidFromSinkAction:perform()
+function UB_TransferFluidFromGasPumpAction:perform()
     self.character:stopOrTriggerSound(self.sound)
     -- needed to remove from queue / start next.
     ISBaseTimedAction.perform(self)
 end
 
-function UB_TransferFluidFromSinkAction:complete()
+function UB_TransferFluidFromGasPumpAction:complete()
     if self.sourceObject then
+        local sourceAmount = self.sourceObject:getPipedFuelAmount()
         local destCurrentAmount = self.destFluidContainer:getAmount()
         if self.destinationTarget > destCurrentAmount then
-            self.sourceObject:transferFluidTo(self.destFluidContainer, self.destinationTarget - destCurrentAmount)
+            self.sourceObject:setPipedFuelAmount(sourceAmount - (self.destinationTarget - destCurrentAmount))
+            self.destFluidContainer:addFluid(Fluid.Petrol, self.destinationTarget - destCurrentAmount)
         end
     end
     return true
 end
 
-function UB_TransferFluidFromSinkAction:getDuration()
+function UB_TransferFluidFromGasPumpAction:getDuration()
     if self.character:isTimedActionInstant() then
 		return 1
 	end
@@ -71,13 +74,13 @@ function UB_TransferFluidFromSinkAction:getDuration()
     return self.amountToTransfer * basePerLiter
 end
 
-function UB_TransferFluidFromSinkAction:new(character, sink, barrel)
+function UB_TransferFluidFromGasPumpAction:new(character, gas_pump, barrel)
     local o = ISBaseTimedAction.new(self, character)
-    o.sourceObject = sink
+    o.sourceObject = gas_pump
     o.destFluidContainer = barrel.fluidContainer
 
     local destFreeCapacity = o.destFluidContainer:getFreeCapacity()
-    local sourceCurrent = tonumber(o.sourceObject:getFluidAmount())
+    local sourceCurrent = tonumber(o.sourceObject:getPipedFuelAmount())
     o.amountToTransfer = math.min(sourceCurrent, destFreeCapacity)
     o.maxTime = o:getDuration()
     return o

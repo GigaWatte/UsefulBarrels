@@ -119,4 +119,8 @@
 - New feature: able to add water from fixtures (including sinks, bathrooms, toilets or even other barrels)
 - New feature: increased barrel encumbrance from 0.5 to 10 units
 [ ------ ]
+[ 24/05/2025 ]
+3.2.4:
+- New feature: able to add gasoline from gas pump
+[ ------ ]
 

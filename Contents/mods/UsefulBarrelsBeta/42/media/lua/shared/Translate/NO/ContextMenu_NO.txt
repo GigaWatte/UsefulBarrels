@@ -13,4 +13,5 @@ ContextMenu_NO = {
     ContextMenu_UB_BarrelLidCut = "Cut %1 lid"
     ContextMenu_UB_AddFromFixture = "Add from fixture"
     ContextMenu_UB_NoFixturesAvailable = "No fixtures to add from"
+    ContextMenu_UB_PumpFuel = "Fuel Pump"
 }

@@ -97,9 +97,14 @@ function UB_BarrelContextMenu.OnVehicleTransferFluid(playerObj, part, barrel)
 	end
 end
 
-function UB_BarrelContextMenu.OnTransferFluidFromSink(playerObj, sink, barrel)
-    if not luautils.walkAdj(playerObj, sink:getSquare(), true) then return end
-    ISTimedActionQueue.add(UB_TransferFluidFromSinkAction:new(playerObj, sink, barrel))
+function UB_BarrelContextMenu.OnTransferFluidFromMapObject(playerObj, map_object, barrel)
+    if not luautils.walkAdj(playerObj, map_object:getSquare(), true) then return end
+    ISTimedActionQueue.add(UB_TransferFluidFromSinkAction:new(playerObj, map_object, barrel))
+end
+
+function UB_BarrelContextMenu.OnTransferFluidFromPump(playerObj, fuelPump, barrel)
+    if not luautils.walkAdj(playerObj, fuelPump:getSquare()) then return end
+    ISTimedActionQueue.add(UB_TransferFluidFromGasPumpAction:new(playerObj, fuelPump, barrel))	
 end
 
 function UB_BarrelContextMenu:DoCategoryList(subMenu, allContainerTypes, addToBarrel, oneOptionText, allOptionText)
@@ -225,8 +230,8 @@ end
 
 local items_cache = {}
 
-function UB_BarrelContextMenu:CreateSinkOption(containerMenu, sink, hasHoseNearby)
-    local props = sink:getSprite():getProperties()
+function UB_BarrelContextMenu:CreateMapObjectOption(containerMenu, map_object, hasHoseNearby)
+    local props = map_object:getSprite():getProperties()
 
     local name
     if props:Is("CustomName") then
@@ -236,32 +241,61 @@ function UB_BarrelContextMenu:CreateSinkOption(containerMenu, sink, hasHoseNearb
         end
     end
 
-    local item = instanceItem("Moveables." .. sink:getSpriteName())
+    local moveable_name = "Moveables." .. map_object:getSpriteName()
+    if not items_cache[moveable_name] then
+        items_cache[moveable_name] = instanceItem(moveable_name)
+    end
+    local moveable_item = items_cache[moveable_name]
 
     local containerOption = containerMenu:addGetUpOption(
         Translator.getMoveableDisplayName(name), 
         self.playerObj, 
-        UB_BarrelContextMenu.OnTransferFluidFromSink, 
-        sink, self.barrel
+        UB_BarrelContextMenu.OnTransferFluidFromMapObject, 
+        map_object, self.barrel
     )
-    if containerOption then
+    if containerOption and item then
         containerOption.iconTexture = item:getIcon()
     end
 
     local tooltip = ISToolTip:new()
     tooltip:initialise()
     tooltip.maxLineWidth = 512
-    tooltip.description = sink:getFluidUiName() --sink:GetTooltipText(tooltip.font)
-    tooltip.object = sink
+    tooltip.description = map_object:getFluidUiName()
+    tooltip.object = map_object
     containerOption.toolTip = tooltip
 end
 
-function UB_BarrelContextMenu:DoFillFromFixtureMenu(context, hasHoseNearby)
-    local sinks = UBUtils.GetSinksNearby(self.barrel.square, 3, true, true)
+function UB_BarrelContextMenu:CreateGasPumpOption(containerMenu, pump_object, hasHoseNearby)
+    local containerOption = containerMenu:addGetUpOption(
+        getText("ContextMenu_UB_PumpFuel"), 
+        self.playerObj, 
+        UB_BarrelContextMenu.OnTransferFluidFromPump, 
+        pump_object, self.barrel
+    )
+
+    local fuelPower = (SandboxVars.AllowExteriorGenerator and pump_object and pump_object:getSquare():haveElectricity()) 
+        or (pump_object:getSquare():hasGridPower())
+    
+    if not fuelPower then
+        UBUtils.DisableOptionAddTooltip(containerOption, getText("ContextMenu_FuelPumpNoPower"), pump_object)
+    elseif pump_object:getPipedFuelAmount() <= 0 then
+        UBUtils.DisableOptionAddTooltip(containerOption, getText("ContextMenu_FuelPumpEmpty"), pump_object)
+    else
+        local tooltip = ISToolTip:new()
+        tooltip:initialise()
+        tooltip.description = Fluid.Petrol:getDisplayName()
+        tooltip.object = pump_object
+        containerOption.toolTip = tooltip 
+    end
+end
+
+function UB_BarrelContextMenu:DoFillFromMapObjectsMenu(context, hasHoseNearby)
+    local sinks = UBUtils.GetSinksNearby(self.barrel.square, UBConst.MAP_OBJECTS_DISTANCE, true, true)
+    local gasPumps = UBUtils.GetGasPumpsNearby(self.barrel.square, UBConst.MAP_OBJECTS_DISTANCE, true)
 
     local fillOption = context:addOption(getText("ContextMenu_UB_AddFromFixture"))
 
-    if #sinks == 0 then
+    if (#sinks == 0) and (#gasPumps == 0) then
         UBUtils.DisableOptionAddTooltip(fillOption, getText("ContextMenu_UB_NoFixturesAvailable"))
         return
     end
@@ -270,7 +304,11 @@ function UB_BarrelContextMenu:DoFillFromFixtureMenu(context, hasHoseNearby)
     context:addSubMenu(fillOption, containerMenu) 
 
     for _,sink in ipairs(sinks) do
-        self:CreateSinkOption(containerMenu, sink, hasHoseNearby)
+        self:CreateMapObjectOption(containerMenu, sink, hasHoseNearby)
+    end
+    
+    for _,gasPump in ipairs(gasPumps) do
+        self:CreateGasPumpOption(containerMenu, gasPump)
     end
 
     local hc = getCore():getObjectHighlitedColor()
@@ -397,8 +435,8 @@ function UB_BarrelContextMenu:new(player, context, ub_barrel)
             -- transfer fuel from vehicle menu
             self:DoSiphonFromVehicleMenu(barrelMenu, hasHoseNearby)
 
-            -- transfer water from fixtures menu
-            self:DoFillFromFixtureMenu(barrelMenu, hasHoseNearby)
+            -- transfer water from map objects menu
+            self:DoFillFromMapObjectsMenu(barrelMenu, hasHoseNearby)
         end
     end
 end

@@ -126,10 +126,11 @@ function UBUtils.SortContainers(allContainers)
     return allContainerTypes
 end
 
-function UBUtils.DisableOptionAddTooltip(option, description)
+function UBUtils.DisableOptionAddTooltip(option, description, object)
     if option then
         option.notAvailable = true
-        option.toolTip = ISWorldObjectContextMenu.addToolTip()
+        option.toolTip = ISToolTip:new()
+        if object then option.toolTip.object = object end
         if description then option.toolTip.description = description else option.toolTip.description = "" end
     end
 end
@@ -290,8 +291,7 @@ function UBUtils.GetSinksNearby(square, distance, sortByDistance, requireLOSClea
     local sinks = {}
 
     for _,curr in ipairs(squares) do
-        local current_square = curr
-        local squareObjects = current_square:getObjects()
+        local squareObjects = curr:getObjects()
         local sqTable = UBUtils.ConvertToTable(squareObjects)
         for i,isoObject in ipairs(sqTable) do
             if isoObject:hasWater() 
@@ -326,6 +326,34 @@ function UBUtils.GetSinksNearby(square, distance, sortByDistance, requireLOSClea
     end
 
     return sinks
+end
+
+function UBUtils.GetGasPumpsNearby(square, distance, sortByDistance)
+    if not square then return {} end
+
+    local squares = UBUtils.GetSquaresInRange(square, distance, false)
+    
+    local gasPumps = {}
+
+    for _,curr in ipairs(squares) do
+        local squareObjects = curr:getObjects()
+        local sqTable = UBUtils.ConvertToTable(squareObjects)
+        for i,isoObject in ipairs(sqTable) do
+            if isoObject:getPipedFuelAmount() >= 0 then
+                table.insert(gasPumps, isoObject)
+            end
+        end
+    end
+
+    if #gasPumps > 1 and sortByDistance ~= nil and sortByDistance then
+        table.sort(gasPumps, function(a,b) return IsoUtils.DistanceTo(
+            a:getX(), a:getY(), square:getX(), square:getY()
+        ) < IsoUtils.DistanceTo(
+            b:getX(), b:getY(), square:getX(), square:getY()
+        ) end)
+    end
+
+    return gasPumps
 end
 
 function UBUtils.GetVehiclePartSquare(vehicle, part)
