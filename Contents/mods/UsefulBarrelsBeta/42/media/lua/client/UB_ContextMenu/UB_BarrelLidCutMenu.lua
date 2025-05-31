@@ -4,19 +4,41 @@ local UBConst = require "UBConst"
 local UBBarrel = require "UBBarrel"
 
 local function DuBarrelLidCut(playerObj, barrel, blowTorch, weldingMask)
-	if luautils.walkAdj(playerObj, barrel.square, true) then
+    if luautils.walkAdj(playerObj, barrel.square, true) then
+        local blowTorchContainerToReturn = blowTorch:getContainer()
+        local weldingMaskContainerToReturn = weldingMask:getContainer()
+        local playerInv = playerObj:getInventory()
+
         if SandboxVars.UsefulBarrels.RequireWeldingMask and weldingMask ~= nil then
-            --local mask = player:getInventory():getFirstEvalRecurse(predicateWeldingMask);
-            --if mask then
-            --	ISInventoryPaneContextMenu.wearItem(mask, player:getPlayerNum());
-            --end
-            ISTimedActionQueue.add(ISEquipWeaponAction:new(playerObj, weldingMask, 25, true))
+            -- transfer item to player inventory
+            if luautils.haveToBeTransfered(playerObj, weldingMask) then
+                ISTimedActionQueue.add(ISInventoryTransferAction:new(playerObj, weldingMask, weldingMask:getContainer(), playerInv))
+            end
+            ISTimedActionQueue.add(ISWearClothing:new(playerObj, weldingMask, 25))
         end
-        if SandboxVars.UsefulBarrels.RequirePipeWrench and blowTorch ~= nil then
+
+        if SandboxVars.UsefulBarrels.RequireBlowTorch and blowTorch ~= nil then
+            -- transfer item to player inventory
+            if luautils.haveToBeTransfered(playerObj, blowTorch) then
+                ISTimedActionQueue.add(ISInventoryTransferAction:new(playerObj, blowTorch, blowTorch:getContainer(), playerInv))
+            end
             ISTimedActionQueue.add(ISEquipWeaponAction:new(playerObj, blowTorch, 25, true))
         end
-		ISTimedActionQueue.add(UB_BarrelLidCutAction:new(playerObj, barrel, blowTorch, UBConst.BLOW_TORCH_USES));
-	end
+
+        ISTimedActionQueue.add(UB_BarrelLidCutAction:new(playerObj, barrel, blowTorch, UBConst.BLOW_TORCH_USES))
+
+        ISTimedActionQueue.add(ISUnequipAction:new(playerObj, weldingMask, 25))
+        -- return item back to container
+        if weldingMaskContainerToReturn and (weldingMaskContainerToReturn ~= playerInv) then
+            ISTimedActionQueue.add(ISInventoryTransferAction:new(playerObj, weldingMask, playerInv, weldingMaskContainerToReturn))
+        end
+
+        ISTimedActionQueue.add(ISUnequipAction:new(playerObj, blowTorch, 25))
+        -- return item back to container
+        if blowTorchContainerToReturn and (blowTorchContainerToReturn ~= playerInv) then
+            ISTimedActionQueue.add(ISInventoryTransferAction:new(playerObj, blowTorch, playerInv, blowTorchContainerToReturn))
+        end
+    end
 end
 
 local function BarrelLidCutContextMenu(player, context, worldobjects, test)
