@@ -65,9 +65,9 @@ function UB_BarrelLidCutAction:complete()
 end
 
 function UB_BarrelLidCutAction:getDuration()
-	if self.character:isTimedActionInstant() then
-		return 1
-	end
+    if self.character:isTimedActionInstant() then
+        return 1
+    end
     return 150 - (self.character:getPerkLevel(Perks.MetalWelding) * 10)
 end
 

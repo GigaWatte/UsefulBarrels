@@ -17,9 +17,9 @@ function UB_BarrelContextMenu.OnTransferFluid(playerObj, barrelSquare, fluidCont
     local reequipPrimary = primaryItem and not luautils.tableContains(fluidContainerItems, primaryItem)
     local reequipSecondary = secondaryItem and not luautils.tableContains(fluidContainerItems, secondaryItem)
     -- Drop corpse or generator
-	if isForceDropHeavyItem(primaryItem) then
-		ISTimedActionQueue.add(ISUnequipAction:new(playerObj, primaryItem, 50));
-	end
+    if isForceDropHeavyItem(primaryItem) then
+        ISTimedActionQueue.add(ISUnequipAction:new(playerObj, primaryItem, 50));
+    end
 
     if not luautils.walkAdj(playerObj, barrelSquare, true) then return end
     -- sort to remove unnecesary equip action if proper container already equipped
@@ -89,15 +89,15 @@ end
 
 function UB_BarrelContextMenu.OnVehicleTransferFluid(playerObj, part, barrel)
     if playerObj:getVehicle() then
-		ISVehicleMenu.onExit(playerObj)
-	end
-	if barrel then
-		local action = ISPathFindAction:pathToVehicleArea(playerObj, part:getVehicle(), part:getArea())
-		action:setOnFail(ISVehiclePartMenu.onPumpGasolinePathFail, playerObj)
-		ISTimedActionQueue.add(action)
-		
+        ISVehicleMenu.onExit(playerObj)
+    end
+    if barrel then
+        local action = ISPathFindAction:pathToVehicleArea(playerObj, part:getVehicle(), part:getArea())
+        action:setOnFail(ISVehiclePartMenu.onPumpGasolinePathFail, playerObj)
+        ISTimedActionQueue.add(action)
+        
         ISTimedActionQueue.add(UB_SiphonFromVehicleAction:new(playerObj, part, barrel))
-	end
+    end
 end
 
 function UB_BarrelContextMenu.OnTransferFluidFromMapObject(playerObj, map_object, barrel)
@@ -107,7 +107,7 @@ end
 
 function UB_BarrelContextMenu.OnTransferFluidFromPump(playerObj, fuelPump, barrel)
     if not luautils.walkAdj(playerObj, fuelPump:getSquare()) then return end
-    ISTimedActionQueue.add(UB_TransferFluidFromGasPumpAction:new(playerObj, fuelPump, barrel))	
+    ISTimedActionQueue.add(UB_TransferFluidFromGasPumpAction:new(playerObj, fuelPump, barrel))    
 end
 
 function UB_BarrelContextMenu:DoCategoryList(subMenu, allContainerTypes, addToBarrel, oneOptionText, allOptionText)

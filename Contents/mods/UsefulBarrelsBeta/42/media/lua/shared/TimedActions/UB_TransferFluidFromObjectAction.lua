@@ -32,7 +32,7 @@ end
 
 function UB_TransferFluidFromObjectAction:start()
     self.destinationStart = self.barrel:getAmount()
-	self.destinationTarget = self.destinationStart + self.amountToTransfer
+    self.destinationTarget = self.destinationStart + self.amountToTransfer
 
     self:setActionAnim("fill_container_tap")
     self:setOverrideHandModels(nil, nil)
@@ -67,8 +67,8 @@ end
 
 function UB_TransferFluidFromObjectAction:getDuration()
     if self.character:isTimedActionInstant() then
-		return 1
-	end
+        return 1
+    end
 
     local basePerLiter = 50
 

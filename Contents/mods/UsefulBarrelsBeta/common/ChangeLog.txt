@@ -130,5 +130,12 @@
 - Fixed: error with equipping proper tools for "cut lid" action
 - Translations: updated KO translation
 [ ------ ]
+[ 04/06/2025 ]
+3.3.0:
+- Improved: required tools for "cut lid" and "uncap" actions now returning to backpack if they taken from
+- Fixed: cut lid job title pointing to wrong language translation key
+- Fixed: error with equipping proper tools for "cut lid" action
+- Translations: updated KO translation
+[ ------ ]
 
 

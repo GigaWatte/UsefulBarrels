@@ -5,11 +5,11 @@ local UB_GeneratorContextMenu = {}
 
 
 function UB_GeneratorContextMenu.doAddFuelGenerator(worldobjects, generator, barrel, playerObj)
-	if luautils.walkAdj(playerObj, generator:getSquare()) then
+    if luautils.walkAdj(playerObj, generator:getSquare()) then
         if generator:getFuel() < 100 then
             ISTimedActionQueue.add(UB_RefuelGeneratorAction:new(playerObj, generator, barrel));
         end
-	end
+    end
 end
 
 function UB_GeneratorContextMenu:CreateBarrelOption(containerMenu, barrel, hasHoseNearby, player)

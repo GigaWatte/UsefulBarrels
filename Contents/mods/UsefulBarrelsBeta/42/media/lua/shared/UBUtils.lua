@@ -59,18 +59,18 @@ function UBUtils.itemHasUses(item, uses)
 end
 
 function UBUtils.hasItemNearbyOrInInv(worldObjects, playerInv, item)
-	return UBUtils.TableContainsItem(worldObjects, item) or UBUtils.playerHasItem(playerInv, item)
+    return UBUtils.TableContainsItem(worldObjects, item) or UBUtils.playerHasItem(playerInv, item)
 end
 
 function UBUtils.getPlayerFluidContainers(playerInv)
     local itemsArray = playerInv:getAllEvalRecurse(
         function (item) return UBUtils.predicateAnyFluid(item) and not UBBarrel.validate(item) end
     )
-	return UBUtils.ConvertToTable(itemsArray)
+    return UBUtils.ConvertToTable(itemsArray)
 end
 
 function UBUtils.getPlayerFluidContainersWithFluid(playerInv, fluid)
-	local itemsArray = playerInv:getAllEvalRecurse(
+    local itemsArray = playerInv:getAllEvalRecurse(
         function (item) return (UBUtils.predicateFluid(item, fluid) or UBUtils.predicateHasFluidContainer(item)) and not UBBarrel.validate(item) end
     )
     
@@ -193,24 +193,24 @@ function UBUtils.CleanItemContainersFromBarrels(containerList, container)
 end
 
 function UBUtils.GetSquaresInRange(square, distance, includeInitialSquare, isDiamondShape)
-	if not distance then distance = 1 end
+    if not distance then distance = 1 end
     if isDiamondShape == nil then isDiamondShape = true end
 
     local x = square:getX()
     local y = square:getY()
     local z = square:getZ()
     local cell = square:getCell()
-	local squares = {}
+    local squares = {}
     for xx = -distance,distance do
         for yy = -distance,distance do
             if (xx == 0) and (yy == 0) then
                 local nextSquare = cell:getGridSquare(x+xx, y+yy, z)
                 if nextSquare and includeInitialSquare == true then table.insert(squares, nextSquare) end
             elseif isDiamondShape and math.abs(xx) + math.abs(yy) <= distance then
-				local nextSquare = cell:getGridSquare(x+xx, y+yy, z)
+                local nextSquare = cell:getGridSquare(x+xx, y+yy, z)
                 if nextSquare then table.insert(squares, nextSquare) end
             elseif not isDiamondShape then
-				local nextSquare = cell:getGridSquare(x+xx, y+yy, z)
+                local nextSquare = cell:getGridSquare(x+xx, y+yy, z)
                 if nextSquare then table.insert(squares, nextSquare) end
             end
         end 
@@ -278,9 +278,9 @@ function UBUtils.GetBarrelsNearby(square, distance, fluid, sortByDistance)
 end
 
 local function isPuddleOrRiver(object)
-	if not object or not object:getSprite() then return false end
-	if not object:hasWater() then return false end
-	return object:getSprite():getProperties():Is(IsoFlagType.solidfloor)
+    if not object or not object:getSprite() then return false end
+    if not object:hasWater() then return false end
+    return object:getSprite():getProperties():Is(IsoFlagType.solidfloor)
 end
 
 function UBUtils.GetMapObjectsNearby(square, distance, sortByDistance, requireLOSClear)
