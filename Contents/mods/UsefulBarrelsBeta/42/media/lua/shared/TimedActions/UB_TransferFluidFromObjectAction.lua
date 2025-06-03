@@ -1,17 +1,17 @@
 require "TimedActions/ISBaseTimedAction"
 
-UB_TransferFluidFromSinkAction = ISBaseTimedAction:derive("UB_TransferFluidFromSinkAction")
+UB_TransferFluidFromObjectAction = ISBaseTimedAction:derive("UB_TransferFluidFromObjectAction")
 
-function UB_TransferFluidFromSinkAction:isValid()
+function UB_TransferFluidFromObjectAction:isValid()
     return self.sourceObject:getFluidAmount() > 0
 end
 
-function UB_TransferFluidFromSinkAction:waitToStart()
+function UB_TransferFluidFromObjectAction:waitToStart()
     self.character:faceThisObject(self.sourceObject)
     return self.character:shouldBeTurning()
 end
 
-function UB_TransferFluidFromSinkAction:update()
+function UB_TransferFluidFromObjectAction:update()
     local sourceAmount = self.sourceObject:getFluidAmount()
     if sourceAmount > 0 then
         local actionCurrent = math.floor(self.amountToTransfer * self:getJobDelta() + 0.001)
@@ -30,7 +30,7 @@ function UB_TransferFluidFromSinkAction:update()
     self.character:setMetabolicTarget(Metabolics.LightWork)
 end
 
-function UB_TransferFluidFromSinkAction:start()
+function UB_TransferFluidFromObjectAction:start()
     self.destinationStart = self.barrel:getAmount()
 	self.destinationTarget = self.destinationStart + self.amountToTransfer
 
@@ -42,18 +42,18 @@ function UB_TransferFluidFromSinkAction:start()
     self.sound = self.character:playSound("GetWaterFromLake")
 end
 
-function UB_TransferFluidFromSinkAction:stop()
+function UB_TransferFluidFromObjectAction:stop()
     self.character:stopOrTriggerSound(self.sound)
     ISBaseTimedAction.stop(self)
 end
 
-function UB_TransferFluidFromSinkAction:perform()
+function UB_TransferFluidFromObjectAction:perform()
     self.character:stopOrTriggerSound(self.sound)
     -- needed to remove from queue / start next.
     ISBaseTimedAction.perform(self)
 end
 
-function UB_TransferFluidFromSinkAction:complete()
+function UB_TransferFluidFromObjectAction:complete()
     if self.sourceObject then
         local destCurrentAmount = self.barrel:getAmount()
         if self.destinationTarget > destCurrentAmount then
@@ -65,7 +65,7 @@ function UB_TransferFluidFromSinkAction:complete()
     return true
 end
 
-function UB_TransferFluidFromSinkAction:getDuration()
+function UB_TransferFluidFromObjectAction:getDuration()
     if self.character:isTimedActionInstant() then
 		return 1
 	end
@@ -75,7 +75,7 @@ function UB_TransferFluidFromSinkAction:getDuration()
     return self.amountToTransfer * basePerLiter
 end
 
-function UB_TransferFluidFromSinkAction:new(character, sink, barrel)
+function UB_TransferFluidFromObjectAction:new(character, sink, barrel)
     local o = ISBaseTimedAction.new(self, character)
     o.sourceObject = sink
     o.barrel = barrel

@@ -263,6 +263,8 @@ function UBFluidBarrel:removeWaterType()
 end
 
 function UBFluidBarrel:UpdateWaterLevel()
+    if self:getSprite() ~= self:getSpriteType(UBBarrel.LIDLESS) then return end
+
     local current_level = (self:getAmount() / self:getCapacity())
     --print("current fill level ", current_level)
     if current_level >= (UBBarrel.WATER_FULL_LEVEL) then

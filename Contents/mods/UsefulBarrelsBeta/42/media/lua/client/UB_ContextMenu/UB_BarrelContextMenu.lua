@@ -102,7 +102,7 @@ end
 
 function UB_BarrelContextMenu.OnTransferFluidFromMapObject(playerObj, map_object, barrel)
     if not luautils.walkAdj(playerObj, map_object:getSquare(), true) then return end
-    ISTimedActionQueue.add(UB_TransferFluidFromSinkAction:new(playerObj, map_object, barrel))
+    ISTimedActionQueue.add(UB_TransferFluidFromObjectAction:new(playerObj, map_object, barrel))
 end
 
 function UB_BarrelContextMenu.OnTransferFluidFromPump(playerObj, fuelPump, barrel)

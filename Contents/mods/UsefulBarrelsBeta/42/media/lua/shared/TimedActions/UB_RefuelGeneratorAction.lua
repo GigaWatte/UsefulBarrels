@@ -50,7 +50,7 @@ end
 
 function UB_RefuelGeneratorAction:getDuration()
 	if self.character:isTimedActionInstant() then
-		return 1;
+		return 1
 	end
 	return 70 + (self.amount * 50)
 end

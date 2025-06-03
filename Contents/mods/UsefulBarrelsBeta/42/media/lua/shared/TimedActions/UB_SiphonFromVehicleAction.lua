@@ -106,6 +106,10 @@ function UB_SiphonFromVehicleAction:getDuration()
     self.barrelTarget = self.barrelStart + amountToTransfer
     self.amountSent = self.barrelStart
 
+    if self.character:isTimedActionInstant() then
+		return 1
+	end
+
     return amountToTransfer * 50
 end
 

@@ -87,6 +87,10 @@ function UB_RefuelVehicleAction:getDuration()
 	self.barrelTarget = self.barrelStart - amountToTransfer
 	self.amountSent = self.tankStart
 
+	if self.character:isTimedActionInstant() then
+		return 1
+	end
+
 	return amountToTransfer * 50
 end
 
