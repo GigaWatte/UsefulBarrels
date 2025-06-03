@@ -123,4 +123,12 @@
 3.2.4:
 - New feature: able to add gasoline from gas pump
 [ ------ ]
+[ 31/05/2025 ]
+3.2.5:
+- Improved: required tools for "cut lid" and "uncap" actions now returning to backpack if they taken from
+- Fixed: cut lid job title pointing to wrong language translation key
+- Fixed: error with equipping proper tools for "cut lid" action
+- Translations: updated KO translation
+[ ------ ]
+
 

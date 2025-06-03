@@ -21,7 +21,7 @@ function UB_BarrelLidCutAction:update()
 end
 
 function UB_BarrelLidCutAction:start()
-    self.blowTorch:setJobType(getText("ContextMenu_UB_BarrelCutLid", self.objectLabel))
+    self.blowTorch:setJobType(getText("ContextMenu_UB_BarrelLidCut", self.objectLabel))
     self.blowTorch:setJobDelta(0.0)
     self:setActionAnim("BlowTorch")
     self:setOverrideHandModels(self.blowTorch, nil)
