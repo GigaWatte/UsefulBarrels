@@ -37,10 +37,10 @@ end
 
 function UB_RefuelGeneratorAction:complete()
 	local endFuel = 0;
-	while self.fluidCont and self.fluidCont:getAmount() >= 1.0 and self.generator:getFuel() + endFuel < 100 do
-		local amount = self.fluidCont:getAmount() - 1.0;
-		self.fluidCont:adjustAmount(amount);
-		endFuel = endFuel + 10;
+	while self.barrel:getAmount() >= 1.0 and self.generator:getFuel() + endFuel < 100 do
+		local amount = self.barrel:getAmount() - 1.0
+		self.barrel:adjustAmount(amount)
+		endFuel = endFuel + 10
 	end
 	self.generator:setFuel(self.generator:getFuel() + endFuel)
 	self.generator:sync()
@@ -56,10 +56,10 @@ function UB_RefuelGeneratorAction:getDuration()
 end
 
 function UB_RefuelGeneratorAction:new(character, generator, barrel, maxTime)
-	local o = ISBaseTimedAction.new(self, character);
-	o.fluidCont = barrel.fluidContainer;
-	o.generator = generator;
+	local o = ISBaseTimedAction.new(self, character)
+	o.barrel = barrel
+	o.generator = generator
 	o.amount = 10 - o.generator:getFuel() / 10
-	o.maxTime = o:getDuration();
+	o.maxTime = o:getDuration()
 	return o;
 end

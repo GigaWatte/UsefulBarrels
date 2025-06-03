@@ -29,7 +29,7 @@ function UB_RefuelVehicleAction:update()
 	end
 
 	local barrelUnits = self.barrelStart + (self.barrelTarget - self.barrelStart) * self:getJobDelta()
-	self.fuelFluidContainer:adjustAmount(math.ceil(barrelUnits));
+	self.barrel:adjustAmount(math.ceil(barrelUnits));
 
     self.character:setMetabolicTarget(Metabolics.HeavyDomestic);
 end
@@ -50,7 +50,7 @@ end
 
 function UB_RefuelVehicleAction:serverStop()
     local barrelLitres = self.barrelStart + (self.barrelTarget - self.barrelStart) * self.netAction:getProgress()
-    self.fuelFluidContainer:adjustAmount(math.ceil(barrelLitres));
+    self.barrel:adjustAmount(math.ceil(barrelLitres));
     local litres = self.tankStart + (self.tankTarget - self.tankStart) * self.netAction:getProgress()
     self.part:setContainerContentAmount(math.floor(litres))
     self.vehicle:transmitPartModData(self.part)
@@ -78,7 +78,7 @@ end
 
 function UB_RefuelVehicleAction:getDuration()
     self.tankStart = self.part:getContainerContentAmount()
-	self.barrelStart = self.fuelFluidContainer:getAmount()
+	self.barrelStart = self.barrel:getAmount()
 
 	local tankLitresRequired = self.part:getContainerCapacity() - self.tankStart
 	local amountToTransfer = math.min(tankLitresRequired, self.barrelStart)
@@ -94,7 +94,7 @@ function UB_RefuelVehicleAction:new(character, part, barrel)
 	local o = ISBaseTimedAction.new(self, character)
 	o.vehicle = part:getVehicle()
 	o.part = part
-	o.fuelFluidContainer = barrel.fluidContainer
+	o.barrel = barrel
 	--o.stopOnWalk = false
 	--o.stopOnRun = false
 	o.maxTime = o:getDuration()

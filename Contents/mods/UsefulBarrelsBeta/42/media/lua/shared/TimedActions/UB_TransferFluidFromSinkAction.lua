@@ -15,11 +15,13 @@ function UB_TransferFluidFromSinkAction:update()
     local sourceAmount = self.sourceObject:getFluidAmount()
     if sourceAmount > 0 then
         local actionCurrent = math.floor(self.amountToTransfer * self:getJobDelta() + 0.001)
-        local destinationAmount = self.destFluidContainer:getAmount()
+        local destinationAmount = self.barrel:getAmount()
         local desiredAmount = (self.destinationStart + actionCurrent)
         if desiredAmount > destinationAmount then
             local amountToTransfer = desiredAmount - destinationAmount
-            self.sourceObject:transferFluidTo(self.destFluidContainer, amountToTransfer)
+            self.sourceObject:transferFluidTo(self.barrel.fluidContainer, amountToTransfer)
+            -- trigger event for barrel
+            LuaEventManager.triggerEvent("OnWaterAmountChange", self.barrel.isoObject, destinationAmount)
         end
     else
         self.action:forceComplete()
@@ -29,7 +31,7 @@ function UB_TransferFluidFromSinkAction:update()
 end
 
 function UB_TransferFluidFromSinkAction:start()
-    self.destinationStart = self.destFluidContainer:getAmount()
+    self.destinationStart = self.barrel:getAmount()
 	self.destinationTarget = self.destinationStart + self.amountToTransfer
 
     self:setActionAnim("fill_container_tap")
@@ -53,9 +55,11 @@ end
 
 function UB_TransferFluidFromSinkAction:complete()
     if self.sourceObject then
-        local destCurrentAmount = self.destFluidContainer:getAmount()
+        local destCurrentAmount = self.barrel:getAmount()
         if self.destinationTarget > destCurrentAmount then
-            self.sourceObject:transferFluidTo(self.destFluidContainer, self.destinationTarget - destCurrentAmount)
+            self.sourceObject:transferFluidTo(self.barrel.fluidContainer, self.destinationTarget - destCurrentAmount)
+            -- trigger event for destination object also
+            LuaEventManager.triggerEvent("OnWaterAmountChange", self.barrel.isoObject, destCurrentAmount)
         end
     end
     return true
@@ -74,9 +78,9 @@ end
 function UB_TransferFluidFromSinkAction:new(character, sink, barrel)
     local o = ISBaseTimedAction.new(self, character)
     o.sourceObject = sink
-    o.destFluidContainer = barrel.fluidContainer
+    o.barrel = barrel
 
-    local destFreeCapacity = o.destFluidContainer:getFreeCapacity()
+    local destFreeCapacity = o.barrel:getFreeCapacity()
     local sourceCurrent = tonumber(o.sourceObject:getFluidAmount())
     o.amountToTransfer = math.min(sourceCurrent, destFreeCapacity)
     o.maxTime = o:getDuration()

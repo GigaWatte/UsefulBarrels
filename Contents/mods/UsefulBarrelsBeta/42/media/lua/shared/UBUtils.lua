@@ -283,7 +283,7 @@ local function isPuddleOrRiver(object)
 	return object:getSprite():getProperties():Is(IsoFlagType.solidfloor)
 end
 
-function UBUtils.GetSinksNearby(square, distance, sortByDistance, requireLOSClear)
+function UBUtils.GetMapObjectsNearby(square, distance, sortByDistance, requireLOSClear)
     if not square then return {} end
 
     local squares = UBUtils.GetSquaresInRange(square, distance, false)
@@ -294,13 +294,13 @@ function UBUtils.GetSinksNearby(square, distance, sortByDistance, requireLOSClea
         local squareObjects = curr:getObjects()
         local sqTable = UBUtils.ConvertToTable(squareObjects)
         for i,isoObject in ipairs(sqTable) do
-            if isoObject:hasWater() 
+            if isoObject:hasFluid() 
                 and not isPuddleOrRiver(isoObject)
                 and not instanceof(isoObject, "IsoClothingDryer")
                 and not instanceof(isoObject, "IsoClothingWasher")
                 and not instanceof(isoObject, "IsoCombinationWasherDryer") 
                 and not instanceof(isoObject, "IsoWorldInventoryObject")
-                then -- TODO does it react to barrel? local isValid = UBBarrel.validate(isoObject)
+                then
                 
                 if requireLOSClear == true then
                     local cell = square:getCell()

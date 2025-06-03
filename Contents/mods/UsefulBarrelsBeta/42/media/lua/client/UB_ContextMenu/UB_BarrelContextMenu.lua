@@ -5,7 +5,10 @@ local UBBarrel = require "UBBarrel"
 local UBFluidBarrel = require "UBFluidBarrel"
 local UB_BarrelContextMenu = {}
 
-function UB_BarrelContextMenu.OnTransferFluid(playerObj, barrelSquare, fluidContainer, fluidContainerItems, addToBarrel)
+--if getActivatedMods():contains("\\MODID") then
+--end
+
+function UB_BarrelContextMenu.OnTransferFluid(playerObj, barrelSquare, fluidContainer, fluidContainerItems, addToBarrel, barrel)
     local playerInv = playerObj:getInventory()
     local primaryItem = playerObj:getPrimaryHandItem()
     local secondaryItem = playerObj:getSecondaryHandItem()
@@ -52,11 +55,11 @@ function UB_BarrelContextMenu.OnTransferFluid(playerObj, barrelSquare, fluidCont
             local hasFunnelNearby = UBUtils.hasItemNearbyOrInInv(worldObjects, playerInv, "Base.Funnel")
             local speedModifierApply = SandboxVars.UsefulBarrels.FunnelSpeedUpFillModifier > 0 and hasFunnelNearby
             ISTimedActionQueue.add(
-                UB_TransferFluidAction:new(playerObj, itemFluidContainer, fluidContainer, barrelSquare, item, speedModifierApply)
+                UB_TransferFluidAction:new(playerObj, itemFluidContainer, fluidContainer, barrelSquare, item, barrel, speedModifierApply)
             )
         else
             ISTimedActionQueue.add(
-                UB_TransferFluidAction:new(playerObj, fluidContainer, itemFluidContainer, barrelSquare, item)
+                UB_TransferFluidAction:new(playerObj, fluidContainer, itemFluidContainer, barrelSquare, item, barrel)
             )
         end
         -- return item back to container
@@ -117,20 +120,20 @@ function UB_BarrelContextMenu:DoCategoryList(subMenu, allContainerTypes, addToBa
             local addOneContainerOption = containerTypeMenu:addGetUpOption(
                 oneOptionText, 
                 self.playerObj, 
-                UB_BarrelContextMenu.OnTransferFluid, self.barrel.square, self.barrel.fluidContainer, { destItem }, addToBarrel
+                UB_BarrelContextMenu.OnTransferFluid, self.barrel.square, self.barrel.fluidContainer, { destItem }, addToBarrel, self.barrel
             )
             if containerType[2] ~= nil then
                 local addAllContainerOption = containerTypeMenu:addGetUpOption(
                     allOptionText, 
                     self.playerObj, 
-                    UB_BarrelContextMenu.OnTransferFluid, self.barrel.square, self.barrel.fluidContainer, containerType, addToBarrel
+                    UB_BarrelContextMenu.OnTransferFluid, self.barrel.square, self.barrel.fluidContainer, containerType, addToBarrel, self.barrel
                 )
             end
         else
             local containerOption = subMenu:addGetUpOption(
                 destItem:getName(),
                 self.playerObj,
-                UB_BarrelContextMenu.OnTransferFluid, self.barrel.square, self.barrel.fluidContainer, { destItem }, addToBarrel
+                UB_BarrelContextMenu.OnTransferFluid, self.barrel.square, self.barrel.fluidContainer, { destItem }, addToBarrel, self.barrel
             )
         end
     end
@@ -141,7 +144,7 @@ function UB_BarrelContextMenu:DoAllItemsMenu(subMenu, allContainers, allContaine
         local containerOption = subMenu:addGetUpOption(
             optionText, 
             self.playerObj, 
-            UB_BarrelContextMenu.OnTransferFluid, self.barrel.square, self.barrel.fluidContainer, allContainers, addToBarrel
+            UB_BarrelContextMenu.OnTransferFluid, self.barrel.square, self.barrel.fluidContainer, allContainers, addToBarrel, self.barrel
         )
     end
 end
@@ -240,8 +243,14 @@ function UB_BarrelContextMenu:CreateMapObjectOption(containerMenu, map_object, h
             name = props:Val("GroupName") .. " " .. name
         end
     end
+    local sprite_name = map_object:getSpriteName()
 
-    local moveable_name = "Moveables." .. map_object:getSpriteName()
+    if not sprite_name then
+        -- this is strange actually, but sometimes produces nil
+        return
+    end
+
+    local moveable_name = "Moveables." .. sprite_name
     if not items_cache[moveable_name] then
         items_cache[moveable_name] = instanceItem(moveable_name)
     end
@@ -290,12 +299,12 @@ function UB_BarrelContextMenu:CreateGasPumpOption(containerMenu, pump_object, ha
 end
 
 function UB_BarrelContextMenu:DoFillFromMapObjectsMenu(context, hasHoseNearby)
-    local sinks = UBUtils.GetSinksNearby(self.barrel.square, UBConst.MAP_OBJECTS_DISTANCE, true, true)
+    local objects = UBUtils.GetMapObjectsNearby(self.barrel.square, UBConst.MAP_OBJECTS_DISTANCE, true, true)
     local gasPumps = UBUtils.GetGasPumpsNearby(self.barrel.square, UBConst.MAP_OBJECTS_DISTANCE, true)
 
     local fillOption = context:addOption(getText("ContextMenu_UB_AddFromFixture"))
 
-    if (#sinks == 0) and (#gasPumps == 0) then
+    if (#objects == 0) and (#gasPumps == 0) then
         UBUtils.DisableOptionAddTooltip(fillOption, getText("ContextMenu_UB_NoFixturesAvailable"))
         return
     end
@@ -303,7 +312,7 @@ function UB_BarrelContextMenu:DoFillFromMapObjectsMenu(context, hasHoseNearby)
     local containerMenu = ISContextMenu:getNew(context)
     context:addSubMenu(fillOption, containerMenu) 
 
-    for _,sink in ipairs(sinks) do
+    for _,sink in ipairs(objects) do
         self:CreateMapObjectOption(containerMenu, sink, hasHoseNearby)
     end
     
@@ -348,13 +357,16 @@ end
 
 function UB_BarrelContextMenu:RemoveVanillaOptions(context, subcontext)
     -- remove default add water menu coz I want to handle all fluids not just water
+    if context:getOptionFromName(getText("ContextMenu_AddFluidFromItem")) then context:removeOptionByName(getText("ContextMenu_AddFluidFromItem")) end
     if context:getOptionFromName(getText("ContextMenu_AddWaterFromItem")) then context:removeOptionByName(getText("ContextMenu_AddWaterFromItem")) end
     -- a whole UI pannel just to know what fluid and amount inside? ... I will replace it on option with tooltip
     if subcontext:getOptionFromName(getText("Fluid_Show_Info")) then subcontext:removeOptionByName(getText("Fluid_Show_Info")) end
     -- remove transfer because I want to implement tools requirements
     if subcontext:getOptionFromName(getText("Fluid_Transfer_Fluids")) then subcontext:removeOptionByName(getText("Fluid_Transfer_Fluids")) end
     -- drink? from barrel? no
-    if subcontext:getOptionFromName(getText("ContextMenu_Drink")) then subcontext:removeOptionByName(getText("ContextMenu_Drink")) end
+    if  self.barrel:getSprite() ~= self.barrel:getSpriteType(UBBarrel.LIDLESS) then
+        if subcontext:getOptionFromName(getText("ContextMenu_Drink")) then subcontext:removeOptionByName(getText("ContextMenu_Drink")) end
+    end
     -- vanilla fill is to silly, I will recreate it
     if subcontext:getOptionFromName(getText("ContextMenu_Fill")) then subcontext:removeOptionByName(getText("ContextMenu_Fill")) end
     -- the same as above
@@ -378,6 +390,7 @@ function UB_BarrelContextMenu:new(player, context, ub_barrel)
     if barrelOption then
         local barrelMenu = context:getSubMenu(barrelOption.subOption)
         self:RemoveVanillaOptions(context, barrelMenu)
+
         if UBUtils.CanCreateBarrelFluidMenu(self.playerObj, self.barrel.square, barrelOption) then
             self:AddInfoOption(barrelMenu)
             local worldObjects = UBUtils.GetWorldItemsNearby(self.barrel.square, UBConst.TOOL_SCAN_DISTANCE)
@@ -387,7 +400,7 @@ function UB_BarrelContextMenu:new(player, context, ub_barrel)
             local addMenuOpts = {
                 addToBarrel=true,
                 containers=UBUtils.getPlayerFluidContainers(self.playerInv),
-                optionText=getText("ContextMenu_UB_AddFluid"),
+                optionText=getText("ContextMenu_AddFluidFromItem"),
                 noToolPredicate=SandboxVars.UsefulBarrels.RequireFunnelForFill == true and hasFunnelNearby == false,
                 noToolTooltip=getText("Tooltip_UB_FunnelMissing", getItemName("Base.Funnel")),
                 noContainersNooltip=getText("Tooltip_UB_NoProperFluidInInventory"),

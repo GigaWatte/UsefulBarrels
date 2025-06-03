@@ -27,6 +27,8 @@ function UB_TransferFluidAction:update()
 			if desiredAmount > destinationAmount then
 				local amountToTransfer = desiredAmount - destinationAmount
 				FluidContainer.Transfer(self.sourceFluidContainer, self.destFluidContainer, amountToTransfer)
+				-- trigger event for barrel
+				LuaEventManager.triggerEvent("OnWaterAmountChange", self.barrel.isoObject, destinationAmount)
 			end
 		else
 			self.action:forceComplete()
@@ -68,6 +70,8 @@ function UB_TransferFluidAction:complete()
 	local destCurrentAmount = self.destFluidContainer:getAmount();
 	if self.destinationTarget > destCurrentAmount then
 		FluidContainer.Transfer(self.sourceFluidContainer, self.destFluidContainer, self.destinationTarget - destCurrentAmount)
+		-- trigger event for barrel
+		LuaEventManager.triggerEvent("OnWaterAmountChange", self.barrel.isoObject, destCurrentAmount)
 	end
 
 	return true;
@@ -94,10 +98,11 @@ function UB_TransferFluidAction:init()
 
 end
 
-function UB_TransferFluidAction:new(character, sourceFluidContainer, destFluidContainer, lookAt, itemToOperate, speedModifierApply)
+function UB_TransferFluidAction:new(character, sourceFluidContainer, destFluidContainer, lookAt, itemToOperate, barrel, speedModifierApply)
 	local o = ISBaseTimedAction.new(self, character)
 	o.sourceFluidContainer = sourceFluidContainer
 	o.destFluidContainer = destFluidContainer
+	o.barrel = barrel
 	o.square = lookAt
 	o.itemToOperate = itemToOperate
 	o.speedModifierApply = speedModifierApply ~= nil
