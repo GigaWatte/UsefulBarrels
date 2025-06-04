@@ -1,6 +1,4 @@
 local UBUtils = require "UBUtils"
-local UBConst = require "UBConst"
-local UBBarrel = require "UBBarrel"
 local UBFluidBarrel = require "UBFluidBarrel"
 
 local function OnWaterAmountChange(object, prevAmount)

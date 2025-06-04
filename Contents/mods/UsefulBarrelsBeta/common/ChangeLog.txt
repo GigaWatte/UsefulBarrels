@@ -132,10 +132,8 @@
 [ ------ ]
 [ 04/06/2025 ]
 3.3.0:
-- Improved: required tools for "cut lid" and "uncap" actions now returning to backpack if they taken from
-- Fixed: cut lid job title pointing to wrong language translation key
-- Fixed: error with equipping proper tools for "cut lid" action
-- Translations: updated KO translation
+- New Feature: Both green barrels now also can be turned into Rain Collectors
+- New Feature: Visually represent fluid level of the barrel withoud lid at 75%, 80% and 95% fluid level
 [ ------ ]
 
 
