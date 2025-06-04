@@ -12,35 +12,44 @@ function UB_BarrelLidCutAction:isValid()
 end
 
 function UB_BarrelLidCutAction:update()
-    self.blowTorch:setJobDelta(self:getJobDelta())
+    if self.blowTorch then
+        self.blowTorch:setJobDelta(self:getJobDelta())
+        if self.sound ~= 0 and not self.character:getEmitter():isPlaying(self.sound) then
+            self.sound = self.character:playSound("BlowTorch")
+        end
+    end
+
     self.character:faceThisObject(self.barrelObj)
     self.character:setMetabolicTarget(Metabolics.HeavyWork)
-    if self.sound ~= 0 and not self.character:getEmitter():isPlaying(self.sound) then
+end
+
+function UB_BarrelLidCutAction:start()
+    if self.blowTorch then
+        self.blowTorch:setJobType(getText("ContextMenu_UB_BarrelLidCut", self.objectLabel))
+        self.blowTorch:setJobDelta(0.0)
+        self:setActionAnim("BlowTorch")
+        self:setOverrideHandModels(self.blowTorch, nil)
         self.sound = self.character:playSound("BlowTorch")
     end
 end
 
-function UB_BarrelLidCutAction:start()
-    self.blowTorch:setJobType(getText("ContextMenu_UB_BarrelLidCut", self.objectLabel))
-    self.blowTorch:setJobDelta(0.0)
-    self:setActionAnim("BlowTorch")
-    self:setOverrideHandModels(self.blowTorch, nil)
-    self.sound = self.character:playSound("BlowTorch")
-end
-
 function UB_BarrelLidCutAction:stop()
-    if self.sound ~= 0 then
-        self.character:getEmitter():stopSound(self.sound)
+    if self.blowTorch then
+        if self.sound ~= 0 then
+            self.character:getEmitter():stopSound(self.sound)
+        end
+        self.blowTorch:setJobDelta(0.0)
     end
-    self.blowTorch:setJobDelta(0.0)
     ISBaseTimedAction.stop(self);
 end
 
 function UB_BarrelLidCutAction:perform()
-    if self.sound ~= 0 then
-        self.character:getEmitter():stopSound(self.sound)
+    if self.blowTorch then
+        if self.sound ~= 0 then
+            self.character:getEmitter():stopSound(self.sound)
+        end
+        self.blowTorch:setJobDelta(0.0)
     end
-    self.blowTorch:setJobDelta(0.0)
     -- needed to remove from queue / start next.
     ISBaseTimedAction.perform(self);
 end
@@ -51,7 +60,7 @@ function UB_BarrelLidCutAction:complete()
 
         local cutSuccess = self.ub_barrel:CutLid()
 
-        if cutSuccess then
+        if cutSuccess and self.blowTorch then
             for i=1,self.uses do
                 self.blowTorch:Use(false, false, true)
             end

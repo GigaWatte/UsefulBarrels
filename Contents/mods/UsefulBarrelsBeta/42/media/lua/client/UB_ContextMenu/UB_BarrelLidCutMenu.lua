@@ -5,11 +5,12 @@ local UBBarrel = require "UBBarrel"
 
 local function DuBarrelLidCut(playerObj, barrel, blowTorch, weldingMask)
     if luautils.walkAdj(playerObj, barrel.square, true) then
-        local blowTorchContainerToReturn = blowTorch:getContainer()
-        local weldingMaskContainerToReturn = weldingMask:getContainer()
+        local blowTorchContainerToReturn = nil
+        local weldingMaskContainerToReturn = nil
         local playerInv = playerObj:getInventory()
 
         if SandboxVars.UsefulBarrels.RequireWeldingMask and weldingMask ~= nil then
+            weldingMaskContainerToReturn = weldingMask:getContainer()
             -- transfer item to player inventory
             if luautils.haveToBeTransfered(playerObj, weldingMask) then
                 ISTimedActionQueue.add(ISInventoryTransferAction:new(playerObj, weldingMask, weldingMask:getContainer(), playerInv))
@@ -18,6 +19,7 @@ local function DuBarrelLidCut(playerObj, barrel, blowTorch, weldingMask)
         end
 
         if SandboxVars.UsefulBarrels.RequireBlowTorch and blowTorch ~= nil then
+            blowTorchContainerToReturn = blowTorch:getContainer()
             -- transfer item to player inventory
             if luautils.haveToBeTransfered(playerObj, blowTorch) then
                 ISTimedActionQueue.add(ISInventoryTransferAction:new(playerObj, blowTorch, blowTorch:getContainer(), playerInv))
@@ -27,16 +29,20 @@ local function DuBarrelLidCut(playerObj, barrel, blowTorch, weldingMask)
 
         ISTimedActionQueue.add(UB_BarrelLidCutAction:new(playerObj, barrel, blowTorch, UBConst.BLOW_TORCH_USES))
 
-        ISTimedActionQueue.add(ISUnequipAction:new(playerObj, weldingMask, 25))
-        -- return item back to container
-        if weldingMaskContainerToReturn and (weldingMaskContainerToReturn ~= playerInv) then
-            ISTimedActionQueue.add(ISInventoryTransferAction:new(playerObj, weldingMask, playerInv, weldingMaskContainerToReturn))
+        if SandboxVars.UsefulBarrels.RequireWeldingMask and weldingMask ~= nil then
+            ISTimedActionQueue.add(ISUnequipAction:new(playerObj, weldingMask, 25))
+            -- return item back to container
+            if weldingMaskContainerToReturn and (weldingMaskContainerToReturn ~= playerInv) then
+                ISTimedActionQueue.add(ISInventoryTransferAction:new(playerObj, weldingMask, playerInv, weldingMaskContainerToReturn))
+            end
         end
-
-        ISTimedActionQueue.add(ISUnequipAction:new(playerObj, blowTorch, 25))
-        -- return item back to container
-        if blowTorchContainerToReturn and (blowTorchContainerToReturn ~= playerInv) then
-            ISTimedActionQueue.add(ISInventoryTransferAction:new(playerObj, blowTorch, playerInv, blowTorchContainerToReturn))
+        
+        if SandboxVars.UsefulBarrels.RequireBlowTorch and blowTorch ~= nil then
+            ISTimedActionQueue.add(ISUnequipAction:new(playerObj, blowTorch, 25))
+            -- return item back to container
+            if blowTorchContainerToReturn and (blowTorchContainerToReturn ~= playerInv) then
+                ISTimedActionQueue.add(ISInventoryTransferAction:new(playerObj, blowTorch, playerInv, blowTorchContainerToReturn))
+            end
         end
     end
 end

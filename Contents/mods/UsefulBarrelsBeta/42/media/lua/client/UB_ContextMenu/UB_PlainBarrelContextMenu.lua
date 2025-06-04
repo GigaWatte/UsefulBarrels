@@ -4,10 +4,11 @@ local UBBarrel = require "UBBarrel"
 
 local function DoBarrelUncap(playerObj, ub_barrel, wrench, hasValidWrench)
     if luautils.walkAdj(playerObj, ub_barrel.square, true) then
-        local containerToReturn = wrench:getContainer()
+        local containerToReturn = nil
         local playerInv = playerObj:getInventory()
         
         if SandboxVars.UsefulBarrels.RequirePipeWrench and hasValidWrench then
+            containerToReturn = wrench:getContainer()
             -- transfer item to player inventory
             if luautils.haveToBeTransfered(playerObj, wrench) then
                 ISTimedActionQueue.add(ISInventoryTransferAction:new(playerObj, wrench, wrench:getContainer(), playerInv))
@@ -16,7 +17,7 @@ local function DoBarrelUncap(playerObj, ub_barrel, wrench, hasValidWrench)
         end
 
         ISTimedActionQueue.add(UB_BarrelUncapAction:new(playerObj, ub_barrel, wrench))
-        -- this worked..
+
         -- return item back to container
         if containerToReturn and (containerToReturn ~= playerInv) then
             ISTimedActionQueue.add(ISInventoryTransferAction:new(playerObj, wrench, playerInv, containerToReturn))

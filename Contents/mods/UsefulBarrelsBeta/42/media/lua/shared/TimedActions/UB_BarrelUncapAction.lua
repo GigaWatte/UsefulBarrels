@@ -13,26 +13,34 @@ function UB_BarrelUncapAction:isValid()
 end
 
 function UB_BarrelUncapAction:update()
-    self.wrench:setJobDelta(self:getJobDelta())
+    if self.wrench then
+        self.wrench:setJobDelta(self:getJobDelta())
+    end
     self.character:faceThisObject(self.barrelObj)
     self.character:setMetabolicTarget(Metabolics.MediumWork)
 end
 
 function UB_BarrelUncapAction:start()
-    self.wrench:setJobType(getText("ContextMenu_UB_UncapBarrel", self.objectLabel))
-    self.wrench:setJobDelta(0.0)
+    if self.wrench then
+        self.wrench:setJobType(getText("ContextMenu_UB_UncapBarrel", self.objectLabel))
+        self.wrench:setJobDelta(0.0)
+    end
     self.sound = self.character:playSound("RepairWithWrench")
 end
 
 function UB_BarrelUncapAction:stop()
     self.character:stopOrTriggerSound(self.sound)
-    self.wrench:setJobDelta(0.0)
+    if self.wrench then
+        self.wrench:setJobDelta(0.0)
+    end
     ISBaseTimedAction.stop(self);
 end
 
 function UB_BarrelUncapAction:perform()
     self.character:stopOrTriggerSound(self.sound)
-    self.wrench:setJobDelta(0.0)
+    if self.wrench then
+        self.wrench:setJobDelta(0.0)
+    end
     -- needed to remove from queue / start next.
     ISBaseTimedAction.perform(self);
 end

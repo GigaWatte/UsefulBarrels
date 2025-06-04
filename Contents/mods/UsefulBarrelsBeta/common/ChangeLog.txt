@@ -139,5 +139,9 @@
 - Fixed: Some timed actions does not respect InstantTimedAction cheat
 - Fixed: Fill from other barrels that contains non-water fluids
 [ ------ ]
-
+[ 05/06/2025 ]
+3.3.1:
+- Fixed: Duplication of Add Fluid from Item menu options
+- Fixed: Multiple lua errors while tools are not in the inventory and that are optional in sandbox vars
+[ ------ ]
 

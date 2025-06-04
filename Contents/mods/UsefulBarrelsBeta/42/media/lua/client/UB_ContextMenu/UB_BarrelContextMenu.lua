@@ -357,7 +357,7 @@ end
 
 function UB_BarrelContextMenu:RemoveVanillaOptions(context, subcontext)
     -- remove default add water menu coz I want to handle all fluids not just water
-    if context:getOptionFromName(getText("ContextMenu_AddFluidFromItem")) then context:removeOptionByName(getText("ContextMenu_AddFluidFromItem")) end
+    if subcontext:getOptionFromName(getText("ContextMenu_AddFluidFromItem")) then subcontext:removeOptionByName(getText("ContextMenu_AddFluidFromItem")) end
     if context:getOptionFromName(getText("ContextMenu_AddWaterFromItem")) then context:removeOptionByName(getText("ContextMenu_AddWaterFromItem")) end
     -- a whole UI pannel just to know what fluid and amount inside? ... I will replace it on option with tooltip
     if subcontext:getOptionFromName(getText("Fluid_Show_Info")) then subcontext:removeOptionByName(getText("Fluid_Show_Info")) end
