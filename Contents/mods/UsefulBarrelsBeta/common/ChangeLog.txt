@@ -134,6 +134,10 @@
 3.3.0:
 - New Feature: Both green barrels now also can be turned into Rain Collectors
 - New Feature: Visually represent fluid level of the barrel withoud lid at 75%, 80% and 95% fluid level
+- Improved: Added own sprites, tiledefinitions, depthmaps for the green barrels
+- Fixed: Incorrect items position on some barrels
+- Fixed: Some timed actions does not respect InstantTimedAction cheat
+- Fixed: Fill from other barrels that contains non-water fluids
 [ ------ ]
 
 
