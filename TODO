@@ -1,9 +1,10 @@
 
 TODO Rework plumbing to make it work again properly
-TODO Add sprite and craftrecipe for rain collector
 TODO crashes may not save fluidContainer
 TODO Connect the barrel to the generator with a hose and refuel it over time
 TODO add more icons
+
+!!! ISWorldObjectContextMenu.addFluidFromItem looks like reworked. take a look later
 
 icons: 
 mpty barrel from fluid

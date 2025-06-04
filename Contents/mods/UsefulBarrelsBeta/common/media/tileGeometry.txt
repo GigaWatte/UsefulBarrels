@@ -1,0 +1,81 @@
+tileGeometry
+{
+	VERSION = 2,
+
+	tileset
+	{
+		name = useful_barrels_1,
+
+		/* useful_barrels_1_5 */
+		tile
+		{
+			xy = 5x0,
+
+			cylinder
+			{
+				translate = -68x7469x-508,
+				rotate = 2700000x0x0,
+				radius1 = 3319,
+				radius2 = 3319,
+				height = 851,
+			}
+
+			properties
+			{
+				OpaquePixelsOnly = true,
+				Translucent = true,
+				UseObjectDepthTexture = true,
+			}
+		}
+	}
+
+	tileset
+	{
+		name = crafted_01,
+
+		/* crafted_01_24 */
+		tile
+		{
+			xy = 0x3,
+
+			cylinder
+			{
+				translate = 0x4300x-276,
+				rotate = 2700000x0x0,
+				radius1 = 3600,
+				radius2 = 3600,
+				height = 8600,
+			}
+		}
+
+		/* crafted_01_28 */
+		tile
+		{
+			xy = 4x3,
+
+			cylinder
+			{
+				translate = -41x4400x-359,
+				rotate = 2700000x0x0,
+				radius1 = 3600,
+				radius2 = 3600,
+				height = 8800,
+			}
+		}
+
+		/* crafted_01_32 */
+		tile
+		{
+			xy = 0x4,
+
+			cylinder
+			{
+				translate = -138x4300x-400,
+				rotate = 2700000x0x0,
+				radius1 = 3600,
+				radius2 = 3600,
+				height = 8600,
+			}
+		}
+	}
+}

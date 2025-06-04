@@ -31,6 +31,7 @@ tileset
         IsMoveAble = 
         Material = MetalPlates
         Material2 = MetalScrap
+        Surface = 36
         solidtrans = 
     }
     // crafted_01_32

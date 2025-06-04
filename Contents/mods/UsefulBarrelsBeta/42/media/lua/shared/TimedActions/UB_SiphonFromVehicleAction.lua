@@ -29,10 +29,10 @@ function UB_SiphonFromVehicleAction:update()
         local barrelUnits = self.barrelStart + (self.barrelTarget - self.barrelStart) * self:getJobDelta()
         barrelUnits = math.ceil(barrelUnits)
 
-        if self.fuelFluidContainer:isEmpty() and self.fuelFluidContainer:canAddFluid(Fluid.Petrol) then
-            self.fuelFluidContainer:addFluid(Fluid.Petrol, barrelUnits)
+        if self.barrel:isEmpty() and self.barrel:canAddFluid(Fluid.Petrol) then
+            self.barrel:addFluid(Fluid.Petrol, barrelUnits)
         else
-            self.fuelFluidContainer:adjustSpecificFluidAmount(Fluid.Petrol, barrelUnits)
+            self.barrel:adjustSpecificFluidAmount(Fluid.Petrol, barrelUnits)
         end
         
         self.vehicle:transmitPartModData(self.part)
@@ -58,7 +58,7 @@ end
 
 function UB_SiphonFromVehicleAction:serverStop()
     local barrelLitres = self.barrelStart + (self.barrelTarget - self.barrelStart) * self.netAction:getProgress()
-    self.fuelFluidContainer:adjustAmount(math.ceil(barrelLitres));
+    self.barrel:adjustAmount(math.ceil(barrelLitres));
     local litres = self.tankStart + (self.tankTarget - self.tankStart) * self.netAction:getProgress()
     self.part:setContainerContentAmount(math.floor(litres))
     self.vehicle:transmitPartModData(self.part)
@@ -82,10 +82,10 @@ function UB_SiphonFromVehicleAction:complete()
         local barrelUnits = self.barrelStart + (self.barrelTarget - self.barrelStart) * self:getJobDelta()
         barrelUnits = math.ceil(barrelUnits)
 
-        if self.fuelFluidContainer:isEmpty() and self.fuelFluidContainer:canAddFluid(Fluid.Petrol) then
-            self.fuelFluidContainer:addFluid(Fluid.Petrol, barrelUnits)
+        if self.barrel:isEmpty() and self.barrel:canAddFluid(Fluid.Petrol) then
+            self.barrel:addFluid(Fluid.Petrol, barrelUnits)
         else
-            self.fuelFluidContainer:adjustSpecificFluidAmount(Fluid.Petrol, barrelUnits)
+            self.barrel:adjustSpecificFluidAmount(Fluid.Petrol, barrelUnits)
         end
         
         self.vehicle:transmitPartModData(self.part)
@@ -97,14 +97,18 @@ end
 
 function UB_SiphonFromVehicleAction:getDuration()
     self.tankStart = self.part:getContainerContentAmount()
-    self.barrelStart = self.fuelFluidContainer:getAmount()
+    self.barrelStart = self.barrel:getAmount()
 
-    local barrelFreeSpace = self.fuelFluidContainer:getCapacity() - self.barrelStart
+    local barrelFreeSpace = self.barrel:getCapacity() - self.barrelStart
     local amountToTransfer = math.min(self.tankStart, barrelFreeSpace)
 
     self.tankTarget = self.tankStart - amountToTransfer
     self.barrelTarget = self.barrelStart + amountToTransfer
     self.amountSent = self.barrelStart
+
+    if self.character:isTimedActionInstant() then
+        return 1
+    end
 
     return amountToTransfer * 50
 end
@@ -113,7 +117,6 @@ function UB_SiphonFromVehicleAction:new(character, part, barrel)
     local o = ISBaseTimedAction.new(self, character)
     o.vehicle = part:getVehicle()
     o.part = part
-    o.fuelFluidContainer = barrel.fluidContainer
     o.barrel = barrel
     --o.stopOnWalk = false
     --o.stopOnRun = false

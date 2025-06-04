@@ -80,29 +80,26 @@ function UBFluidBarrel:GetBarrelInfo()
     local output = UBBarrel.GetBarrelInfo(self)
     output = output .. string.format("hasFluidContainer: %s\n", tostring(self:hasFluidContainer()))
 
-    if self.fluidContainer~=nil then
-        local fluidAmount = self:getAmount()
-        local fluidMax = self:getCapacity()
-        local barrelFluid = self:getPrimaryFluid()
+    local fluidAmount = self:getAmount()
+    local fluidMax = self:getCapacity()
+    local barrelFluid = self:getPrimaryFluid()
 
-
-        output = output .. string.format(
-            [[
-            Fluid: %s
-            Fluid amount: %s
-            Fluid capacity: %s
-            isInputLocked: %s
-            canPlayerEmpty: %s
-            rainCatcherFactor: %s
-            ]],
-            tostring(barrelFluid),
-            tostring(fluidAmount),
-            tostring(fluidMax),
-            tostring(self.fluidContainer:isInputLocked()),
-            tostring(self.fluidContainer:canPlayerEmpty()),
-            tostring(self.fluidContainer:getRainCatcher())
-        )
-    end
+    output = output .. string.format(
+        [[
+        Fluid: %s
+        Fluid amount: %s
+        Fluid capacity: %s
+        isInputLocked: %s
+        canPlayerEmpty: %s
+        rainCatcherFactor: %s
+        ]],
+        tostring(barrelFluid),
+        tostring(fluidAmount),
+        tostring(fluidMax),
+        tostring(self.fluidContainer:isInputLocked()),
+        tostring(self.fluidContainer:canPlayerEmpty()),
+        tostring(self.fluidContainer:getRainCatcher())
+    )
 
     if self.isoObject:hasModData() then
         local modData = self.isoObject:getModData()
@@ -175,8 +172,24 @@ function UBFluidBarrel:CanTransferFluid(fluidContainers, transferToContainers)
     return allContainers
 end
 
+function UBFluidBarrel:canAddFluid(fluid)
+    return self.fluidContainer:canAddFluid(fluid)
+end
+
+function UBFluidBarrel:addFluid(fluid, amount)
+    local result = self.fluidContainer:addFluid(fluid, amount)
+    self:UpdateWaterLevel()
+    return result
+end
+
+function UBFluidBarrel:adjustSpecificFluidAmount(fluid, amount)
+    local result = self.fluidContainer:adjustSpecificFluidAmount(fluid, amount)
+    self:UpdateWaterLevel()
+    return result
+end
+
 function UBFluidBarrel:ContainsFluid(fluid)
-    return self.fluidContainer~=nil and self.fluidContainer:contains(fluid)
+    return self.fluidContainer:contains(fluid)
 end
 
 function UBFluidBarrel:hasFluidContainer()
@@ -185,15 +198,33 @@ function UBFluidBarrel:hasFluidContainer()
 end
 
 function UBFluidBarrel:getAmount()
-    if self.fluidContainer~=nil then return self.fluidContainer:getAmount() else return 0 end  
+    return self.fluidContainer:getAmount()
 end
 
 function UBFluidBarrel:getCapacity()
-    if self.fluidContainer~=nil then return self.fluidContainer:getCapacity() else return 0 end
+    return self.fluidContainer:getCapacity()
+end
+
+function UBFluidBarrel:getFreeCapacity()
+    return self.fluidContainer:getFreeCapacity()
+end
+
+function UBFluidBarrel:adjustAmount(amount)
+    local result = self.fluidContainer:adjustAmount(amount)
+    self:UpdateWaterLevel()
+    return result
+end
+
+function UBFluidBarrel:isEmpty()
+    return not self.isoObject:hasFluid()
+end
+
+function UBFluidBarrel:hasFluid()
+    return self.isoObject:hasFluid()
 end
 
 function UBFluidBarrel:getPrimaryFluid()
-    if self.fluidContainer~=nil and self:getAmount() > 0 then 
+    if self:getAmount() > 0 then 
         return self.fluidContainer:getPrimaryFluid() 
     else 
         return nil 
@@ -207,6 +238,47 @@ function UBFluidBarrel:GetTranslatedFluidNameOrEmpty()
         return fluidObject:getTranslatedName()
     else
         return getText("ContextMenu_Empty")
+    end
+end
+
+function UBFluidBarrel:setWaterType(type)
+    local sprite = self:getWaterType(type)
+    --print("setting type: ", type)
+    --print("overlay sprite: ", tostring(sprite))
+    if not sprite then return end
+    self.isoObject:setOverlaySprite(sprite)
+    
+    local color = self.fluidContainer:getColor()
+
+    self.isoObject:setOverlaySpriteColor(
+        color:getRedFloat(),
+        color:getGreenFloat(),
+        color:getBlueFloat(),
+        0.9
+    )
+end
+
+function UBFluidBarrel:removeWaterType()
+    self.isoObject:setOverlaySprite("")
+end
+
+function UBFluidBarrel:UpdateWaterLevel()
+    if self:getSprite() ~= self:getSpriteType(UBBarrel.LIDLESS) then return end
+
+    local current_level = (self:getAmount() / self:getCapacity())
+    --print("current fill level ", current_level)
+    if current_level >= (UBBarrel.WATER_FULL_LEVEL) then
+        self:setWaterType(UBBarrel.WATER_FULL)
+        --print("apply full level sprite: ", UBBarrel.WATER_FULL_LEVEL)
+    elseif current_level >= (UBBarrel.WATER_HALF_LEVEL) then
+        self:setWaterType(UBBarrel.WATER_HALF)
+        --print("apply half level sprite: ", UBBarrel.WATER_HALF_LEVEL)
+    elseif current_level >= (UBBarrel.WATER_LOW_LEVEL) then
+        self:setWaterType(UBBarrel.WATER_LOW)
+        --print("apply low level sprite: ", UBBarrel.WATER_LOW_LEVEL)
+    else
+        self:removeWaterType()
+        --print("remove all levels")
     end
 end
 
@@ -253,6 +325,3 @@ function UBFluidBarrel:new(isoObject)
 end
 
 return UBFluidBarrel
-
--- overlay sprite for water
---    self.wall:setOverlaySprite("constructedobjects_signs_01_" .. self.sign, self.r,self.g,self.b,1);

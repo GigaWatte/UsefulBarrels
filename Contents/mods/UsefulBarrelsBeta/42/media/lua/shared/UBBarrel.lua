@@ -56,6 +56,10 @@ function UBBarrel:AddFluidContainerToBarrel()
 
     GameEntityFactory.AddComponent(self.isoObject, true, component)
 
+    if shouldSpawn then
+        LuaEventManager.triggerEvent("OnWaterAmountChange", self.isoObject, -1)
+    end
+
     self:SetModData("UB_Uncapped", true)
 
     buildUtil.setHaveConstruction(self.square, true)
@@ -178,54 +182,73 @@ UBBarrel.S = "S"
 -- sprite type
 UBBarrel.DEFAULT = "default"
 UBBarrel.LIDLESS = "lidless"
-UBBarrel.LIDLESS_WATER = "lidless_water"
+UBBarrel.WATER_LOW = "water_low"
+UBBarrel.WATER_LOW_LEVEL = 0.75
+UBBarrel.WATER_HALF = "water_half"
+UBBarrel.WATER_HALF_LEVEL = 0.80
+UBBarrel.WATER_FULL = "water_full"
+UBBarrel.WATER_FULL_LEVEL = 0.95
 UBBarrel.LIDLESS_RUSTY = "lidless_rusty"
 
 local SPRITE_MAP = {}
-SPRITE_MAP["Base.MetalDrum"] = {}
+SPRITE_MAP["Base.MetalDrum"] = {
+    [UBBarrel.WATER_LOW] = "useful_barrels_1_14",
+    [UBBarrel.WATER_HALF] = "useful_barrels_1_15",
+    [UBBarrel.WATER_FULL] = "useful_barrels_1_16",
+}
 SPRITE_MAP["Base.MetalDrum"][UBBarrel.N] = {
     [UBBarrel.DEFAULT] = "crafted_01_32",
     [UBBarrel.LIDLESS] = "crafted_01_24",
-    [UBBarrel.LIDLESS_WATER] = "crafted_01_25",
     [UBBarrel.LIDLESS_RUSTY] = "crafted_05_56"
 }
 SPRITE_MAP["Base.MetalDrum"][UBBarrel.S] = {
-    [UBBarrel.DEFAULT] = "crafted_01_32"
+    [UBBarrel.DEFAULT] = "crafted_01_32",
+    [UBBarrel.LIDLESS] = "crafted_01_24"
 }
 
-SPRITE_MAP["Base.Mov_LightGreenBarrel"] = {}
+SPRITE_MAP["Base.Mov_LightGreenBarrel"] = {
+    [UBBarrel.WATER_LOW] = "useful_barrels_1_11",
+    [UBBarrel.WATER_HALF] = "useful_barrels_1_12",
+    [UBBarrel.WATER_FULL] = "useful_barrels_1_13",
+}
 SPRITE_MAP["Base.Mov_LightGreenBarrel"][UBBarrel.N] = {
     [UBBarrel.DEFAULT] = "location_military_generic_01_6",
-    [UBBarrel.LIDLESS] = nil,
-    [UBBarrel.LIDLESS_WATER] = nil,
+    [UBBarrel.LIDLESS] = "useful_barrels_1_2",
     [UBBarrel.LIDLESS_RUSTY] = "crafted_05_28"
 }
 SPRITE_MAP["Base.Mov_LightGreenBarrel"][UBBarrel.S] = {
-    [UBBarrel.DEFAULT] = "location_military_generic_01_7"
+    [UBBarrel.DEFAULT] = "location_military_generic_01_7",
+    [UBBarrel.LIDLESS] = "useful_barrels_1_3",
 }
 
-SPRITE_MAP["Base.Mov_OrangeBarrel"] = {}
+SPRITE_MAP["Base.Mov_OrangeBarrel"] = {
+    [UBBarrel.WATER_LOW] = "useful_barrels_1_5",
+    [UBBarrel.WATER_HALF] = "useful_barrels_1_6",
+    [UBBarrel.WATER_FULL] = "useful_barrels_1_7",
+}
 SPRITE_MAP["Base.Mov_OrangeBarrel"][UBBarrel.N] = {
     [UBBarrel.DEFAULT] = "industry_01_22",
     [UBBarrel.LIDLESS] = "crafted_01_28",
-    [UBBarrel.LIDLESS_WATER] = "crafted_01_29",
     [UBBarrel.LIDLESS_RUSTY] = "crafted_05_60"
 }
 SPRITE_MAP["Base.Mov_OrangeBarrel"][UBBarrel.S] = {
     [UBBarrel.DEFAULT] = "industry_01_23",
-    [UBBarrel.LIDLESS] = "crafted_01_28",
-    [UBBarrel.LIDLESS_WATER] = "crafted_01_29",
+    [UBBarrel.LIDLESS] = "useful_barrels_1_4",
 }
 
-SPRITE_MAP["Base.Mov_DarkGreenBarrel"] = {}
+SPRITE_MAP["Base.Mov_DarkGreenBarrel"] = {
+    [UBBarrel.WATER_LOW] = "useful_barrels_1_8",
+    [UBBarrel.WATER_HALF] = "useful_barrels_1_9",
+    [UBBarrel.WATER_FULL] = "useful_barrels_1_10",
+}
 SPRITE_MAP["Base.Mov_DarkGreenBarrel"][UBBarrel.N] = {
     [UBBarrel.DEFAULT] = "location_military_generic_01_14",
-    [UBBarrel.LIDLESS] = nil,
-    [UBBarrel.LIDLESS_WATER] = nil,
+    [UBBarrel.LIDLESS] = "useful_barrels_1_0",
     [UBBarrel.LIDLESS_RUSTY] = "crafted_05_65"
 }
 SPRITE_MAP["Base.Mov_DarkGreenBarrel"][UBBarrel.S] = {
-    [UBBarrel.DEFAULT] = "location_military_generic_01_15"
+    [UBBarrel.DEFAULT] = "location_military_generic_01_15",
+    [UBBarrel.LIDLESS] = "useful_barrels_1_1",
 }
 
 function UBBarrel:getSpriteType(type)
@@ -233,6 +256,12 @@ function UBBarrel:getSpriteType(type)
     if not SPRITE_MAP[self.baseName][self.facing] then return nil end
     if not SPRITE_MAP[self.baseName][self.facing][type] then return nil end
     return SPRITE_MAP[self.baseName][self.facing][type]
+end
+
+function UBBarrel:getWaterType(type)
+    if not SPRITE_MAP[self.baseName] then return end
+    if not SPRITE_MAP[self.baseName][type] then return nil end
+    return SPRITE_MAP[self.baseName][type]
 end
 
 function UBBarrel:getSprite()
