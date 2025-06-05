@@ -62,6 +62,12 @@ function UBUtils.hasItemNearbyOrInInv(worldObjects, playerInv, item)
     return UBUtils.TableContainsItem(worldObjects, item) or UBUtils.playerHasItem(playerInv, item)
 end
 
+function UBUtils.getItemNearbyOrInInv(worldObjects, playerInv, item)
+    local table_item = UBUtils.GetTableItem(worldObjects, item)
+    if table_item then return table_item end
+    return UBUtils.playerGetItem(playerInv, item)
+end
+
 function UBUtils.getPlayerFluidContainers(playerInv)
     local itemsArray = playerInv:getAllEvalRecurse(
         function (item) return UBUtils.predicateAnyFluid(item) and not UBBarrel.validate(item) end
@@ -225,6 +231,14 @@ function UBUtils.TableContainsItem(table, item_name)
         if item_name == item:getFullType() then return true end
     end
     return false
+end
+
+function UBUtils.GetTableItem(table, item_name)
+    for _,v in pairs(table) do 
+        local item = v:getItem()
+        if item_name == item:getFullType() then return item end
+    end
+    return nil
 end
 
 function UBUtils.GetWorldItemsNearby(square, distance, isDiamondShape)
