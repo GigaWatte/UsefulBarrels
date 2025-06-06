@@ -5,9 +5,6 @@ local UBBarrel = require "UBBarrel"
 local UBFluidBarrel = require "UBFluidBarrel"
 local UB_BarrelContextMenu = {}
 
---if getActivatedMods():contains("\\MODID") then
---end
-
 function UB_BarrelContextMenu.OnTransferFluid(playerObj, barrelSquare, fluidContainer, fluidContainerItems, addToBarrel, barrel)
     local playerInv = playerObj:getInventory()
     local primaryItem = playerObj:getPrimaryHandItem()
