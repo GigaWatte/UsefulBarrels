@@ -3,23 +3,23 @@ require "TimedActions/ISBaseTimedAction"
 UB_TransferFluidFromGasPumpAction = ISBaseTimedAction:derive("UB_TransferFluidFromGasPumpAction")
 
 function UB_TransferFluidFromGasPumpAction:isValid()
-    return self.sourceObject:getPipedFuelAmount() > 0
+    return self.fuelStation:getPipedFuelAmount() > 0
 end
 
 function UB_TransferFluidFromGasPumpAction:waitToStart()
-    self.character:faceThisObject(self.sourceObject)
+    self.character:faceThisObject(self.fuelStation)
     return self.character:shouldBeTurning()
 end
 
 function UB_TransferFluidFromGasPumpAction:update()
-    local sourceAmount = self.sourceObject:getPipedFuelAmount()
+    local sourceAmount = self.fuelStation:getPipedFuelAmount()
     if sourceAmount > 0 then
         local actionCurrent = math.floor(self.amountToTransfer * self:getJobDelta() + 0.001)
         local destinationAmount = self.barrel:getAmount()
         local desiredAmount = (self.destinationStart + actionCurrent)
         if desiredAmount > destinationAmount then
             local amountToTransfer = desiredAmount - destinationAmount
-            self.sourceObject:setPipedFuelAmount(sourceAmount - (amountToTransfer))
+            self.fuelStation:setPipedFuelAmount(sourceAmount - (amountToTransfer))
             self.barrel:addFluid(Fluid.Petrol, amountToTransfer)
         end
     else
@@ -53,11 +53,11 @@ function UB_TransferFluidFromGasPumpAction:perform()
 end
 
 function UB_TransferFluidFromGasPumpAction:complete()
-    if self.sourceObject then
-        local sourceAmount = self.sourceObject:getPipedFuelAmount()
+    if self.fuelStation then
+        local sourceAmount = self.fuelStation:getPipedFuelAmount()
         local destCurrentAmount = self.barrel:getAmount()
         if self.destinationTarget > destCurrentAmount then
-            self.sourceObject:setPipedFuelAmount(sourceAmount - (self.destinationTarget - destCurrentAmount))
+            self.fuelStation:setPipedFuelAmount(sourceAmount - (self.destinationTarget - destCurrentAmount))
             self.barrel:addFluid(Fluid.Petrol, self.destinationTarget - destCurrentAmount)
         end
     end
@@ -74,13 +74,13 @@ function UB_TransferFluidFromGasPumpAction:getDuration()
     return self.amountToTransfer * basePerLiter
 end
 
-function UB_TransferFluidFromGasPumpAction:new(character, gas_pump, barrel)
+function UB_TransferFluidFromGasPumpAction:new(character, fuelStation, barrel)
     local o = ISBaseTimedAction.new(self, character)
-    o.sourceObject = gas_pump
+    o.fuelStation = fuelStation
     o.barrel = barrel
 
     local destFreeCapacity = o.barrel:getFreeCapacity()
-    local sourceCurrent = tonumber(o.sourceObject:getPipedFuelAmount())
+    local sourceCurrent = tonumber(o.fuelStation:getPipedFuelAmount())
     o.amountToTransfer = math.min(sourceCurrent, destFreeCapacity)
     o.maxTime = o:getDuration()
     return o

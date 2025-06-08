@@ -5,9 +5,6 @@ local UBBarrel = require "UBBarrel"
 local UBFluidBarrel = require "UBFluidBarrel"
 local UB_BarrelContextMenu = {}
 
---if getActivatedMods():contains("\\MODID") then
---end
-
 function UB_BarrelContextMenu.OnTransferFluid(playerObj, barrelSquare, fluidContainer, fluidContainerItems, addToBarrel, barrel)
     local playerInv = playerObj:getInventory()
     local primaryItem = playerObj:getPrimaryHandItem()
@@ -203,6 +200,11 @@ function UB_BarrelContextMenu:DoSiphonFromVehicleMenu(context, hasHoseNearby)
         return
     end
 
+    if not self.barrel:canAddFluid(Fluid.Petrol) then
+        UBUtils.DisableOptionAddTooltip(vehicleOption, getText("Tooltip_UB_CantAddFluid"))
+        return
+    end
+
     local vehicleMenu = ISContextMenu:getNew(context)
     context:addSubMenu(vehicleOption, vehicleMenu)
     for _,vehicle in ipairs(vehicles) do
@@ -266,6 +268,26 @@ function UB_BarrelContextMenu:CreateMapObjectOption(containerMenu, map_object, h
         containerOption.iconTexture = item:getIcon()
     end
 
+    if map_object:hasComponent(ComponentType.FluidContainer) then
+        local mapObjectFluidContainer = map_object:getFluidContainer()
+        if not self.barrel:canAddFluid(mapObjectFluidContainer:getPrimaryFluid()) then
+            UBUtils.DisableOptionAddTooltip(vehicleOption, getText("Tooltip_UB_CantAddFluid"))
+            return
+        end
+    end
+    --if map_object:getUsesExternalWaterSource() then
+    --    local externalWaterObject = map_object:checkExternalFluidSource()
+    --    if externalWaterObject ~= nil then
+    --        local externalFluidContainer = externalWaterObject:getFluidContainer()
+    --        if externalFluidContainer ~= nil and externalFluidContainer:getAmount() > 0.0F then
+    --            if not self.barrel:canAddFluid(externalFluidContainer:getPrimaryFluid()) then
+    --                UBUtils.DisableOptionAddTooltip(vehicleOption, getText("Tooltip_UB_CantAddFluid"))
+    --                return
+    --            end
+    --        end
+    --    end
+    --end
+
     local tooltip = ISToolTip:new()
     tooltip:initialise()
     tooltip.maxLineWidth = 512
@@ -281,6 +303,11 @@ function UB_BarrelContextMenu:CreateGasPumpOption(containerMenu, pump_object, ha
         UB_BarrelContextMenu.OnTransferFluidFromPump, 
         pump_object, self.barrel
     )
+
+    if not self.barrel:canAddFluid(Fluid.Petrol) then
+        UBUtils.DisableOptionAddTooltip(containerOption, getText("Tooltip_UB_CantAddFluid"))
+        return
+    end
 
     local fuelPower = (SandboxVars.AllowExteriorGenerator and pump_object and pump_object:getSquare():haveElectricity()) 
         or (pump_object:getSquare():hasGridPower())

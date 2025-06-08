@@ -100,7 +100,7 @@ description=Thanks to [url=https://steamcommunity.com/profiles/76561198355106439
 description=Thanks to [url=https://steamcommunity.com/profiles/76561199781026961]Dust Runner[/url] for ES translation.
 description=Thanks to [url=https://steamcommunity.com/profiles/76561198027815009]Bobitec[/url] for FR translation.
 description=Thanks to [url=https://steamcommunity.com/profiles/76561197963614977]Steven Ts[/url] for IT translation.
-description=Thanks to [url=https://steamcommunity.com/profiles/76561199190958423]anormal‹[/url] for DE translation.
+description=Thanks to [url=https://steamcommunity.com/profiles/76561199190958423]anormal?[/url] for DE translation.
 description=Thanks to [url=https://steamcommunity.com/id/Chuckleberry_Finn]Chuckleberry Finn[/url] for [url=https://steamcommunity.com/sharedfiles/filedetails/?id=3077900375]Mod Update and Alert System[/url].
 description=Thanks to [url=https://steamcommunity.com/id/Chuckleberry_Finn]Chuckleberry Finn[/url] for pz-translator tool.
 description=

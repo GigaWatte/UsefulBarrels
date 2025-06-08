@@ -6,4 +6,5 @@ Tooltip_EN = {
     Tooltip_UB_NoProperContainerOnGround = "Nothing to fill on ground"
     Tooltip_UB_HoseMissing = "%1 is required to take fluid.<br>Place it nearby or put it in your inventory"
     Tooltip_UB_FunnelMissing = "%1 is required to add fluid.<br>Place it nearby or put it in your inventory"
+    Tooltip_UB_CantAddFluid = "Can't add fluid from this object"
 }
