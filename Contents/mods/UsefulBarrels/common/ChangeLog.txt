@@ -99,3 +99,7 @@
 - Fixed: mispell sandbox variable "FillBarrelFromVehiclesRequiresHose" (again...)
 - Fixed: transferring fuel from a vehicle to an empty barrel causes the fuel to disappear
 [ ------ ]
+[ 08/06/2025 ]
+3.0.5:
+- Translations: update JP translation
+[ ------ ]
