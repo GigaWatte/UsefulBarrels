@@ -16,25 +16,25 @@ function SRefuelGlobalObject:initNew(generator, barrel)
     self.generator = generator
 end
 
--- load data from object?
---function SRefuelGlobalObject:stateFromIsoObject(isoObject)
---    self.generator = isoObject
---	self:fromModData(isoObject:getModData())
+-- restore global object data from isoobject moddata
+function SRefuelGlobalObject:stateFromIsoObject(isoObject)
+    self.generator = isoObject
+	self:fromModData(isoObject:getModData())
 	--self:processContainerItems()
 	--self:changeFireLvl()
---end
--- and save data to object?
---function SRefuelGlobalObject:stateToIsoObject(isoObject)
-	--self.generator = isoObject
-	--self:toModData(isoObject:getModData())
+end
+-- restore state
+function SRefuelGlobalObject:stateToIsoObject(isoObject)
+	self.generator = isoObject
+	self:toModData(isoObject:getModData())
 	--self:processContainerItems()
 	--self:changeFireLvl()
---end
+end
 
---function SRefuelGlobalObject:fromModData(modData)
-	--self.barrelX = modData.barrelX
-	--self.barrelY = modData.barrelY
---end
+function SRefuelGlobalObject:fromModData(modData)
+	self.barrelX = modData.barrelX
+	self.barrelY = modData.barrelY
+end
 function SRefuelGlobalObject:toModData(modData)
 	modData.barrelX = self.barrelX
 	modData.barrelY = self.barrelY

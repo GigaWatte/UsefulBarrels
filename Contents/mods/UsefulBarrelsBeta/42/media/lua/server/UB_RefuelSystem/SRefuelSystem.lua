@@ -24,7 +24,9 @@ function SRefuelSystem:newLuaObject(globalObject)
 end
 
 function SRefuelSystem:isValidModData(modData)
-	return modData ~= nil --and modData.fuelAmt ~= nil
+	return modData ~= nil 
+		and modData.barrelX ~= nil
+    	and modData.barrelY ~= nil
 end
 
 -- when looking for iso object at square - but there may be multiple generators!
@@ -60,6 +62,7 @@ function SRefuelSystem:refuelGenerators()
     print("s every one min - refuel generators")
     for i=1,self:getLuaObjectCount() do
 		local luaObject = self:getLuaObjectByIndex(i)
+		print(luaObject)
         --luaObject:refuelGenerator()
 	end
 end
