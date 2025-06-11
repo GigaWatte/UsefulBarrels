@@ -59,16 +59,22 @@ end
 SGlobalObjectSystem.RegisterSystemClass(SRefuelSystem)
 
 function SRefuelSystem:refuelGenerators()
-    print("s every one min - refuel generators")
     for i=1,self:getLuaObjectCount() do
+		print("object index: " .. i)
 		local luaObject = self:getLuaObjectByIndex(i)
-		print(luaObject)
-        --luaObject:refuelGenerator()
+        luaObject:checkRefuelGenerator()
 	end
 end
 
-local function EveryOneMinute()
-	SRefuelSystem.instance:refuelGenerators()
+local function EveryTenMinutes()
+	print("check instance")
+	-- instance is missing...
+	print(SRefuelSystem)
+	print(SRefuelSystem.instance)
+	if SRefuelSystem.instance then
+		print("system call refuel")
+		SRefuelSystem.instance:refuelGenerators()
+	end
 end
 
-Events.EveryOneMinute.Add(EveryOneMinute)
+Events.EveryTenMinutes.Add(EveryTenMinutes)
