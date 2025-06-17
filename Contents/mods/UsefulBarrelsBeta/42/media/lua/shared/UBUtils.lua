@@ -96,6 +96,15 @@ function UBUtils.GetValidBarrel(worldObjects)
     end
 end
 
+function UBUtils.GetBarrelAtCoords(x,y,z)
+    local square = getCell():getGridSquare(x, y, z)
+    if not square then return end
+
+    local squareObjects = square:getObjects()
+    local squareObjectsTable = UBUtils.ConvertToTable(squareObjects)
+    return UBUtils.GetValidBarrel(squareObjectsTable)
+end
+
 function UBUtils.playerHasItem(playerInv, itemName) return playerInv:containsTypeEvalRecurse(itemName, UBUtils.predicateNotBroken) or playerInv:containsTagEvalRecurse(itemName, UBUtils.predicateNotBroken) end
 
 function UBUtils.playerGetItem(playerInv, itemName) return playerInv:getFirstTypeEvalRecurse(itemName, UBUtils.predicateNotBroken) or playerInv:getFirstTagEvalRecurse(itemName, UBUtils.predicateNotBroken) end

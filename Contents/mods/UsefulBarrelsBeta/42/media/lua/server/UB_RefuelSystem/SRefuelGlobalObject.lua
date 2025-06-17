@@ -13,9 +13,10 @@ function SRefuelGlobalObject:new(luaSystem, globalObject)
 end
 
 function SRefuelGlobalObject:initNew(generator, ub_barrel)
-	self.barrelX = barrel.isoObject:getX()
-    self.barrelY = barrel.isoObject:getY()
-	self.barrelZ = barrel.isoObject:getZ()
+	self:noise("SRefuelGlobalObject:initNew" .. tostring(generator))
+	self.barrelX = ub_barrel.isoObject:getX()
+    self.barrelY = ub_barrel.isoObject:getY()
+	self.barrelZ = ub_barrel.isoObject:getZ()
 
 	self.ub_barrel = ub_barrel
     self.generator = generator
@@ -23,23 +24,17 @@ end
 
 -- restore global object data from isoobject moddata
 function SRefuelGlobalObject:stateFromIsoObject(isoObject)
+	self:noise("SRefuelGlobalObject:stateFromIsoObject: " .. tostring(isoObject))
     self.generator = isoObject
 	self:fromModData(isoObject:getModData())
-
-	local barrelSquare = getCell():getGridSquare(self.barrelX, self.barrelY, self.barrelZ)
-	local barrels = UBUtils.GetBarrelsNearby(barrelSquare, 1)
-	self.ub_barrel = barrels[1] or nil
+	self.ub_barrel = UBUtils.GetBarrelAtCoords(self.barrelX, self.barrelY, self.barrelZ)
 end
 
-	--self:processContainerItems()
-	--self:changeFireLvl()
-end
--- save state to mod data
 function SRefuelGlobalObject:stateToIsoObject(isoObject)
+	self:noise("SRefuelGlobalObject:stateToIsoObject: " .. tostring(isoObject))
 	self.generator = isoObject
 	self:toModData(isoObject:getModData())
-	--self:processContainerItems()
-	--self:changeFireLvl()
+	self.ub_barrel = UBUtils.GetBarrelAtCoords(self.barrelX, self.barrelY, self.barrelZ)
 end
 
 function SRefuelGlobalObject:fromModData(modData)
@@ -53,39 +48,50 @@ function SRefuelGlobalObject:toModData(modData)
 	modData.barrelZ = self.barrelZ
 end
 function SRefuelGlobalObject:saveData()
-    --self:noise('save object modData for generator '..self.x..','..self.y..','..self.z .. " to " .. tostring(self.getIsoObject()))
-	local isoObject = self:getIsoObject()
+    self:noise("save object modData for generator: "..self.x..','..self.y..','..self.z .. " to " .. tostring(self.generator))
+	local isoObject = self.generator
 	if isoObject then
 		self:toModData(isoObject:getModData())
 	end
 end
 
-function SRefuelGlobalObject:getObject()
-	return self:getIsoObject()
+function SRefuelGlobalObject:aboutToRemoveFromSystem()
+	self:noise("about to remove luaObject: " ..self.x..','..self.y..','..self.z .. " to " .. tostring(self.generator))
+	local isoObject = self.generator
+	if isoObject then
+		local modData = isoObject:getModData()
+		modData.barrelX = nil
+		modData.barrelY = nil
+		modData.barrelZ = nil
+		isoObject:setModData(modData)
+	end
+	-- TODO spawn hose
 end
 
-function SRefuelGlobalObject:removeObject()
-	print("s remove global object")
+function SRefuelGlobalObject:selfCheck()
+	if self.generator then return true end
+	if self.ub_barrel then return true end
+	return false
 end
 
 function SRefuelGlobalObject:checkRefuelGenerator()
+	if not self.generator then self:noise("no generator");return end
+
 	local startGeneratorFuel = self.generator:getFuel()
 
-	if startGeneratorFuel > 90 then return end
-	print("generator fuel is low than 90")
-	if not self.ub_barrel then return end
-	print("no barrel found")
-    if self.ub_barrel.Type ~= UBFluidBarrel.Type then return end
-	print("barrel is fluid type")
-	if not self.ub_barrel:ContainsFluid(Fluid.Petrol) then return end
-	print("barrel contains petrol")
-	if not self.barrel:getAmount() >= 1.0 then return end
-	
-    local amount = self.barrel:getAmount() - 1.0
-    self.barrel:adjustAmount(amount)
+	if startGeneratorFuel > 90 then self:noise("fuel is above 90");return end
+	if not self.ub_barrel then self:noise("no barrel");return end
+    if self.ub_barrel.Type ~= UBFluidBarrel.Type then self:noise("not a fluid barrel");return end
+	if not self.ub_barrel:ContainsFluid(Fluid.Petrol) then self:noise("no petrol in barrel");return end
 
-    self.generator:setFuel(startGeneratorFuel + 10)
-    self.generator:sync()
+	self:noise(self.ub_barrel:getAmount())
+	--if not self.ub_barrel:getAmount() >= 1.0 then self:noise("amount in barrel lower than 1");return end
 	
-    print("generator refueled: " .. startGeneratorFuel .. " -> " .. self.generator:getFuel())
+    --local amount = self.ub_barrel:getAmount() - 1.0
+    --self.ub_barrel:adjustAmount(amount)
+
+    --self.generator:setFuel(startGeneratorFuel + 10)
+    --self.generator:sync()
+
+    self:noise("generator refueled: " .. startGeneratorFuel .. " -> " .. self.generator:getFuel())
 end
