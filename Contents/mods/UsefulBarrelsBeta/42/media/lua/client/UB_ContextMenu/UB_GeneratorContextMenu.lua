@@ -14,13 +14,13 @@ end
 
 function UB_GeneratorContextMenu.doBindGenerator(generator, barrel, playerObj, hose)
     if luautils.walkAdj(playerObj, generator:getSquare()) then
-        SRefuelSystem:bindGeneratorToBarrel(generator, barrel, playerObj, hose)
+        SRefuelSystem.bindGeneratorToBarrel(generator, barrel, playerObj, hose)
     end
 end
 
-function UB_GeneratorContextMenu.doUnbindGenerator(generator, barrel, playerObj)
+function UB_GeneratorContextMenu.doUnbindGenerator(generator, playerObj)
     if luautils.walkAdj(playerObj, generator:getSquare()) then
-        SRefuelSystem:unbindGeneratorFromBarrel(generator, barrel, playerObj)
+        SRefuelSystem.unbindGeneratorFromBarrel(generator, playerObj)
     end
 end
 
@@ -49,20 +49,17 @@ end
 
 function UB_GeneratorContextMenu:CreateBindOption(bindMenu, barrel, hose, player)
     local bindOption = bindMenu:addGetUpOption(
-        "bind" .. barrel.objectLabel, 
+        barrel.objectLabel, 
         self.generator, 
         UB_GeneratorContextMenu.doBindGenerator, barrel, self.playerObj, hose
     )
-    local unbindOption = bindMenu:addGetUpOption(
-        "unbind" .. barrel.objectLabel, 
-        self.generator, 
-        UB_GeneratorContextMenu.doUnbindGenerator, barrel, self.playerObj, hose
-    )
-
-    --if SandboxVars.UsefulBarrels.GeneratorRefuelRequiresHose and not hasHoseNearby then 
-    --    UBUtils.DisableOptionAddTooltip(containerOption, getText("Tooltip_UB_HoseMissing", getItemName("Base.RubberHose")))
-    --    return       
-    --end
+    if bindOption and barrel.icon then
+        bindOption.iconTexture = barrel.icon
+    end
+    if hose == nil then 
+        UBUtils.DisableOptionAddTooltip(bindOption, getText("Tooltip_UB_HoseMissing", getItemName("Base.RubberHose")))
+        return       
+    end
 
     local tooltip = ISToolTip:new()
     tooltip:initialise()
@@ -86,17 +83,11 @@ function UB_GeneratorContextMenu:DoRefuelMenu(player, context)
     local containerMenu = ISContextMenu:getNew(context)
     context:addSubMenu(fillOption, containerMenu)
 
-    local bindOption = context:insertOptionAfter(getText("ContextMenu_UB_RefuelFromBarrel"), getText("ContextMenu_UB_BindToBarrel"))
-
-    local bindMenu = ISContextMenu:getNew(context)
-    context:addSubMenu(bindOption, bindMenu)
-
     for _,barrel in ipairs(self.barrels) do
         local worldObjects = UBUtils.GetWorldItemsNearby(barrel.square, UBConst.TOOL_SCAN_DISTANCE)
         local hose = UBUtils.getItemNearbyOrInInv(worldObjects, self.playerInv, "Base.RubberHose")
         local hasHoseNearby = hose ~= nil
         self:CreateBarrelOption(containerMenu, barrel, hasHoseNearby, player)
-        self:CreateBindOption(bindMenu, barrel, hose, player)
     end
 
     local hc = getCore():getObjectHighlitedColor()
@@ -119,8 +110,68 @@ function UB_GeneratorContextMenu:DoRefuelMenu(player, context)
     end
 end
 
+function UB_GeneratorContextMenu:DoBindMenu(player, context)
+    local bindOption
+
+    if context:getOptionFromName(getText("ContextMenu_GeneratorAddFuel")) then
+        bindOption = context:insertOptionAfter(getText("ContextMenu_GeneratorAddFuel"), getText("ContextMenu_UB_BindBarrel"))
+    elseif context:getOptionFromName(getText("ContextMenu_GeneratorInfo")) then
+        bindOption = context:insertOptionAfter(getText("ContextMenu_GeneratorInfo"), getText("ContextMenu_UB_BindBarrel"))
+    end
+
+    if not bindOption then return end
+
+    local bindMenu = ISContextMenu:getNew(context)
+    context:addSubMenu(bindOption, bindMenu)
+    
+    for _,barrel in ipairs(self.barrels) do
+        local worldObjects = UBUtils.GetWorldItemsNearby(barrel.square, UBConst.TOOL_SCAN_DISTANCE)
+        local hose = UBUtils.getItemNearbyOrInInv(worldObjects, self.playerInv, "Base.RubberHose")
+        local hasHoseNearby = hose ~= nil
+        self:CreateBindOption(bindMenu, barrel, hose, player)
+    end
+
+    local hc = getCore():getObjectHighlitedColor()
+    --highlight the object on tile while the tooltip is showing
+    bindMenu.showTooltip = function(_subMenu, _option)
+        ISContextMenu.showTooltip(_subMenu, _option)
+        if _subMenu.toolTip.object ~= nil then
+            _option.toolTip:setVisible(false)
+            _option.toolTip.object:setHighlightColor(hc)
+            _option.toolTip.object:setHighlighted(true, false)
+        end
+    end
+
+    --stop highlighting the object when the tooltip is not showing
+    bindMenu.hideToolTip = function(_subMenu)
+        if _subMenu.toolTip and _subMenu.toolTip.object then
+            _subMenu.toolTip.object:setHighlighted(false)
+        end
+        ISContextMenu.hideToolTip(_subMenu)
+    end
+end
+
+function UB_GeneratorContextMenu:DoUnbindMenu(player, context)
+    local bindOption
+
+    if context:getOptionFromName(getText("ContextMenu_GeneratorAddFuel")) then
+        bindOption = context:insertOptionAfter(
+            getText("ContextMenu_GeneratorAddFuel"), getText("ContextMenu_UB_UnbindBarrel"),
+            self.generator, 
+            UB_GeneratorContextMenu.doUnbindGenerator, self.playerObj
+        )
+    elseif context:getOptionFromName(getText("ContextMenu_GeneratorInfo")) then
+        bindOption = context:insertOptionAfter(
+            getText("ContextMenu_GeneratorInfo"), getText("ContextMenu_UB_UnbindBarrel"),
+            self.generator, 
+            UB_GeneratorContextMenu.doUnbindGenerator, self.playerObj
+        )
+    end
+end
+
 function UB_GeneratorContextMenu:new(player, context, worldobjects, test)
     local o = self
+    o.player = player
     o.playerObj = getSpecificPlayer(player)
     o.playerInv = o.playerObj:getInventory()
     o.generator = ISWorldObjectContextMenu.fetchVars.generator
@@ -134,7 +185,19 @@ function UB_GeneratorContextMenu:new(player, context, worldobjects, test)
 
     if #o.barrels == 0 then return end
     if not UBUtils.CanCreateGeneratorMenu(o.generator:getSquare(), o.playerObj) then return end
-    return self:DoRefuelMenu(player, context)
+    
+    if SRefuelSystem.instance:getLuaObjectOnSquare(self.generator:getSquare()) then
+        local generatorAddFuelOption = context:getOptionFromName(getText("ContextMenu_GeneratorAddFuel"))
+        print(tostring(generatorAddFuelOption))
+        if generatorAddFuelOption then
+            UBUtils.DisableOptionAddTooltip(generatorAddFuelOption, getText("Tooltip_UB_HatchBlocked"))
+            generatorAddFuelOption.subOption = nil
+        end
+        self:DoUnbindMenu(player, context)
+    else
+        self:DoRefuelMenu(player, context)
+        self:DoBindMenu(player, context)
+    end
 end
 
 Events.OnFillWorldObjectContextMenu.Add(function (player, context, worldobjects, test) return UB_GeneratorContextMenu:new(player, context, worldobjects, test) end)

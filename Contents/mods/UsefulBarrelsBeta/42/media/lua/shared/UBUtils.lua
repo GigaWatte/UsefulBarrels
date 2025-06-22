@@ -452,4 +452,57 @@ function UBUtils.CanCreateGeneratorMenu(square, playerObj)
     return true
 end
 
+function UBUtils.AddItemToSquare(square, item)
+    if item and square then
+        --local item 	= instanceItem( _item )
+        if item then
+            square:SpawnWorldInventoryItem(item, ZombRandFloat(0.1,0.9), ZombRandFloat(0.1,0.9), 0.0)
+        end
+    end
+end
+-- taken from ISRemoveItemTool.removeItem
+function UBUtils.RemoveItem(item, playerObj)
+    local srcContainer = item:getContainer()
+
+    srcContainer:DoRemoveItem(item);
+    sendRemoveItemFromContainer(srcContainer, item);
+
+    if srcContainer:getType() == "floor" and item:getWorldItem() ~= nil then
+        DesignationZoneAnimal.removeItemFromGround(item:getWorldItem())
+        if instanceof(item, "Radio") then
+            local grabSquare = item:getWorldItem():getSquare()
+            local _obj = nil
+            for i=0, grabSquare:getObjects():size()-1 do
+                local tObj = grabSquare:getObjects():get(i)
+                if instanceof(tObj, "IsoRadio") then
+                    if tObj:getModData().RadioItemID == item:getID() then
+                        _obj = tObj
+                        break
+                    end
+                end
+            end
+            if _obj ~= nil then
+                local deviceData = _obj:getDeviceData()
+                if deviceData then
+                    item:setDeviceData(deviceData)
+                end
+                grabSquare:transmitRemoveItemFromSquare(_obj)
+                grabSquare:RecalcProperties()
+                grabSquare:RecalcAllWithNeighbours(true)
+            end
+        end
+
+        item:getWorldItem():getSquare():transmitRemoveItemFromSquare(item:getWorldItem())
+        item:getWorldItem():getSquare():removeWorldObject(item:getWorldItem())
+        --item:getWorldItem():getSquare():getObjects():remove(item:getWorldItem())
+        item:setWorldItem(nil)
+    elseif playerObj:getInventory() == srcContainer then
+        playerObj:removeAttachedItem(item)
+        if not playerObj:isEquipped(item) then return end
+        playerObj:removeFromHands(item)
+        playerObj:removeWornItem(item, false)
+        triggerEvent("OnClothingUpdated", playerObj)
+    end
+end
+
 return UBUtils

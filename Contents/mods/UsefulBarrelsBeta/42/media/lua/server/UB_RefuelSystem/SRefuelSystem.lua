@@ -2,6 +2,8 @@ if isClient() then return end
 
 require "Map/SGlobalObjectSystem"
 
+local UBUtils = require("UBUtils")
+
 SRefuelSystem = SGlobalObjectSystem:derive("SRefuelSystem")
 
 function SRefuelSystem:new()
@@ -35,18 +37,22 @@ function SRefuelSystem:isValidIsoObject(isoObject)
 	return isoObject and instanceof(isoObject, "IsoGenerator")
 end
 
-function SRefuelSystem:bindGeneratorToBarrel(generator, barrel, playerObj, hose)
+function SRefuelSystem.bindGeneratorToBarrel(generator, barrel, playerObj, hose)
     local luaObject = SRefuelSystem.instance:newLuaObjectOnSquare(generator:getSquare())
     luaObject:initNew(generator, barrel)
 	luaObject:saveData()
-    -- TODO remove hose from player or world
+
+	UBUtils.RemoveItem(hose, playerObj)
+
 end
 
-function SRefuelSystem:unbindGeneratorFromBarrel(generator, barrel, playerObj)
+function SRefuelSystem.unbindGeneratorFromBarrel(generator, playerObj)
     local luaObject = SRefuelSystem.instance:getLuaObjectOnSquare(generator:getSquare())
     if luaObject then
--- 		noise('removing luaObject at same location as newly-loaded isoObject')
 		SRefuelSystem.instance:removeLuaObject(luaObject)
+
+		local inv = playerObj:getInventory()
+		inv:SpawnItem("Base.RubberHose")
 	end
 end
 
@@ -74,30 +80,30 @@ function SRefuelSystem:OnClientCommand(command, playerObj, args)
 	SRefuelSystemCommand(command, playerObj, args)
 end
 
-function SRefuelSystem:OnDestroyIsoThumpable(isoObject, playerObj)
-	self:noise("on destroy")
-	SGlobalObjectSystem.OnDestroyIsoThumpable(self, isoObject, playerObj)
-
-end
+--function SRefuelSystem:OnDestroyIsoThumpable(isoObject, playerObj)
+--	SGlobalObjectSystem.OnDestroyIsoThumpable(self, isoObject, playerObj)
+--end
 
 function SRefuelSystem:OnObjectAboutToBeRemoved(isoObject)
-	self:noise("on about to be removed")
 	SGlobalObjectSystem.OnObjectAboutToBeRemoved(self, isoObject)
+	--UBUtils.AddItemToSquare(isoObject:getSquare(), "Base.RubberHose")
 end
 
 SGlobalObjectSystem.RegisterSystemClass(SRefuelSystem)
 
 function SRefuelSystem:refuelGenerators()
+	self:noise("every minute: check generators for refuel")
     for i=1,self:getLuaObjectCount() do
+		self:noise("checking object #"..i)
 		local luaObject = self:getLuaObjectByIndex(i)
 		luaObject:checkRefuelGenerator()
 	end
 end
 
-local function EveryTenMinutes()
+local function EveryOneMinute()
 	if SRefuelSystem.instance then
 		SRefuelSystem.instance:refuelGenerators()
 	end
 end
 
-Events.EveryTenMinutes.Add(EveryTenMinutes)
+Events.EveryOneMinute.Add(EveryOneMinute)
