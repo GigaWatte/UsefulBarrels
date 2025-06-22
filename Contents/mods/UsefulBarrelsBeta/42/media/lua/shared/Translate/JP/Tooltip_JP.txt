@@ -6,4 +6,5 @@ Tooltip_JP = {
     Tooltip_UB_NoProperContainerOnGround = "Nothing to fill on ground"
     Tooltip_UB_HoseMissing = "%1 は、流体を摂取するために必要です。<br>腕の範囲内に配置するか、在庫に入れます。"
     Tooltip_UB_FunnelMissing = "%1 は、液体を追加するために必要です。<br>腕の範囲内に配置するか、在庫に入れます。"
+    Tooltip_UB_HatchBlocked = "Fuel hatch is occupied"
 }

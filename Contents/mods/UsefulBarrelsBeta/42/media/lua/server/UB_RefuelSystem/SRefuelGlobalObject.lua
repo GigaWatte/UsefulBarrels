@@ -67,12 +67,6 @@ function SRefuelGlobalObject:aboutToRemoveFromSystem()
 	end
 end
 
-function SRefuelGlobalObject:selfCheck()
-	if self.generator then return true end
-	if self.ub_barrel then return true end
-	return false
-end
-
 function SRefuelGlobalObject:checkRefuelGenerator()
 	if not self.generator then self:noise("no generator");return end
 	if not UBUtils.GetBarrelAtCoords(self.barrelX, self.barrelY, self.barrelZ) then self.noise("barrel is missing"); return end

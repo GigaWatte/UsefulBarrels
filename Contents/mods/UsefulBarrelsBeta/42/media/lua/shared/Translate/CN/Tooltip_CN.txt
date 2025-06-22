@@ -6,4 +6,5 @@ Tooltip_CN = {
     Tooltip_UB_NoProperContainerOnGround = "Nothing to fill on ground"
     Tooltip_UB_HoseMissing = "需要 %1 。<br>需要把橡胶软管放在身边，或者身上。"
     Tooltip_UB_FunnelMissing = "需要 %1 。<br>需要把漏斗放在身边，或者身上。"
+    Tooltip_UB_HatchBlocked = "Fuel hatch is occupied"
 }

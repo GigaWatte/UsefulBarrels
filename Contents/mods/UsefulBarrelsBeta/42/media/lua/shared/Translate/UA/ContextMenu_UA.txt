@@ -14,4 +14,6 @@ ContextMenu_UA = {
     ContextMenu_UB_AddFromFixture = "Додати з пристосування"
     ContextMenu_UB_NoFixturesAvailable = "Немає доступних пристосувань"
     ContextMenu_UB_PumpFuel = "Паливна колонка"
+    ContextMenu_UB_BindBarrel = "З'єднати генерадор з"
+    ContextMenu_UB_UnbindBarrel = "Від'єднати генератор"
 }
