@@ -59,6 +59,7 @@ option UsefulBarrels.EnableGeneratorRefuel
 
 option UsefulBarrels.GeneratorRefuelRequiresHose
 {type = boolean, default = true, page = UsefulBarrels, translation = UsefulBarrelsGeneratorRefuelRequiresHose,}
+
 option UsefulBarrels.EnableCarRefuel
 {type = boolean, default = true, page = UsefulBarrels, translation = UsefulBarrelsEnableVehicleRefuel,}
 

@@ -79,7 +79,7 @@ function ISMoveableSpriteProps:pickUpMoveableInternal( _character, _square, _obj
     end
     return ISMoveableSpriteProps_pickUpMoveableInternal(self, _character, _square, _object, _sprInstance, _spriteName, _createItem, _rotating)
 end
-function OnObjectPlaced(_object)
+local function OnObjectPlaced(_object)
     if _object then
         if UBBarrel.validate(_object) and _object:hasComponent(ComponentType.FluidContainer) then
             local barrel = UBBarrel:new(_object)
@@ -88,3 +88,13 @@ function OnObjectPlaced(_object)
     end
 end
 Events.OnObjectAdded.Add(OnObjectPlaced)
+
+local function UB_OnGameBoot()
+    local instance = ScriptManager.instance
+    instance:getItem("Base.MetalDrum"):DoParam("Weight = 10")
+    instance:getItem("Base.Mov_LightGreenBarrel"):DoParam("Weight = 10")
+    instance:getItem("Base.Mov_OrangeBarrel"):DoParam("Weight = 10")
+    instance:getItem("Base.Mov_DarkGreenBarrel"):DoParam("Weight = 10")
+end
+
+Events.OnGameBoot.Add(UB_OnGameBoot) 
