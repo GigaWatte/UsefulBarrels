@@ -49,4 +49,6 @@ Sandbox_TH = {
     Sandbox_UsefulBarrelsInitialFluidMaxAmount_tooltip = "ปริมาณสูงสุดของของเหลวเริ่มต้น <br> จะไม่มากกว่าความจุของบาร์เรล"
     Sandbox_UsefulBarrelsInitialFluidSpawnChance = "โอกาสวางไข่"
     Sandbox_UsefulBarrelsInitialFluidSpawnChance_tooltip = "โอกาสวางไข่ของของเหลวเริ่มต้น"
+    Sandbox_UsefulBarrelsRequireWeldingMask = "Require Welding Mask for cut lid"
+    Sandbox_UsefulBarrelsRequireBlowTorch = "Require Blow Torch for cut lid"
 }

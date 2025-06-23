@@ -49,4 +49,6 @@ Sandbox_ID = {
     Sandbox_UsefulBarrelsInitialFluidMaxAmount_tooltip = "Jumlah Max dari Cairan Awal. <Br> tidak akan lebih besar dari kapasitas barel."
     Sandbox_UsefulBarrelsInitialFluidSpawnChance = "Peluang bertelur"
     Sandbox_UsefulBarrelsInitialFluidSpawnChance_tooltip = "Peluang melahirkan cairan awal."
+    Sandbox_UsefulBarrelsRequireWeldingMask = "Require Welding Mask for cut lid"
+    Sandbox_UsefulBarrelsRequireBlowTorch = "Require Blow Torch for cut lid"
 }

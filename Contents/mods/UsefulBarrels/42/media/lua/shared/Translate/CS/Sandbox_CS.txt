@@ -49,4 +49,6 @@ Sandbox_CS = {
     Sandbox_UsefulBarrelsInitialFluidMaxAmount_tooltip = "Maximální množství počáteční tekutiny. <Br> nebude větší než kapacita hlavně."
     Sandbox_UsefulBarrelsInitialFluidSpawnChance = "Vytvořte šanci"
     Sandbox_UsefulBarrelsInitialFluidSpawnChance_tooltip = "Vytvořte šanci na počáteční tekutinu."
+    Sandbox_UsefulBarrelsRequireWeldingMask = "Require Welding Mask for cut lid"
+    Sandbox_UsefulBarrelsRequireBlowTorch = "Require Blow Torch for cut lid"
 }

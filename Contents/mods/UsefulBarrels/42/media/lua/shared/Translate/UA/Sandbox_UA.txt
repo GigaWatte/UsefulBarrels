@@ -4,7 +4,7 @@ Sandbox_UA = {
     Sandbox_UsefulBarrelsDebugMode_tooltip = "Дозволяє отримати додаткову інформацію для дебага."
     Sandbox_UsefulBarrelsBarrelCapacity = "Ємність бочки"
     Sandbox_UsefulBarrelsBarrelCapacity_tooltip = "Максимальна ємність бочки."
-    Sandbox_UsefulBarrelsRequirePipeWrench = "Вимагати гайковий ключа"
+    Sandbox_UsefulBarrelsRequirePipeWrench = "Потрібен гайковий ключ"
     Sandbox_UsefulBarrelsRequirePipeWrench_tooltip = "Для бочки необхідний гайковий ключ."
     Sandbox_UsefulBarrelsRequireHose = "Потрібен гумовий шланг"
     Sandbox_UsefulBarrelsRequireHose_tooltip = "Гумовий шланг необхідний для отримання рідини з бочки."
@@ -49,4 +49,6 @@ Sandbox_UA = {
     Sandbox_UsefulBarrelsInitialFluidMaxAmount_tooltip = "Максимальна кількість початкової рідини. <Br> не буде більшим, ніж ємність бочки."
     Sandbox_UsefulBarrelsInitialFluidSpawnChance = "Шанс з'явитись"
     Sandbox_UsefulBarrelsInitialFluidSpawnChance_tooltip = "Шанс з'явитись початковій рідині."
+    Sandbox_UsefulBarrelsRequireWeldingMask = "Потрібна маска зварника"
+    Sandbox_UsefulBarrelsRequireBlowTorch = "Потрібна паяльна лампа"
 }
