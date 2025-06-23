@@ -110,26 +110,26 @@ local function GeneratorDebugContextMenu(player, context, worldobjects, test)
     debugOption.toolTip.description = description
 end
 
---local function CreateWaterTypeMenu(debugMenu, ub_barrel)
---    debugMenu:addOptionOnTop(
---        getText("UB_Remove_Water_Level_Sprite"), 
---        ub_barrel,
---        UBFluidBarrel.removeWaterType
---    )
---    local waterLevelOption = debugMenu:addOptionOnTop(
---        getText("UB_Add_Water_Level_Sprite")
---    )
---    local waterMenu = ISContextMenu:getNew(debugMenu)
---    debugMenu:addSubMenu(waterLevelOption, waterMenu)
---
---    for _,waterType in ipairs({UBBarrel.WATER_LOW, UBBarrel.WATER_HALF, UBBarrel.WATER_FULL}) do
---        waterMenu:addOption(
---            getText(waterType), 
---            ub_barrel, 
---            UBFluidBarrel.setWaterType, waterType
---        )
---    end
---end
+local function CreateWaterTypeMenu(debugMenu, ub_barrel)
+    debugMenu:addOptionOnTop(
+        getText("UB_Remove_Water_Level_Sprite"), 
+        ub_barrel,
+        UBFluidBarrel.removeWaterType
+    )
+    local waterLevelOption = debugMenu:addOptionOnTop(
+        getText("UB_Add_Water_Level_Sprite")
+    )
+    local waterMenu = ISContextMenu:getNew(debugMenu)
+    debugMenu:addSubMenu(waterLevelOption, waterMenu)
+
+    for _,waterType in ipairs({UBBarrel.WATER_LOW, UBBarrel.WATER_HALF, UBBarrel.WATER_FULL}) do
+        waterMenu:addOption(
+            getText(waterType), 
+            ub_barrel, 
+            UBFluidBarrel.setWaterType, waterType
+        )
+    end
+end
 
 local function GetFluidTransferDebugText(optionsTable, isGroundMenu, ub_barrel)
     local containers
@@ -177,7 +177,7 @@ local function BarrelDebugContextMenu(player, context, worldobjects, test)
     
     local debugMenu = ISContextMenu:getNew(context)
     context:addSubMenu(debugOption, debugMenu) 
-    --CreateWaterTypeMenu(debugMenu, ub_barrel)
+    CreateWaterTypeMenu(debugMenu, ub_barrel)
     
     local worldObjects = UBUtils.GetWorldItemsNearby(ub_barrel.square, UBConst.TOOL_SCAN_DISTANCE)
     local hasHoseNearby = UBUtils.hasItemNearbyOrInInv(worldObjects, playerInv, "Base.RubberHose")

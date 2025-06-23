@@ -49,4 +49,6 @@ Sandbox_NO = {
     Sandbox_UsefulBarrelsInitialFluidMaxAmount_tooltip = "Maks mengde initialvæske. <Br> vil ikke være større enn tønne kapasiteten."
     Sandbox_UsefulBarrelsInitialFluidSpawnChance = "Gyte sjanse"
     Sandbox_UsefulBarrelsInitialFluidSpawnChance_tooltip = "Gyte sjanse for innledende væske."
+    Sandbox_UsefulBarrelsRequireWeldingMask = "Require Welding Mask for cut lid"
+    Sandbox_UsefulBarrelsRequireBlowTorch = "Require Blow Torch for cut lid"
 }

@@ -49,4 +49,6 @@ Sandbox_AR = {
     Sandbox_UsefulBarrelsInitialFluidMaxAmount_tooltip = "La cantidad máxima de fluido inicial. <Br> no será mayor que la capacidad del barril."
     Sandbox_UsefulBarrelsInitialFluidSpawnChance = "Chance de desove"
     Sandbox_UsefulBarrelsInitialFluidSpawnChance_tooltip = "Posibilidad de generación de líquido inicial."
+    Sandbox_UsefulBarrelsRequireWeldingMask = "Require Welding Mask for cut lid"
+    Sandbox_UsefulBarrelsRequireBlowTorch = "Require Blow Torch for cut lid"
 }

@@ -49,4 +49,6 @@ Sandbox_UA = {
     Sandbox_UsefulBarrelsInitialFluidMaxAmount_tooltip = "Максимальна кількість початкової рідини. <Br> не буде більшим, ніж ємність бочки."
     Sandbox_UsefulBarrelsInitialFluidSpawnChance = "Шанс з'явитись"
     Sandbox_UsefulBarrelsInitialFluidSpawnChance_tooltip = "Шанс з'явитись початковій рідині."
+    Sandbox_UsefulBarrelsRequireWeldingMask = "Потрібна маска зварника"
+    Sandbox_UsefulBarrelsRequireBlowTorch = "Потрібна паяльна лампа"
 }

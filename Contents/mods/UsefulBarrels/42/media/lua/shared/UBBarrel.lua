@@ -67,36 +67,36 @@ function UBBarrel:AddFluidContainerToBarrel()
     return true
 end
 
---function UBBarrel:EnableRainFactor()
---    if self.isoObject:hasComponent(ComponentType.FluidContainer) then
---        local component = self.isoObject:getComponent(ComponentType.FluidContainer)
---        component:setRainCatcher(UBConst.RAIN_CATCHER_FACTOR)
---    end
---end
+function UBBarrel:EnableRainFactor()
+    if self.isoObject:hasComponent(ComponentType.FluidContainer) then
+        local component = self.isoObject:getComponent(ComponentType.FluidContainer)
+        component:setRainCatcher(UBConst.RAIN_CATCHER_FACTOR)
+    end
+end
 
---function UBBarrel:CutLid()
---    local addFluidContainerSuccess = self:AddFluidContainerToBarrel()
---    if not addFluidContainerSuccess then return false end
---
---    local newSprite = self:getSpriteType(UBBarrel.LIDLESS)
---
---    if newSprite then
---        self:SetModData("UB_OriginalSprite", self:getSprite())
---        self:SetModData("UB_CurrentSprite", newSprite)
---        self:setSprite(newSprite)
---
---        self:EnableRainFactor()
---    else
---        print(string.format("Missing sprite %s for %s", UBBarrel.LIDLESS), self:getSprite())
---        return false
---    end
---
---    self:SetModData("UB_CutLid", true)
---    
---    buildUtil.setHaveConstruction(self.square, true)
---
---    return true
---end
+function UBBarrel:CutLid()
+    local addFluidContainerSuccess = self:AddFluidContainerToBarrel()
+    if not addFluidContainerSuccess then return false end
+
+    local newSprite = self:getSpriteType(UBBarrel.LIDLESS)
+
+    if newSprite then
+        self:SetModData("UB_OriginalSprite", self:getSprite())
+        self:SetModData("UB_CurrentSprite", newSprite)
+        self:setSprite(newSprite)
+
+        self:EnableRainFactor()
+    else
+        print(string.format("Missing sprite %s for %s", UBBarrel.LIDLESS), self:getSprite())
+        return false
+    end
+
+    self:SetModData("UB_CutLid", true)
+    
+    buildUtil.setHaveConstruction(self.square, true)
+
+    return true
+end
 
 function UBBarrel:OnPickup()
 end
@@ -190,9 +190,9 @@ UBBarrel.LIDLESS_RUSTY = "lidless_rusty"
 
 local SPRITE_MAP = {}
 SPRITE_MAP["Base.MetalDrum"] = {
-    --[UBBarrel.WATER_LOW] = "useful_barrels_1_14",
-    --[UBBarrel.WATER_HALF] = "useful_barrels_1_15",
-    --[UBBarrel.WATER_FULL] = "useful_barrels_1_16",
+    [UBBarrel.WATER_LOW] = "useful_barrels_1_14",
+    [UBBarrel.WATER_HALF] = "useful_barrels_1_15",
+    [UBBarrel.WATER_FULL] = "useful_barrels_1_16",
 }
 SPRITE_MAP["Base.MetalDrum"][UBBarrel.N] = {
     [UBBarrel.DEFAULT] = "crafted_01_32",
@@ -205,24 +205,24 @@ SPRITE_MAP["Base.MetalDrum"][UBBarrel.S] = {
 }
 
 SPRITE_MAP["Base.Mov_LightGreenBarrel"] = {
-    --[UBBarrel.WATER_LOW] = "useful_barrels_1_11",
-    --[UBBarrel.WATER_HALF] = "useful_barrels_1_12",
-    --[UBBarrel.WATER_FULL] = "useful_barrels_1_13",
+    [UBBarrel.WATER_LOW] = "useful_barrels_1_11",
+    [UBBarrel.WATER_HALF] = "useful_barrels_1_12",
+    [UBBarrel.WATER_FULL] = "useful_barrels_1_13",
 }
 SPRITE_MAP["Base.Mov_LightGreenBarrel"][UBBarrel.N] = {
     [UBBarrel.DEFAULT] = "location_military_generic_01_6",
-    --[UBBarrel.LIDLESS] = "useful_barrels_1_2",
+    [UBBarrel.LIDLESS] = "useful_barrels_1_2",
     [UBBarrel.LIDLESS_RUSTY] = "crafted_05_28"
 }
 SPRITE_MAP["Base.Mov_LightGreenBarrel"][UBBarrel.S] = {
     [UBBarrel.DEFAULT] = "location_military_generic_01_7",
-    --[UBBarrel.LIDLESS] = "useful_barrels_1_3",
+    [UBBarrel.LIDLESS] = "useful_barrels_1_3",
 }
 
 SPRITE_MAP["Base.Mov_OrangeBarrel"] = {
-    --[UBBarrel.WATER_LOW] = "useful_barrels_1_5",
-    --[UBBarrel.WATER_HALF] = "useful_barrels_1_6",
-    --[UBBarrel.WATER_FULL] = "useful_barrels_1_7",
+    [UBBarrel.WATER_LOW] = "useful_barrels_1_5",
+    [UBBarrel.WATER_HALF] = "useful_barrels_1_6",
+    [UBBarrel.WATER_FULL] = "useful_barrels_1_7",
 }
 SPRITE_MAP["Base.Mov_OrangeBarrel"][UBBarrel.N] = {
     [UBBarrel.DEFAULT] = "industry_01_22",
@@ -231,22 +231,22 @@ SPRITE_MAP["Base.Mov_OrangeBarrel"][UBBarrel.N] = {
 }
 SPRITE_MAP["Base.Mov_OrangeBarrel"][UBBarrel.S] = {
     [UBBarrel.DEFAULT] = "industry_01_23",
-    --[UBBarrel.LIDLESS] = "useful_barrels_1_4",
+    [UBBarrel.LIDLESS] = "useful_barrels_1_4",
 }
 
 SPRITE_MAP["Base.Mov_DarkGreenBarrel"] = {
-    --[UBBarrel.WATER_LOW] = "useful_barrels_1_8",
-    --[UBBarrel.WATER_HALF] = "useful_barrels_1_9",
-    --[UBBarrel.WATER_FULL] = "useful_barrels_1_10",
+    [UBBarrel.WATER_LOW] = "useful_barrels_1_8",
+    [UBBarrel.WATER_HALF] = "useful_barrels_1_9",
+    [UBBarrel.WATER_FULL] = "useful_barrels_1_10",
 }
 SPRITE_MAP["Base.Mov_DarkGreenBarrel"][UBBarrel.N] = {
     [UBBarrel.DEFAULT] = "location_military_generic_01_14",
-    --[UBBarrel.LIDLESS] = "useful_barrels_1_0",
+    [UBBarrel.LIDLESS] = "useful_barrels_1_0",
     [UBBarrel.LIDLESS_RUSTY] = "crafted_05_65"
 }
 SPRITE_MAP["Base.Mov_DarkGreenBarrel"][UBBarrel.S] = {
     [UBBarrel.DEFAULT] = "location_military_generic_01_15",
-    --[UBBarrel.LIDLESS] = "useful_barrels_1_1",
+    [UBBarrel.LIDLESS] = "useful_barrels_1_1",
 }
 
 function UBBarrel:getSpriteType(type)

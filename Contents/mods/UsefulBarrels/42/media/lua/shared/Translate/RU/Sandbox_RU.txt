@@ -47,4 +47,6 @@ Sandbox_RU = {
     Sandbox_UsefulBarrelsInitialFluidMaxAmount_tooltip = "Максимальное количество начальной жидкости. <Br> не будет больше, чем емкость ствола."
     Sandbox_UsefulBarrelsInitialFluidSpawnChance = "Spawn Chance"
     Sandbox_UsefulBarrelsInitialFluidSpawnChance_tooltip = "Spawn шанс начальной жидкости."
+    Sandbox_UsefulBarrelsRequireWeldingMask = "Require Welding Mask for cut lid"
+    Sandbox_UsefulBarrelsRequireBlowTorch = "Require Blow Torch for cut lid"
 }

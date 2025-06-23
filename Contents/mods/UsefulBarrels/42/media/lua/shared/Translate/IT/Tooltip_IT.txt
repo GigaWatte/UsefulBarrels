@@ -1,6 +1,6 @@
 Tooltip_IT = {
     Tooltip_UB_WrenchMissing = "%1 è richiesto per aprire."
-Tooltip_UB_NoProperFluidInInventory = "Nessun fluido appropriato nell'inventario."
+    Tooltip_UB_NoProperFluidInInventory = "Nessun fluido appropriato nell'inventario."
     Tooltip_UB_NoProperContainerInInventory = "Nessun fluido appropriato nel barile o nei contenitori dell'inventario."
     Tooltip_UB_NoProperFluidOnGround = "Nothing to add from ground"
     Tooltip_UB_NoProperContainerOnGround = "Nothing to fill on ground"

@@ -45,4 +45,6 @@ Sandbox_DE = {
     Sandbox_UsefulBarrelsInitialFluidMaxAmount_tooltip = "Maximale Menge für Ausgangsflüssigkeit.<br>Darf das Fassvolumen nicht überschreiten"
     Sandbox_UsefulBarrelsInitialFluidSpawnChance = "Spawn-Chance"
     Sandbox_UsefulBarrelsInitialFluidSpawnChance_tooltip = "Spawn-Chance für Ausgangsflüssigkeit."
+    Sandbox_UsefulBarrelsRequireWeldingMask = "Require Welding Mask for cut lid"
+    Sandbox_UsefulBarrelsRequireBlowTorch = "Require Blow Torch for cut lid"
 }

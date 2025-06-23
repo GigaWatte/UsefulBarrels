@@ -49,4 +49,6 @@ Sandbox_HU = {
     Sandbox_UsefulBarrelsInitialFluidMaxAmount_tooltip = "A kezdeti folyadék maximális mennyisége. <Br> nem lesz nagyobb, mint a hordó kapacitása."
     Sandbox_UsefulBarrelsInitialFluidSpawnChance = "Spawn esély"
     Sandbox_UsefulBarrelsInitialFluidSpawnChance_tooltip = "A kezdeti folyadék spawn esélye."
+    Sandbox_UsefulBarrelsRequireWeldingMask = "Require Welding Mask for cut lid"
+    Sandbox_UsefulBarrelsRequireBlowTorch = "Require Blow Torch for cut lid"
 }
