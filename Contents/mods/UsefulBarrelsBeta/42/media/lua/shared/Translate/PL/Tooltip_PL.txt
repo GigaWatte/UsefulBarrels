@@ -6,4 +6,5 @@ Tooltip_PL = {
     Tooltip_UB_NoProperContainerOnGround = "Nothing to fill on ground"
     Tooltip_UB_HoseMissing = "%1 jest zobowiązane do przyjmowania płynu. <Br> umieścić go w zasięgu ręki lub umieść w swoim ekwipunku."
     Tooltip_UB_FunnelMissing = "%1 jest zobowiązane do dodania płynu. <Br> umieścić go w zasięgu ręki lub umieść go w swoim ekwipunku."
+    Tooltip_UB_HatchBlocked = "Fuel hatch is occupied"
 }

@@ -6,4 +6,5 @@ Tooltip_HU = {
     Tooltip_UB_NoProperContainerOnGround = "Nothing to fill on ground"
     Tooltip_UB_HoseMissing = "%1 A folyadék átvételéhez szükséges. <Br> Helyezze a kar elérésére, vagy tegye be a készletbe."
     Tooltip_UB_FunnelMissing = "%1 A folyadék hozzáadásához szükséges. <Br> Helyezze a kar elérésére, vagy tegye be a készletbe."
+    Tooltip_UB_HatchBlocked = "Fuel hatch is occupied"
 }

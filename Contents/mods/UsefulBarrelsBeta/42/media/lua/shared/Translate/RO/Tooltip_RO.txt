@@ -6,4 +6,5 @@ Tooltip_RO = {
     Tooltip_UB_NoProperContainerOnGround = "Nothing to fill on ground"
     Tooltip_UB_HoseMissing = "S."
     Tooltip_UB_FunnelMissing = "%1 este necesară pentru a adăuga fluid. <Br> Puneți -l la îndemâna brațului sau introduceți -l în inventarul dvs."
+    Tooltip_UB_HatchBlocked = "Fuel hatch is occupied"
 }

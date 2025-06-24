@@ -49,6 +49,6 @@ Sandbox_JP = {
     Sandbox_UsefulBarrelsInitialFluidMaxAmount_tooltip = "初期の液体の最大量。<br>樽の容量を超えることはありません。",
     Sandbox_UsefulBarrelsInitialFluidSpawnChance = "生成確率",
     Sandbox_UsefulBarrelsInitialFluidSpawnChance_tooltip = "初期の液体が生成される確率。",
-    Sandbox_UsefulBarrelsRequireWeldingMask = "Require Welding Mask for cut lid"
-    Sandbox_UsefulBarrelsRequireBlowTorch = "Require Blow Torch for cut lid"
+    Sandbox_UsefulBarrelsRequireWeldingMask = "蓋を切るには溶接マスクが必要"
+    Sandbox_UsefulBarrelsRequireBlowTorch = "蓋を切るにはプロパントーチが必要"
 }

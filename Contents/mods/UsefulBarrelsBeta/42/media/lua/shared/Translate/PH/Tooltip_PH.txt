@@ -6,4 +6,5 @@ Tooltip_PH = {
     Tooltip_UB_NoProperContainerOnGround = "Nothing to fill on ground"
     Tooltip_UB_HoseMissing = "Ang %1 ay kinakailangan upang kumuha ng likido. <Br> Ilagay ito sa loob ng pag -abot ng braso o ilagay ito sa iyong imbentaryo."
     Tooltip_UB_FunnelMissing = "Ang %1 ay kinakailangan upang magdagdag ng likido. <Br> Ilagay ito sa loob ng pag -abot ng braso o ilagay ito sa iyong imbentaryo."
+    Tooltip_UB_HatchBlocked = "Fuel hatch is occupied"
 }
