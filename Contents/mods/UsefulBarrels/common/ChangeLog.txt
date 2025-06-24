@@ -99,3 +99,73 @@
 - Fixed: mispell sandbox variable "FillBarrelFromVehiclesRequiresHose" (again...)
 - Fixed: transferring fuel from a vehicle to an empty barrel causes the fuel to disappear
 [ ------ ]
+[ 08/06/2025 ]
+3.0.5:
+- Translations: update JP translation
+[ ------ ]
+[ 28/04/2025 ]
+3.1.0:
+- New feature: add fluids from/to items on the ground
+- Changed: scan distance lowered. generator 4->2, tools 2->1, vehicles 4->3, world items ->1
+- Changed: The barrel menu don't draw if player is too far
+- Improved: Debug option for vehicles and the barrel
+- Improved: vehicle refuel now takes the closest barrel, not first found during scan
+- Fixed: mispell sandbox variable "FillBarrelFromVehiclesRequiresHose"
+- Fixed: replaced action sounds from AddFuelFromGasPump to GetWater
+- Fixed: SiphonFromVehicle not transfers fuel while in action is in progess, only at the end of the action
+- Fixed: removed extra squares outside the radius of vehicle, items and the barrel scan
+- Translations: added new keys to all languages, without translation for now
+- Translations: also updated IT and DE translations by steam workshop contributors
+[ ------ ]
+[ 17/05/2025 ]
+3.2.0:
+- New feature: Orange Barrel and Metal Drum now can be turned into Rain Collectors
+- Improved: all debug options moved to separate file
+- Improved: add icons to some context options
+- Fixed: fuel not appear in the barrel after transfer from vehicle to the empty barrel
+- Translations: added new keys to all languages, without translation for now
+[ ------ ]
+[ 18/05/2025 ]
+3.2.1:
+- Improved: add more debug option info related to cutting lid 
+[ ------ ]
+[ 18/05/2025 ]
+3.2.2:
+- New feature: able to wash from the lidless barrel
+[ ------ ]
+[ 21/05/2025 ]
+3.2.3:
+- New feature: able to add water from fixtures (including sinks, bathrooms, toilets or even other barrels)
+- New feature: increased barrel encumbrance from 0.5 to 10 units
+[ ------ ]
+[ 24/05/2025 ]
+3.2.4:
+- New feature: able to add gasoline from gas pump
+[ ------ ]
+[ 31/05/2025 ]
+3.2.5:
+- Improved: required tools for "cut lid" and "uncap" actions now returning to backpack if they taken from
+- Fixed: cut lid job title pointing to wrong language translation key
+- Fixed: error with equipping proper tools for "cut lid" action
+- Translations: updated KO translation
+[ ------ ]
+[ 04/06/2025 ]
+3.3.0:
+- New Feature: Both green barrels now also can be turned into Rain Collectors
+- New Feature: Visually represent fluid level of the barrel withoud lid at 75%, 80% and 95% fluid level
+- Improved: Added own sprites, tiledefinitions, depthmaps for the green barrels
+- Fixed: Incorrect items position on some barrels
+- Fixed: Some timed actions does not respect InstantTimedAction cheat
+- Fixed: Fill from other barrels that contains non-water fluids
+[ ------ ]
+[ 05/06/2025 ]
+3.3.1:
+- Fixed: Duplication of Add Fluid from Item menu options
+- Fixed: Multiple lua errors while tools are not in the inventory and that are optional in sandbox vars
+[ ------ ]
+[ 08/06/2025 ]
+3.3.2:
+- New Feature: Integrated "RicksMLC_PayAtThePump" mod.
+- Fixed: add some checks that fluid can be transfered to barrel to prevent possible issues
+[ ------ ]
+

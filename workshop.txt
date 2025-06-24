@@ -1,110 +1,123 @@
 version=1
 id=3436537035
 title=[B42] Useful Barrels
-description=[h1] Barrels can actually be more than just a sprite! [/h1]
-description=[b]B42 only![/b]
-description=[h2] Features [/h2]
-description=[list]
-description=    [*]Use your Pipe Wrench to open the lid of the barrel!
-description=    [*]Store any fluid inside
-description=    [*]The amount of liquid inside the barrel affects the encumbrance
-description=    [*]Rubber Hose to take Gas from barrel
-description=    [*]Funnel for pouring Gas into the barrel
-description=    [*]Funnel may speedup pouring action
-description=    [*]Refueling generator from the barrel
-description=    [*]Refueling vehicle from the barrel. and vice versa.
-description=    [*]Randomized initial fluid and amount
-description=    [*]Sandbox vars to control mod behaviour as you want
-description=    [*]Chuckleberry Finn's Mod Update and Alert System integration for ingame ChangeLog
-description=[/list]
-description=
-description=[h2] Notes [/h2]
-description=[list]
-description=    [*]Uses new FluidContainer system of B42
-description=    [*]Is safe to add in existing saves as well as removing, FuidContainer will remain
-description=    [*]Barrels are now less fragile! But anyway Walkers will break it pretty quickly
-description=    [*]Gasoline does not evaporate from the barrels
-description=    [*]Modded vehicles and trailers are supported if the vehicle has a part with the "gastank" category and the part containerType contains the word "Gasoline" (this information is mostly for modders)
-description=    [*]Please! Any full 800L barrels in your characters pocket or car trunk is your responsibility, there is no proper way to haul them. For now at least.
-description=[/list]
-description=
-description=[h2] How to [/h2]
-description=[h3] Base usage [/h3]
-description=[list]
-description=    [*]Find a Pipe Wrench and any metal barrel in the game (there are only four types available)
-description=    [*]Move it to the garage at your base
-description=    [*]Right click on it and select "Uncap ..." option
-description=    [*]Find a Rubber Hose and a Funnel, then place them on the barrel to enable fluid transfer
-description=[/list]
-description=[h3] Refuel generator [/h3]
-description=[list]
-description=    [*]The generator must be near the barrel with at least 1 liter of fuel
-description=    [*]The generator must be turned off and have free space for fuel
-description=    [*]Find a Rubber Hose if you haven't found it yet, then place it on the barrel (or keep it in your inventory)
-description=    [*]Right click on the generator and select "Refuel From Barrel"
-description=[/list]
-description=[h3] Refuel vehicle [/h3]
-description=[list]
-description=    [*]The vehicle must be near the player
-description=    [*]The vehicle's engine must be turned off
-description=    [*]The gas tank must have free space
-description=    [*]The barrel with gas must be near the vehicle
-description=    [*]Find a Rubber Hose if you haven't found it yet, then place it on the barrel (or keep it in your inventory)
-description=[/list]
-description=[h2] About two versions [/h2]
-description=The mod now comes with two versions: stable and beta.
-description=Stable is polished and works well. Receives an update from beta as soon as it works smoothly.
-description=Beta gets new features early and may be buggy but don't worry, i'm here to fix them asap.
-description=[b] BETA IS NOT SAFE TO REMOVE ANYMORE STARTING FROM 3.3.0 [/b]
-description=[h3]Beta features[/h3]
-description=[list]
-description=    [*]Be able to add fluid from items on the ground
-description=    [*]Cut the barrel lid and turn it into a rain collector. I'd also recommend checking out the [url=https://steamcommunity.com/sharedfiles/filedetails/?id=3439305933]Functional Gutters[/url] mod.
-description=    [*]Be able to add fluid from other world objects such as: sink, bath, toilet or even other Useful Barrel.
-description=    [*]Visually represent fluid lvl in the lidless barrel at 75%, 80% and 90%.
-description=[/list]
-description=
-description=[h2] WIP [/h2]
-description=[list]
-description=    [*]Rework plumbing to make it work again properly
-description=    [*]Connect the barrel to the generator with a hose and refuel it over time
-description=[/list]
-description=
-description=[h2]Mods compatibility[/h2]
-description=[list]
-description=    [*] Modded vehicles (and fluid trailers) should be compatible if: vehicle has part and part category contains "gastank", part contentType contains word "Gasoline".
-description=    [*] Mods that adds context options for FuidContainer may interfere UB. In that case try to re-order mods in Mod load order and move UB to bottom as possible.
-description=[/list]
-description=
-description=[h2] Known bugs [/h2]
-description=[list]
-description=    [*]In case of game crash FuidContainer may not save it's contents.
-description=[/list]
-description=
-description=[h2] FAQ [/h2]
-description=[list]
-description=    [*]Q: Why 800L? In the real world, the barrel has N litres!
-description=    [*]A: 800L was chosen because previously devs used that amount for barrels near Louisville
-description=    [*]Q: b41 when?
-description=    [*]A: I dont have any plans to port it on b41. And there is already a mod for b41, it's called "Fiel API"
-description=    [*]Q: How to move my 800l barrel now?
-description=    [*]A: It's quite hard to implement right now properly. I hope TIS devs add some good functionality to makeit in the future.
-description=[/list]
-description=
-description=[h2] Credits [/h2]
-description=Thanks to [url=https://steamcommunity.com/profiles/76561198022328017]????2346134[/url] for CN translation.
-description=Thanks to [url=https://steamcommunity.com/id/NopOYes]NopOYes[/url] for PTBR translation.
-description=Thanks to [url=https://steamcommunity.com/id/mainfish]MainFish[/url] for RU translation.
-description=Thanks to [url=https://steamcommunity.com/profiles/76561198062695591]Hx[/url] for KO translation.
-description=Thanks to [url=https://steamcommunity.com/profiles/76561198355106439]RedSystem[/url] for TR translation.
-description=Thanks to [url=https://steamcommunity.com/profiles/76561199781026961]Dust Runner[/url] for ES translation.
-description=Thanks to [url=https://steamcommunity.com/profiles/76561198027815009]Bobitec[/url] for FR translation.
-description=Thanks to [url=https://steamcommunity.com/profiles/76561197963614977]Steven Ts[/url] for IT translation.
-description=Thanks to [url=https://steamcommunity.com/profiles/76561199190958423]anormal?[/url] for DE translation.
-description=Thanks to [url=https://steamcommunity.com/id/Chuckleberry_Finn]Chuckleberry Finn[/url] for [url=https://steamcommunity.com/sharedfiles/filedetails/?id=3077900375]Mod Update and Alert System[/url].
-description=Thanks to [url=https://steamcommunity.com/id/Chuckleberry_Finn]Chuckleberry Finn[/url] for pz-translator tool.
-description=
-description=This is my first experience making a mod, so it may not be perfect.
+description=[h1] Barrels can actually be more than just a sprite! [/h1]
+description=[b]B42 only![/b]
+description=[b]Important Note:[/b] Starting from version 3.3.0 (stable and beta), the mod is [b]not[/b] safe to remove.
+description=You will likely lose all barrels with cut lids completely.
+description=[h2] Features [/h2]
+description=[list]
+description=    [*]Use your Pipe Wrench to open the lid of the barrel!
+description=    [*]Store any fluid inside
+description=    [*]The amount of liquid inside the barrel affects the encumbrance
+description=    [*]Rubber Hose to take Gas from barrel
+description=    [*]Funnel for pouring Gas into the barrel
+description=    [*]Funnel may speedup pouring action
+description=    [*]Refueling generator from the barrel
+description=    [*]Refueling vehicle from the barrel. and vice versa.
+description=    [*]Randomized initial fluid and amount
+description=    [*]Sandbox vars to control mod behaviour as you want
+description=    [*]Cut the barrel lid and turn it into a rain collector
+description=    [*]Ability to add fluid from other world objects such as: sink, bath, toilet or even other Useful Barrel.
+description=    [*]Visually represent fluid lvl in the lidless barrel at 75%, 80% and 90%.
+description=    [*]Integrated "RicksMLC_PayAtThePump" mod.
+description=    [*]Chuckleberry Finn's Mod Update and Alert System integration for ingame ChangeLog
+description=[/list]
+description=
+description=[h2] Notes [/h2]
+description=[list]
+description=    [*]Uses new FluidContainer system of B42
+description=    [*]Barrels are now less fragile! But anyway Walkers will break it pretty quickly
+description=    [*]Gasoline does not evaporate from the barrels
+description=    [*]You can add fluids from items that are lying on the ground
+description=    [*]Modded vehicles and trailers are supported if the vehicle has a part with the "gastank" category and the part containerType contains the word "Gasoline" (this information is mostly for modders)
+description=    [*]Please! Any full 800L barrels in your characters pocket or car trunk is your responsibility, there is no proper way to haul them. For now at least.
+description=    [*]I'd also recommend checking out the [url=https://steamcommunity.com/sharedfiles/filedetails/?id=3439305933]Functional Gutters[/url] mod.
+description=[/list]
+description=
+description=[h2] How to [/h2]
+description=[h3] Base usage [/h3]
+description=[list]
+description=    [*]Find a Pipe Wrench and any metal barrel in the game (there are only four types available)
+description=    [*]Move it to the garage at your base
+description=    [*]Right click on it and select "Uncap ..." option
+description=    [*]Find a Rubber Hose and a Funnel, then place them on the barrel to enable fluid transfer
+description=[/list]
+description=[h3] Refuel generator [/h3]
+description=[list]
+description=    [*]The generator must be near the barrel with at least 1 liter of fuel
+description=    [*]The generator must be turned off and have free space for fuel
+description=    [*]Find a Rubber Hose if you haven't found it yet, then place it on the barrel (or keep it in your inventory)
+description=    [*]Right click on the generator and select "Refuel From Barrel"
+description=[/list]
+description=[h3] Refuel vehicle [/h3]
+description=[list]
+description=    [*]The vehicle must be near the player
+description=    [*]The vehicle's engine must be turned off
+description=    [*]The gas tank must have free space
+description=    [*]The barrel with gas must be near the vehicle
+description=    [*]Find a Rubber Hose if you haven't found it yet, then place it on the barrel (or keep it in your inventory)
+description=[/list]
+description=[h3] Rain collector barrel [/h3]
+description=[list]
+description=    [*]Find a Welding mask and a Welding torch with at least 2 uses
+description=    [*]Right-click on the barrel
+description=    [*]Find the "Cut Lid" option - it may appear at the top or inside the existing barrel submenu
+description=[/list]
+description=[h2] About two versions [/h2]
+description=The mod now comes with two versions: stable and beta.
+description=Stable is polished and works well. Receives an update from beta as soon as it works smoothly.
+description=Beta gets new features early and may be buggy but don't worry, i'm here to fix them asap.
+description=[h3]Beta features[/h3]
+description=[list]
+description=    [*]Soon: Connect the barrel to the generator with a hose and refuel it over time
+description=[/list]
+description=
+description=[h2] WIP/Future plans [/h2]
+description=[list]
+description=    [*]WIP: Rework plumbing to make it work again properly
+description=    [*]Turn existing lidless barrels into functional ones
+description=    [*]Polishing context options, translations
+description=    [*]Add some UI
+description=[/list]
+description=
+description=[h2]Mods compatibility[/h2]
+description=[list]
+description=    [*] Modded vehicles (and fluid trailers) should be compatible if: vehicle has part and part category contains "gastank", part contentType contains word "Gasoline".
+description=    [*] Mods that adds context options for FuidContainer may interfere UB. In that case try to re-order mods in Mod load order and move UB to bottom as possible.
+description=[/list]
+description=
+description=[h2] Known bugs [/h2]
+description=[list]
+description=    [*]In case of game crash FuidContainer may not save it's contents.
+description=[/list]
+description=
+description=[h2] FAQ [/h2]
+description=[list]
+description=    [*]Q: Why 800L? In the real world, the barrel has N litres!
+description=    [*]A: 800L was chosen because previously devs used that amount for barrels near Louisville
+description=    [*]Q: b41 when?
+description=    [*]A: I dont have any plans to port it on b41. And there is already a mod for b41, it's called "Fiel API"
+description=    [*]Q: How to move my 800l barrel now?
+description=    [*]A: It's quite hard to implement right now properly. I hope TIS devs add some good functionality to makeit in the future.
+description=[/list]
+description=
+description=[h2] Credits [/h2]
+description=Thanks to [url=https://steamcommunity.com/profiles/76561199774161911]Mr_Ordinary_[/url] for UA translation.
+description=Thanks to [url=https://steamcommunity.com/profiles/76561198022328017]????2346134[/url] for CN translation.
+description=Thanks to [url=https://steamcommunity.com/id/NopOYes]NopOYes[/url] for PTBR translation.
+description=Thanks to [url=https://steamcommunity.com/id/mainfish]MainFish[/url] for RU translation.
+description=Thanks to [url=https://steamcommunity.com/profiles/76561198062695591]Hx[/url] for KO translation.
+description=Thanks to [url=https://steamcommunity.com/profiles/76561198355106439]RedSystem[/url] for TR translation.
+description=Thanks to [url=https://steamcommunity.com/profiles/76561199781026961]Dust Runner[/url] for ES translation.
+description=Thanks to [url=https://steamcommunity.com/profiles/76561198027815009]Bobitec[/url] for FR translation.
+description=Thanks to [url=https://steamcommunity.com/profiles/76561197963614977]Steven Ts[/url] for IT translation.
+description=Thanks to [url=https://steamcommunity.com/profiles/76561199190958423]anormal‹[/url] for DE translation.
+description=Thanks to [url=https://steamcommunity.com/profiles/76561198835746666]Si-Cafe[/url] for JP translation.
+description=Thanks to [url=https://steamcommunity.com/id/Chuckleberry_Finn]Chuckleberry Finn[/url] for [url=https://steamcommunity.com/sharedfiles/filedetails/?id=3077900375]Mod Update and Alert System[/url].
+description=Thanks to [url=https://steamcommunity.com/id/Chuckleberry_Finn]Chuckleberry Finn[/url] for pz-translator tool.
+description=
+description=This is my first experience making a mod, so it may not be perfect.
 description=Feel free to report bugs and suggestions for improvement!
 tags=Build 42;Misc;Realistic;QoL;WIP
 visibility=public

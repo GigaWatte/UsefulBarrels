@@ -36,8 +36,8 @@ Sandbox_FR = {
     Sandbox_UsefulBarrelsAllowBeverage_tooltip = "Sang, bière, café, lait, miel, soda..."
     Sandbox_UsefulBarrelsEnableGeneratorRefuel = "Activer le ravitaillement du générateur"
     Sandbox_UsefulBarrelsGeneratorRefuelRequiresHose = "Le ravitaillement du générateur nécessite un tuyau en caoutchouc"
-    Sandbox_UsefulBarrelsEnableVehicleRefuel = "TBD: Activer le ravitaillement du véhicule"
-    Sandbox_UsefulBarrelsVehicleRefuelRequiresHose = "TBD: Le ravitaillement en carburant du véhicule nécessite un tuyau en caoutchouc"
+    Sandbox_UsefulBarrelsEnableVehicleRefuel = "Activer le ravitaillement du véhicule"
+    Sandbox_UsefulBarrelsVehicleRefuelRequiresHose = "Le ravitaillement en carburant du véhicule nécessite un tuyau en caoutchouc"
     Sandbox_UsefulBarrelsInitialFluid = "Fluide initial"
     Sandbox_UsefulBarrelsInitialFluidPool = "Liste des fluides initiaux"
     Sandbox_UsefulBarrelsInitialFluidPool_tooltip = "Liste séparée par des espaces des fluides pouvant apparaître dans des barils."
@@ -45,4 +45,6 @@ Sandbox_FR = {
     Sandbox_UsefulBarrelsInitialFluidMaxAmount_tooltip = "Quantité maximale de liquide initial.<br>Ne sera pas supérieur à la capacité du baril."
     Sandbox_UsefulBarrelsInitialFluidSpawnChance = "Chance d'apparition"
     Sandbox_UsefulBarrelsInitialFluidSpawnChance_tooltip = "Chances d'apparition du fluide initial."
+    Sandbox_UsefulBarrelsRequireWeldingMask = "Require Welding Mask for cut lid"
+    Sandbox_UsefulBarrelsRequireBlowTorch = "Require Blow Torch for cut lid"
 }

@@ -59,6 +59,7 @@ option UsefulBarrels.EnableGeneratorRefuel
 
 option UsefulBarrels.GeneratorRefuelRequiresHose
 {type = boolean, default = true, page = UsefulBarrels, translation = UsefulBarrelsGeneratorRefuelRequiresHose,}
+
 option UsefulBarrels.EnableCarRefuel
 {type = boolean, default = true, page = UsefulBarrels, translation = UsefulBarrelsEnableVehicleRefuel,}
 
@@ -82,3 +83,9 @@ option UsefulBarrels.InitialFluidMaxAmount
 
 option UsefulBarrels.InitialFluidSpawnChance
 {type = double, min = 0, max=100, default = 25, page = UsefulBarrels, translation = UsefulBarrelsInitialFluidSpawnChance,}
+
+option UsefulBarrels.RequireWeldingMask
+{type = boolean, default = true, page = UsefulBarrels, translation = UsefulBarrelsRequireWeldingMask,}
+
+option UsefulBarrels.RequireBlowTorch
+{type = boolean, default = true, page = UsefulBarrels, translation = UsefulBarrelsRequireBlowTorch,}
