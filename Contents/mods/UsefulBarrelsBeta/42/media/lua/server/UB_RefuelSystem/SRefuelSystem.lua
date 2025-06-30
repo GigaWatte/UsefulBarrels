@@ -59,7 +59,7 @@ end
 
 function SRefuelSystem:OnObjectAboutToBeRemoved(isoObject)
 	SGlobalObjectSystem.OnObjectAboutToBeRemoved(self, isoObject)
-	UBUtils.AddItemToSquare(isoObject:getSquare(), "Base.RubberHose")
+	--UBUtils.AddItemToSquare(isoObject:getSquare(), "Base.RubberHose")
 end
 
 SGlobalObjectSystem.RegisterSystemClass(SRefuelSystem)

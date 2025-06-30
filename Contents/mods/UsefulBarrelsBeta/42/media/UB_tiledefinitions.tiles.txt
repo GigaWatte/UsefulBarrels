@@ -17,7 +17,7 @@ tileset
         IsLow = 
         IsMoveAble = 
         Material = MetalScrap
-        solidtrans = 
+        solidtrans =
     }
     // useful_barrels_1_1
     tile

@@ -1,0 +1,18 @@
+module UB
+{
+    model fuel_barrel
+    {
+        mesh = IsoObject/barrel,
+        texture = IsoObject/barrel_d,
+        undoCoreScale = true,
+        postProcess = postprocess
+        shader = basicEffect
+    }
+
+    physicsShape fuel_barrel
+    {
+        mesh = physics/barrel,
+        translate = 0.0 0 0.0,
+        rotate = 0 0 0,
+    }
+}
