@@ -2,8 +2,8 @@ module UB
 {
     model fuel_barrel
     {
-        mesh = IsoObject/barrel,
-        texture = IsoObject/barrel_d,
+        mesh = IsoObject/barrel_new,
+        texture = IsoObject/barrel_d_new,
         undoCoreScale = true,
         postProcess = postprocess
         shader = basicEffect
