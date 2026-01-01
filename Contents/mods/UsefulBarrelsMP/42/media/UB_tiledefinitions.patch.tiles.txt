@@ -1,0 +1,157 @@
+version = 1
+tileset
+{
+    file = crafted_01
+    size = 8,8
+    id = 1
+    // crafted_01_24
+    tile
+    {
+        xy = 0,3
+        BlocksPlacement = 
+        CanScrap = 
+        CustomItem = Base.MetalDrum
+        CustomName = Metal Drum
+        IsLow = 
+        IsMoveAble = 
+        Material = MetalPlates
+        Material2 = MetalScrap
+        solidtrans = 
+    }
+    // crafted_01_28
+    tile
+    {
+        xy = 4,3
+        BlocksPlacement = 
+        CanScrap = 
+        CustomItem = Base.Mov_OrangeBarrel
+        CustomName = Barrel
+        GroupName = Orange
+        IsLow = 
+        IsMoveAble = 
+        Material = MetalPlates
+        Material2 = MetalScrap
+        solidtrans = 
+    }
+    // crafted_01_32
+    tile
+    {
+        xy = 0,4
+        BlocksPlacement = 
+        CanScrap = 
+        CustomItem = Base.MetalDrum
+        CustomName = Metal Drum
+        IsLow = 
+        IsMoveAble = 
+        Material = MetalPlates
+        Material2 = MetalScrap
+        Surface = 36
+        solidtrans = 
+    }
+}
+tileset
+{
+    file = location_military_generic_01
+    size = 8,8
+    id = 2
+    // location_military_generic_01_6
+    tile
+    {
+        xy = 6,0
+        BlocksPlacement = 
+        CanScrap = 
+        CustomItem = Base.Mov_LightGreenBarrel
+        CustomName = Barrel
+        Facing = N
+        GroupName = Light Green
+        IsLow = 
+        IsMoveAble = 
+        Material = MetalScrap
+        solidtrans = 
+    }
+    // location_military_generic_01_7
+    tile
+    {
+        xy = 7,0
+        BlocksPlacement = 
+        CanScrap = 
+        CustomItem = Base.Mov_LightGreenBarrel
+        CustomName = Barrel
+        Facing = S
+        GroupName = Light Green
+        IsLow = 
+        IsMoveAble = 
+        Material = MetalScrap
+        solidtrans = 
+    }
+    // location_military_generic_01_14
+    tile
+    {
+        xy = 6,1
+        BlocksPlacement = 
+        CanScrap = 
+        CustomItem = Base.Mov_DarkGreenBarrel
+        CustomName = Barrel
+        Facing = N
+        GroupName = Dark Green
+        IsLow = 
+        IsMoveAble = 
+        Material = MetalScrap
+        solidtrans = 
+    }
+    // location_military_generic_01_15
+    tile
+    {
+        xy = 7,1
+        BlocksPlacement = 
+        CanScrap = 
+        CustomItem = Base.Mov_DarkGreenBarrel
+        CustomName = Barrel
+        Facing = S
+        GroupName = Dark Green
+        IsLow = 
+        IsMoveAble = 
+        Material = MetalScrap
+        solidtrans = 
+    }
+}
+tileset
+{
+    file = industry_01
+    size = 8,8
+    id = 3
+    // industry_01_22
+    tile
+    {
+        xy = 6,2
+        BlocksPlacement = 
+        CanScrap = 
+        CustomItem = Base.Mov_OrangeBarrel
+        CustomName = Barrel
+        Facing = N
+        GroupName = Orange
+        IsLow = 
+        IsMoveAble = 
+        Material = MetalPlates
+        Material2 = MetalScrap
+        Surface = 36
+        solidtrans = 
+    }
+    // industry_01_23
+    tile
+    {
+        xy = 7,2
+        BlocksPlacement = 
+        CanScrap = 
+        CustomItem = Base.Mov_OrangeBarrel
+        CustomName = Barrel
+        Facing = S
+        GroupName = Orange
+        IsLow = 
+        IsMoveAble = 
+        Material = MetalPlates
+        Material2 = MetalScrap
+        Surface = 36
+        solidtrans = 
+    }
+}

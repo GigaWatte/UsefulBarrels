@@ -1,0 +1,9 @@
+Fluids_UA = {
+    Fluid_UB_Show_Info = "Рідина: %1"
+    Fluid_Container_UB_Barrel = "Бочка"
+    Fluid_Container_UB_MetalDrum = "Металева бочка"
+    Fluid_Container_UB_Mov_OrangeBarrel = "Orange Barrel"
+    Fluid_Container_UB_Mov_LightGreenBarrel = "Light Green Barrel"
+    Fluid_Container_UB_Mov_DarkGreenBarrel = "Dark Green Barrel"
+    Fluid_Container_UB_MetalDrum = "Metal Drum"
+}

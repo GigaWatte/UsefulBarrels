@@ -1,0 +1,137 @@
+version = 1
+tileset
+{
+    file = useful_barrels_1
+    size = 8,8
+    id = 1
+    // useful_barrels_1_0
+    tile
+    {
+        xy = 0,0
+        BlocksPlacement = 
+        CanScrap = 
+        CustomItem = Base.Mov_DarkGreenBarrel
+        CustomName = Barrel
+        Facing = N
+        GroupName = Dark Green
+        IsLow = 
+        IsMoveAble = 
+        Material = MetalScrap
+        solidtrans = 
+    }
+    // useful_barrels_1_1
+    tile
+    {
+        xy = 1,0
+        BlocksPlacement = 
+        CanScrap = 
+        CustomItem = Base.Mov_DarkGreenBarrel
+        CustomName = Barrel
+        Facing = S
+        GroupName = Dark Green
+        IsLow = 
+        IsMoveAble = 
+        Material = MetalScrap
+        solidtrans = 
+    }
+    // useful_barrels_1_2
+    tile
+    {
+        xy = 2,0
+        BlocksPlacement = 
+        CanScrap = 
+        CustomItem = Base.Mov_LightGreenBarrel
+        CustomName = Barrel
+        Facing = N
+        GroupName = Light Green
+        IsLow = 
+        IsMoveAble = 
+        Material = MetalScrap
+        solidtrans = 
+    }
+    // useful_barrels_1_3
+    tile
+    {
+        xy = 3,0
+        BlocksPlacement = 
+        CanScrap = 
+        CustomItem = Base.Mov_LightGreenBarrel
+        CustomName = Barrel
+        Facing = S
+        GroupName = Light Green
+        IsLow = 
+        IsMoveAble = 
+        Material = MetalScrap
+        solidtrans = 
+    }
+    // useful_barrels_1_4
+    tile
+    {
+        xy = 4,0
+        BlocksPlacement = 
+        CanScrap = 
+        CustomItem = Base.Mov_OrangeBarrel
+        CustomName = Barrel
+        Facing = S
+        GroupName = Orange
+        IsLow = 
+        IsMoveAble = 
+        Material = MetalPlates
+        Material2 = MetalScrap
+        solidtrans = 
+    }
+    // useful_barrels_1_5
+    tile
+    {
+        xy = 5,0
+        TileOverlay = 
+    }
+    // useful_barrels_1_6
+    tile
+    {
+        xy = 6,0
+        TileOverlay = 
+    }
+    // useful_barrels_1_7
+    tile
+    {
+        xy = 7,0
+        TileOverlay = 
+    }
+    // useful_barrels_1_8
+    tile
+    {
+        xy = 0,1
+        TileOverlay = 
+    }
+    // useful_barrels_1_9
+    tile
+    {
+        xy = 1,1
+        TileOverlay = 
+    }
+    // useful_barrels_1_10
+    tile
+    {
+        xy = 2,1
+        TileOverlay = 
+    }
+    // useful_barrels_1_11
+    tile
+    {
+        xy = 3,1
+        TileOverlay = 
+    }
+    // useful_barrels_1_12
+    tile
+    {
+        xy = 4,1
+        TileOverlay = 
+    }
+    // useful_barrels_1_13
+    tile
+    {
+        xy = 5,1
+        TileOverlay = 
+    }
+}
