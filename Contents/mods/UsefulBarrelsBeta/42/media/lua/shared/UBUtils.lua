@@ -43,6 +43,12 @@ function UBUtils.hasItemNearbyOrInInv(worldObjects, playerInv, item)
     return UBUtils.TableContainsItem(worldObjects, item) or UBUtils.playerHasItem(playerInv, item)
 end
 
+function UBUtils.getItemNearbyOrInInv(worldObjects, playerInv, item)
+    local table_item = UBUtils.GetTableItem(worldObjects, item)
+    if table_item then return table_item end
+    return UBUtils.playerGetItem(playerInv, item)
+end
+
 function UBUtils.getPlayerFluidContainers(playerInv)
     local itemsArray = playerInv:getAllEvalRecurse(
         function (item) return UBUtils.predicateAnyFluid(item) and not UBBarrel.validate(item) end
@@ -69,6 +75,15 @@ function UBUtils.GetValidBarrel(worldObjects)
             if ubBarrel then return ubBarrel end
         end
     end
+end
+
+function UBUtils.GetBarrelAtCoords(x,y,z)
+    local square = getCell():getGridSquare(x, y, z)
+    if not square then return end
+
+    local squareObjects = square:getObjects()
+    local squareObjectsTable = UBUtils.ConvertToTable(squareObjects)
+    return UBUtils.GetValidBarrel(squareObjectsTable)
 end
 
 function UBUtils.playerHasItem(playerInv, itemName) return playerInv:containsTypeEvalRecurse(itemName, UBUtils.predicateNotBroken) or playerInv:containsTagEvalRecurse(itemName, UBUtils.predicateNotBroken) end
@@ -206,6 +221,14 @@ function UBUtils.TableContainsItem(table, item_name)
         if item_name == item:getFullType() then return true end
     end
     return false
+end
+
+function UBUtils.GetTableItem(table, item_name)
+    for _,v in pairs(table) do 
+        local item = v:getItem()
+        if item_name == item:getFullType() then return item end
+    end
+    return nil
 end
 
 function UBUtils.GetWorldItemsNearby(square, distance, isDiamondShape)
@@ -408,6 +431,59 @@ function UBUtils.CanCreateGeneratorMenu(square, playerObj)
     end
 
     return true
+end
+
+function UBUtils.AddItemToSquare(square, item)
+    if item and square then
+        --local item 	= instanceItem( _item )
+        if item then
+            square:SpawnWorldInventoryItem(item, ZombRandFloat(0.1,0.9), ZombRandFloat(0.1,0.9), 0.0)
+        end
+    end
+end
+-- taken from ISRemoveItemTool.removeItem
+function UBUtils.RemoveItem(item, playerObj)
+    local srcContainer = item:getContainer()
+
+    srcContainer:DoRemoveItem(item);
+    sendRemoveItemFromContainer(srcContainer, item);
+
+    if srcContainer:getType() == "floor" and item:getWorldItem() ~= nil then
+        DesignationZoneAnimal.removeItemFromGround(item:getWorldItem())
+        if instanceof(item, "Radio") then
+            local grabSquare = item:getWorldItem():getSquare()
+            local _obj = nil
+            for i=0, grabSquare:getObjects():size()-1 do
+                local tObj = grabSquare:getObjects():get(i)
+                if instanceof(tObj, "IsoRadio") then
+                    if tObj:getModData().RadioItemID == item:getID() then
+                        _obj = tObj
+                        break
+                    end
+                end
+            end
+            if _obj ~= nil then
+                local deviceData = _obj:getDeviceData()
+                if deviceData then
+                    item:setDeviceData(deviceData)
+                end
+                grabSquare:transmitRemoveItemFromSquare(_obj)
+                grabSquare:RecalcProperties()
+                grabSquare:RecalcAllWithNeighbours(true)
+            end
+        end
+
+        item:getWorldItem():getSquare():transmitRemoveItemFromSquare(item:getWorldItem())
+        item:getWorldItem():getSquare():removeWorldObject(item:getWorldItem())
+        --item:getWorldItem():getSquare():getObjects():remove(item:getWorldItem())
+        item:setWorldItem(nil)
+    elseif playerObj:getInventory() == srcContainer then
+        playerObj:removeAttachedItem(item)
+        if not playerObj:isEquipped(item) then return end
+        playerObj:removeFromHands(item)
+        playerObj:removeWornItem(item, false)
+        triggerEvent("OnClothingUpdated", playerObj)
+    end
 end
 
 return UBUtils

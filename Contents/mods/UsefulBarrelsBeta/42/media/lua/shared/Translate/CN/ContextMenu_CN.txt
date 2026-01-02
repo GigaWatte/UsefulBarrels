@@ -14,4 +14,6 @@ ContextMenu_CN = {
     ContextMenu_UB_AddFromFixture = "从固定装置中添加一个"
     ContextMenu_UB_NoFixturesAvailable = "没有可以添加的固定装置"
     ContextMenu_UB_PumpFuel = "燃油泵"
+    ContextMenu_UB_BindBarrel = "Bind generator to"
+    ContextMenu_UB_UnbindBarrel = "Unbind generator"
 }

@@ -1,5 +1,7 @@
 
-TODO Rework plumbing to make it work again properly
+TODO check again if works correctly with pump with power/nopower
+
+TODO Rework plumbing to make it work again properly (as souce of water, not receiver)
 TODO crashes may not save fluidContainer
 TODO Connect the barrel to the generator with a hose and refuel it over time
 TODO add more icons

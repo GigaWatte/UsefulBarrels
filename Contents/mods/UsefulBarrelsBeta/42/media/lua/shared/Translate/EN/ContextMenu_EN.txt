@@ -14,4 +14,6 @@ ContextMenu_EN = {
     ContextMenu_UB_AddFromFixture = "Add from Object"
     ContextMenu_UB_NoFixturesAvailable = "No Objects to add from"
     ContextMenu_UB_PumpFuel = "Fuel Pump"
+    ContextMenu_UB_BindBarrel = "Bind generator to"
+    ContextMenu_UB_UnbindBarrel = "Unbind generator"
 }

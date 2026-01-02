@@ -6,4 +6,5 @@ Tooltip_DA = {
     Tooltip_UB_NoProperContainerOnGround = "Nothing to fill on ground"
     Tooltip_UB_HoseMissing = "{%1."
     Tooltip_UB_FunnelMissing = "%1 kræves for at tilføje væske. <Br> placer den inden for armens rækkevidde eller læg den i din beholdning."
+    Tooltip_UB_HatchBlocked = "Fuel hatch is occupied"
 }

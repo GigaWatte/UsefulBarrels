@@ -6,4 +6,5 @@ Tooltip_ID = {
     Tooltip_UB_NoProperContainerOnGround = "Nothing to fill on ground"
     Tooltip_UB_HoseMissing = "%1 diperlukan untuk mengambil cairan. <Br> Tempatkan di dalam jangkauan lengan atau masukkan ke dalam inventaris Anda."
     Tooltip_UB_FunnelMissing = "%1 diperlukan untuk menambahkan fluida. <Br> Tempatkan di dalam jangkauan lengan atau masukkan ke dalam inventaris Anda."
+    Tooltip_UB_HatchBlocked = "Fuel hatch is occupied"
 }

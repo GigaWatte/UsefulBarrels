@@ -1,0 +1,17 @@
+spriteModel
+{
+	VERSION = 1,
+	tileset
+	{
+		name = useful_barrels_1,
+
+		tile
+        {
+            xy = 0 0,
+            modelScript = UB.fuel_barrel,
+            translate = 0.0000 0.0000 0.0000,
+            rotate = 0.0000 90.0000 0.0000,
+            scale = 1.0000,
+        }
+    }
+}

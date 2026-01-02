@@ -6,4 +6,5 @@ Tooltip_UA = {
     Tooltip_UB_NoProperContainerOnGround = "Немає що додавати в предмети на полу"
     Tooltip_UB_HoseMissing = "%1 потрібен для злиття рідини"
     Tooltip_UB_FunnelMissing = "%1 потрібен для додавання рідини"
+    Tooltip_UB_HatchBlocked = "Люк для палива заблокований"
 }
