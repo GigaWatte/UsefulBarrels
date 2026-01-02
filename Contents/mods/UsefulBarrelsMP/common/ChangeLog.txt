@@ -1,4 +1,8 @@
 [ 01/01/2026 ]
+4.0.1:
+- Add generator refuel for MP
+- BASE_FUEL_TRANSFER_RATE restore to 50
+[ 01/01/2026 ]
 4.0.0:
 - Updated game version 42.13.1
 - Add MP support for basic features
