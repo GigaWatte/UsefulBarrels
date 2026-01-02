@@ -99,6 +99,10 @@ function UB_Barrel:SetModData(key, value)
     self.isoObject:setModData(modData)
 end
 
+function UB_Barrel:GetTooltipText(font_size)
+    return ""
+end
+
 function UB_Barrel:GetWeight()
     local weight = 0
 

@@ -99,7 +99,7 @@ end
 function UB_RefuelVehicleAction:complete()
     self.barrel:adjustAmount(self.barrelTarget)
     self.barrelObj:sync()
-    LuaEventManager.triggerEvent("OnWaterAmountChange", self.barrelObj, -1);
+    LuaEventManager.triggerEvent("OnWaterAmountChange", self.barrelObj, -1)
     if self.vehicle then
         if not self.part then
             UB_Utils.info(string.format('no such part=%s', tostring(self.part)))

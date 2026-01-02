@@ -3,22 +3,19 @@ local UB_FluidBarrel = require "UB_FluidBarrel"
 local UB_Utils = {}
 
 function UB_Utils.info(message)
-    -- add sandbox var check here
+    if getDebug() and SandboxVars.UsefulBarrels.DebugMode then
         if isClient() then
-            if getDebug() then
-                print(string.format("[UsefulBarrelsMP:Client] %s", tostring(message)))
-            end
+            print(string.format("[UsefulBarrelsMP:Client] %s", tostring(message)))
         else
             print(string.format("[UsefulBarrelsMP:Server] %s", tostring(message)))
         end
+    end
 end
 
 function UB_Utils.PredicateNotBroken(item) return not item:isBroken() end
 
 function UB_Utils.PlayerGetItem(playerInv, itemTag)
-    --local cond1 = playerInv:getFirstTypeEvalRecurse(itemName, UB_Utils.PredicateNotBroken)
-    local cond2 = playerInv:getFirstTagEvalRecurse(itemTag, UB_Utils.PredicateNotBroken)
-    return cond2 --cond1 or cond2
+    return playerInv:getFirstTagEvalRecurse(itemTag, UB_Utils.PredicateNotBroken)
 end
 
 function UB_Utils.DisableOptionAddTooltip(option, description, object)
@@ -120,9 +117,7 @@ function UB_Utils.HasItemNearbyOrInInv(worldObjects, playerInv, itemTag)
 end
 
 function UB_Utils.PlayerHasItem(playerInv, itemTag)
-    --local cond1 = playerInv:containsTypeEvalRecurse(itemName, UB_Utils.PredicateNotBroken)
-    local cond2 = playerInv:containsTagEvalRecurse(itemTag, UB_Utils.PredicateNotBroken)
-    return cond2 --cond1 or
+    return playerInv:containsTagEvalRecurse(itemTag, UB_Utils.PredicateNotBroken)
 end
 
 function UB_Utils.TableContainsItem(table, itemTag)
@@ -144,7 +139,7 @@ function UB_Utils.GetPlayerFluidContainersWithFluid(playerInv, fluid)
     local itemsArray = playerInv:getAllEvalRecurse(
         function (item) return (UB_Utils.PredicateFluid(item, fluid) or UB_Utils.PredicateHasFluidContainer(item)) and not UB_Barrel.validate(item) end
     )
-    
+
     return UB_Utils.ConvertToTable(itemsArray)
 end
 
@@ -256,6 +251,16 @@ function UB_Utils.GetVehiclesNeaby(square, distance)
     end
 
     return vehicles
+end
+
+
+function UB_Utils.CanCreateGeneratorMenu(square, playerObj)
+    if not square or not AdjacentFreeTileFinder.Find(square, playerObj) then
+        -- if the player can reach the tile, populate the submenu, otherwise don't bother
+        return false
+    end
+
+    return true
 end
 
 return UB_Utils

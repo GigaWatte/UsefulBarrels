@@ -1,9 +1,12 @@
 require "TimedActions/ISBaseTimedAction"
 
+local UB_Const = require "UB_Const"
+local UB_Utils = require "UB_Utils"
+
 UB_RefuelGeneratorAction = ISBaseTimedAction:derive("UB_RefuelGeneratorAction");
 
 function UB_RefuelGeneratorAction:isValid()
-    if self.generator:getFuel() >= 100 then ISBaseTimedAction.stop(self) end
+    if self.generator:getFuelPercentage() >= 100 then ISBaseTimedAction.stop(self) end
     return self.generator:getObjectIndex() ~= -1
 end
 
@@ -30,36 +33,34 @@ end
 
 function UB_RefuelGeneratorAction:perform()
     self.character:stopOrTriggerSound(self.sound)
-    
+
     -- needed to remove from queue / start next.
     ISBaseTimedAction.perform(self);
 end
 
 function UB_RefuelGeneratorAction:complete()
-    local endFuel = 0;
-    while self.barrel:getAmount() >= 1.0 and self.generator:getFuel() + endFuel < 100 do
-        local amount = self.barrel:getAmount() - 1.0
-        self.barrel:adjustAmount(amount)
-        endFuel = endFuel + 10
-    end
+    local barrelAmount = self.barrel:getAmount()
+    local endFuel = math.min(barrelAmount, self.generator:getMaxFuel() - self.generator:getFuel())
+    self.barrel:adjustAmount(barrelAmount - endFuel)
+    self.barrelObj:sync()
     self.generator:setFuel(self.generator:getFuel() + endFuel)
     self.generator:sync()
-
-    return true;
+    LuaEventManager.triggerEvent("OnWaterAmountChange", self.barrelObj, barrelAmount)
+    return true
 end
 
 function UB_RefuelGeneratorAction:getDuration()
     if self.character:isTimedActionInstant() then
         return 1
     end
-    return 70 + (self.amount * 50)
+    return 70 + (self.barrel:getAmount() * 50)
 end
 
-function UB_RefuelGeneratorAction:new(character, generator, barrel, maxTime)
+function UB_RefuelGeneratorAction:new(character, generator, barrelObj, maxTime)
     local o = ISBaseTimedAction.new(self, character)
-    o.barrel = barrel
+    o.barrelObj = barrelObj
+    o.barrel = UB_Utils.GetValidBarrelFromWorldObjects({barrelObj})
     o.generator = generator
-    o.amount = 10 - o.generator:getFuel() / 10
     o.maxTime = o:getDuration()
     return o;
 end

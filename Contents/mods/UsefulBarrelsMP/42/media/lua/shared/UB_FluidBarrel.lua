@@ -60,6 +60,22 @@ function UB_FluidBarrel:OnPlace()
     end
 end
 
+function UB_FluidBarrel:GetTooltipText(font_size)
+    function FormatFluidAmount(setX, amount, max, fluidName)
+        if max >= 9999 then
+            return string.format("%s: <SETX:%d> %s", getText(fluidName), setX, getText("Tooltip_WaterUnlimited"))
+        end
+        return string.format("%s: <SETX:%d> %s / %s", getText(fluidName), setX, luautils.round(amount, 2) .. "L", max .. "L")
+    end
+
+    local fluidAmount = self:getAmount()
+    local fluidMax = self:getCapacity()
+    local fluidName = self:GetTranslatedFluidNameOrEmpty()
+
+    local tx = getTextManager():MeasureStringX(font_size, fluidName .. ":") + 20
+    return FormatFluidAmount(tx, fluidAmount, fluidMax, fluidName)
+end
+
 function UB_FluidBarrel:CanTransferFluid(fluidContainers, transferToContainers)
     local toContainers = false
     if transferToContainers ~= nil then
@@ -137,6 +153,16 @@ function UB_FluidBarrel:getPrimaryFluid()
         return self.fluidContainer:getPrimaryFluid()
     else
         return nil
+    end
+end
+
+function UB_FluidBarrel:GetTranslatedFluidNameOrEmpty()
+    local fluidObject = self:getPrimaryFluid()
+
+    if fluidObject then
+        return fluidObject:getTranslatedName()
+    else
+        return getText("ContextMenu_Empty")
     end
 end
 
