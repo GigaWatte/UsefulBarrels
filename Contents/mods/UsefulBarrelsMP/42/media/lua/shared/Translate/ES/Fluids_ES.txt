@@ -1,0 +1,9 @@
+Fluids_ES = {
+    Fluid_UB_Show_Info = "Fluido: %1"
+    Fluid_Container_UB_Barrel = "Barril"
+    Fluid_Container_UB_MetalDrum = "Tambor de metal"
+    Fluid_Container_UB_Mov_OrangeBarrel = "Orange Barrel"
+    Fluid_Container_UB_Mov_LightGreenBarrel = "Light Green Barrel"
+    Fluid_Container_UB_Mov_DarkGreenBarrel = "Dark Green Barrel"
+    Fluid_Container_UB_MetalDrum = "Metal Drum"
+}
