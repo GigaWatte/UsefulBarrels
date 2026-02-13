@@ -93,6 +93,14 @@ function UB_TransferFluidAction:getDuration()
     if self.speedModifierApply ~= nil then
         speedModifier = SandboxVars.UsefulBarrels.FunnelSpeedUpFillModifier
     end
+
+    UB_Utils.info(string.format(table.concat({
+        "UB_TransferFluidAction:getDuration()",
+        "amountSent=%s",
+        "time=%s",
+    }, "\n"),
+    self.amount, (basePerLiter * self.amount) / speedModifier))
+
     return (basePerLiter * self.amount) / speedModifier
 end
 

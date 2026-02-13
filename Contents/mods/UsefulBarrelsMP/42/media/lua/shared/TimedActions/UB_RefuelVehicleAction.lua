@@ -53,11 +53,11 @@ function UB_RefuelVehicleAction:update()
         self.barrelObj:sync()
         LuaEventManager.triggerEvent("OnWaterAmountChange", self.barrelObj, old);
 
-        UB_Utils.info(string.format(table.concat({
-            "UB_RefuelVehicleAction:update()",
-            "amountSent=%s"
-        }, "\n"),
-        self.amountSent))
+        --UB_Utils.info(string.format(table.concat({
+        --    "UB_RefuelVehicleAction:update()",
+        --    "amountSent=%s"
+        --}, "\n"),
+        --self.amountSent))
     end
 
     self.character:setMetabolicTarget(Metabolics.HeavyDomestic);
@@ -111,11 +111,11 @@ function UB_RefuelVehicleAction:complete()
         UB_Utils.info(string.format('no such vehicle id=', tostring(self.vehicle)))
     end
 
-    UB_Utils.info(string.format(table.concat({
-        "UB_RefuelVehicleAction:complete()",
-        "amountSent=%s"
-    }, "\n"),
-    self.amountSent))
+    --UB_Utils.info(string.format(table.concat({
+    --    "UB_RefuelVehicleAction:complete()",
+    --    "amountSent=%s"
+    --}, "\n"),
+    --self.amountSent))
 
     return true
 end
@@ -143,11 +143,12 @@ function UB_RefuelVehicleAction:getDuration()
         "UB_RefuelVehicleAction:getDuration()",
         "tank start=%s -> target=%s",
         "barrel Start=%s -> target=%s",
-        "amountSent=%s"
+        "amountSent=%s",
+        "time=%s"
     }, "\n"),
     self.tankStart, self.tankTarget,
     self.barrelStart, self.barrelTarget,
-    self.amountSent))
+    self.amountSent, amountToTransfer * UB_Const.BASE_FUEL_TRANSFER_RATE))
 
     if self.character:isTimedActionInstant() then
         return 1

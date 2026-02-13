@@ -141,11 +141,12 @@ function UB_SiphonFromVehicleAction:getDuration()
         "UB_SiphonFromVehicleAction:getDuration()",
         "tank start=%s -> target=%s",
         "barrel Start=%s -> target=%s",
-        "amountSent=%s"
+        "amountSent=%s",
+        "time=%s",
     }, "\n"),
     self.tankStart, self.tankTarget,
     self.barrelStart, self.barrelTarget,
-    self.amountSent))
+    self.amountSent, amountToTransfer * UB_Const.BASE_FUEL_TRANSFER_RATE))
 
     if self.character:isTimedActionInstant() then
         return 1

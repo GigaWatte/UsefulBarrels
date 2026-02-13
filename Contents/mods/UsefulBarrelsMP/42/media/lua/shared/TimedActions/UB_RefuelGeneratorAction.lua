@@ -53,7 +53,15 @@ function UB_RefuelGeneratorAction:getDuration()
     if self.character:isTimedActionInstant() then
         return 1
     end
-    return 70 + (self.barrel:getAmount() * 50)
+    local endFuel = math.min(self.barrel:getAmount(), self.generator:getMaxFuel() - self.generator:getFuel())
+    local time = 70 + (endFuel * 50)
+    UB_Utils.info(string.format(table.concat({
+        "UB_RefuelGeneratorAction:getDuration()",
+        "fuel to transfer=%s",
+        "time=%s"
+    }, "\n"), endFuel, time
+    ))
+    return time
 end
 
 function UB_RefuelGeneratorAction:new(character, generator, barrelObj, maxTime)
