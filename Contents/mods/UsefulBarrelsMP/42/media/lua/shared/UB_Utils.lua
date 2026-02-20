@@ -233,6 +233,88 @@ function UB_Utils.GetBarrelsNearby(square, distance, fluid, sortByDistance)
     return barrels
 end
 
+local function isPuddleOrRiver(object)
+    local props = object:getProperties()
+    local hasWaterFlag = (props ~= nil) and props:has(IsoFlagType.water)
+    local isInventoryItem = instanceof(object, "IsoWorldInventoryObject")
+    local isLakeOrRiver = not isInventoryItem and (props ~= nil) and luautils.stringStarts(object:getSprite():getName(), 'blends_natural_02')
+    local isPuddle = not hasWaterFlag and not isLakeOrRiver and (props ~= nil) and props:has(IsoFlagType.solidfloor)
+    return isPuddle or isLakeOrRiver
+end
+
+function UB_Utils.GetMapObjectsNearby(square, distance, sortByDistance, requireLOSClear)
+    if not square then return {} end
+
+    local squares = UB_Utils.GetSquaresInRange(square, distance, false)
+    
+    local sinks = {}
+
+    for _,curr in ipairs(squares) do
+        local squareObjects = curr:getObjects()
+        local sqTable = UB_Utils.ConvertToTable(squareObjects)
+        for i,isoObject in ipairs(sqTable) do
+            if isoObject:hasFluid() 
+                and not isPuddleOrRiver(isoObject)
+                and not instanceof(isoObject, "IsoClothingDryer")
+                and not instanceof(isoObject, "IsoClothingWasher")
+                and not instanceof(isoObject, "IsoCombinationWasherDryer") 
+                and not instanceof(isoObject, "IsoWorldInventoryObject")
+                then
+                
+                if requireLOSClear == true then
+                    local cell = square:getCell()
+                    local x1, y1, z1 = square:getX(), square:getY(), square:getZ()
+                    local x2, y2, z2 = isoObject:getX(), isoObject:getY(), isoObject:getZ()
+                    local state = tostring(LosUtil.lineClear(cell, x1, y1, z1, x2, y2, z2, false))
+                    if state == "Clear" then
+                        table.insert(sinks, isoObject)
+                    end
+                else
+                    table.insert(sinks, isoObject)
+                end
+            end
+        end
+    end
+
+    if #sinks > 1 and sortByDistance ~= nil and sortByDistance then
+        table.sort(sinks, function(a,b) return IsoUtils.DistanceTo(
+            a:getX(), a:getY(), square:getX(), square:getY()
+        ) < IsoUtils.DistanceTo(
+            b:getX(), b:getY(), square:getX(), square:getY()
+        ) end)
+    end
+
+    return sinks
+end
+
+function UB_Utils.GetGasPumpsNearby(square, distance, sortByDistance)
+    if not square then return {} end
+
+    local squares = UB_Utils.GetSquaresInRange(square, distance, false)
+
+    local gasPumps = {}
+
+    for _,curr in ipairs(squares) do
+        local squareObjects = curr:getObjects()
+        local sqTable = UB_Utils.ConvertToTable(squareObjects)
+        for i,isoObject in ipairs(sqTable) do
+            if isoObject:getPipedFuelAmount() >= 0 then
+                table.insert(gasPumps, isoObject)
+            end
+        end
+    end
+
+    if #gasPumps > 1 and sortByDistance ~= nil and sortByDistance then
+        table.sort(gasPumps, function(a,b) return IsoUtils.DistanceTo(
+            a:getX(), a:getY(), square:getX(), square:getY()
+        ) < IsoUtils.DistanceTo(
+            b:getX(), b:getY(), square:getX(), square:getY()
+        ) end)
+    end
+
+    return gasPumps
+end
+
 function UB_Utils.GetVehiclePartSquare(vehicle, part)
     local areaCenter = vehicle:getAreaCenter(part:getArea())
     if not areaCenter then return nil end

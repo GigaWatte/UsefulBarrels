@@ -96,6 +96,16 @@ function UB_BarrelContextMenu.OnVehicleTransferFluid(playerObj, part, barrel)
     end
 end
 
+function UB_BarrelContextMenu.OnTransferFluidFromMapObject(playerObj, map_object, barrel)
+    if not luautils.walkAdj(playerObj, map_object:getSquare(), true) then return end
+    ISTimedActionQueue.add(UB_TransferFluidFromObjectAction:new(playerObj, map_object, barrel.isoObject))
+end
+
+function UB_BarrelContextMenu.OnTransferFluidFromPump(playerObj, fuelPump, barrel)
+    if not luautils.walkAdj(playerObj, fuelPump:getSquare()) then return end
+    ISTimedActionQueue.add(UB_TransferFluidFromGasPumpAction:new(playerObj, fuelPump, barrel.isoObject))
+end
+
 function UB_BarrelContextMenu:DoCategoryList(subMenu, allContainerTypes, addToBarrel, oneOptionText, allOptionText)
     for _,containerType in pairs(allContainerTypes) do
         local destItem = containerType[1]
@@ -242,18 +252,152 @@ function UB_BarrelContextMenu:DoSiphonFromVehicleMenu(context, hasHoseNearby)
     end
 end
 
+local items_cache = {}
+
+function UB_BarrelContextMenu:CreateMapObjectOption(containerMenu, map_object, hasHoseNearby)
+    local props = map_object:getSprite():getProperties()
+
+    local name
+    if props:has("CustomName") then
+        name = props:get("CustomName")
+        if props:has("GroupName") then
+            name = props:get("GroupName") .. " " .. name
+        end
+    end
+    local sprite_name = map_object:getSpriteName()
+
+    if not sprite_name then
+        -- this is strange actually, but sometimes produces nil
+        return
+    end
+
+    local moveable_name = "Moveables." .. sprite_name
+    if not items_cache[moveable_name] then
+        items_cache[moveable_name] = instanceItem(moveable_name)
+    end
+    local moveable_item = items_cache[moveable_name]
+
+    local containerOption = containerMenu:addGetUpOption(
+        Translator.getMoveableDisplayName(name),
+        self.playerObj,
+        UB_BarrelContextMenu.OnTransferFluidFromMapObject,
+        map_object, self.barrel
+    )
+    if containerOption and moveable_item then
+        containerOption.iconTexture = moveable_item:getIcon()
+    end
+
+    if not hasHoseNearby then
+        UB_Utils.DisableOptionAddTooltip(containerOption, getText("Tooltip_UB_HoseMissing", getItemName("Base.RubberHose")))
+        return
+    end
+
+    if map_object:hasComponent(ComponentType.FluidContainer) then
+        local mapObjectFluidContainer = map_object:getFluidContainer()
+        if not self.barrel:canAddFluid(mapObjectFluidContainer:getPrimaryFluid()) then
+            UB_Utils.DisableOptionAddTooltip(containerOption, getText("Tooltip_UB_CantAddFluid"))
+            return
+        end
+    end
+    --if map_object:getUsesExternalWaterSource() then
+    --    local externalWaterObject = map_object:checkExternalFluidSource()
+    --    if externalWaterObject ~= nil then
+    --        local externalFluidContainer = externalWaterObject:getFluidContainer()
+    --        if externalFluidContainer ~= nil and externalFluidContainer:getAmount() > 0.0F then
+    --            if not self.barrel:canAddFluid(externalFluidContainer:getPrimaryFluid()) then
+    --                UBUtils.DisableOptionAddTooltip(vehicleOption, getText("Tooltip_UB_CantAddFluid"))
+    --                return
+    --            end
+    --        end
+    --    end
+    --end
+
+    local tooltip = ISToolTip:new()
+    tooltip:initialise()
+    tooltip.maxLineWidth = 512
+    tooltip.description = map_object:getFluidUiName()
+    tooltip.object = map_object
+    containerOption.toolTip = tooltip
+end
+
+function UB_BarrelContextMenu:CreateGasPumpOption(containerMenu, pump_object, hasHoseNearby)
+    local containerOption = containerMenu:addGetUpOption(
+        getText("ContextMenu_UB_PumpFuel"), 
+        self.playerObj, 
+        UB_BarrelContextMenu.OnTransferFluidFromPump, 
+        pump_object, self.barrel
+    )
+
+    if not self.barrel:canAddFluid(Fluid.Petrol) then
+        UB_Utils.DisableOptionAddTooltip(containerOption, getText("Tooltip_UB_CantAddFluid"))
+        return
+    end
+
+    local fuelPower = (SandboxVars.AllowExteriorGenerator and pump_object and pump_object:getSquare():haveElectricity()) 
+        or (pump_object:getSquare():hasGridPower())
+    
+    if not fuelPower then
+        UB_Utils.DisableOptionAddTooltip(containerOption, getText("ContextMenu_FuelPumpNoPower"), pump_object)
+    elseif pump_object:getPipedFuelAmount() <= 0 then
+        UB_Utils.DisableOptionAddTooltip(containerOption, getText("ContextMenu_FuelPumpEmpty"), pump_object)
+    else
+        local tooltip = ISToolTip:new()
+        tooltip:initialise()
+        tooltip.description = Fluid.Petrol:getDisplayName()
+        tooltip.object = pump_object
+        containerOption.toolTip = tooltip 
+    end
+end
+
+function UB_BarrelContextMenu:DoFillFromMapObjectsMenu(context, hasHoseNearby)
+    local objects = UB_Utils.GetMapObjectsNearby(self.barrel.square, UB_Const.MAP_OBJECTS_DISTANCE, true, true)
+    local gasPumps = UB_Utils.GetGasPumpsNearby(self.barrel.square, UB_Const.MAP_OBJECTS_DISTANCE, true)
+
+    local fillOption = context:addOption(getText("ContextMenu_UB_AddFromFixture"))
+
+    if (#objects == 0) and (#gasPumps == 0) then
+        UB_Utils.DisableOptionAddTooltip(fillOption, getText("ContextMenu_UB_NoFixturesAvailable"))
+        return
+    end
+
+    local containerMenu = ISContextMenu:getNew(context)
+    context:addSubMenu(fillOption, containerMenu)
+
+    for _,sink in ipairs(objects) do
+        self:CreateMapObjectOption(containerMenu, sink, hasHoseNearby)
+    end
+
+    --for _,gasPump in ipairs(gasPumps) do
+    --    self:CreateGasPumpOption(containerMenu, gasPump)
+    --end
+
+    local hc = getCore():getObjectHighlitedColor()
+    --highlight the object on tile while the tooltip is showing
+    containerMenu.showTooltip = function(_subMenu, _option)
+        ISContextMenu.showTooltip(_subMenu, _option)
+        if _subMenu.toolTip.object ~= nil then
+            _option.toolTip:setVisible(false)
+            _option.toolTip.object:setHighlightColor(hc)
+            _option.toolTip.object:setHighlighted(true, false)
+        end
+    end
+
+    --stop highlighting the object when the tooltip is not showing
+    containerMenu.hideToolTip = function(_subMenu)
+        if _subMenu.toolTip and _subMenu.toolTip.object then
+            _subMenu.toolTip.object:setHighlighted(false)
+        end
+        ISContextMenu.hideToolTip(_subMenu)
+    end
+end
+
 function UB_BarrelContextMenu:new(player, context, ub_barrel)
     self.barrel = ub_barrel
     self.playerObj = getSpecificPlayer(player)
     self.playerInv = self.playerObj:getInventory()
     self.barrelFluid = self.barrel:getPrimaryFluid()
 
-    -- get vanilla FluidContainer object option
     local barrelOption = context:getOptionFromName(self.barrel.objectLabel)
-    -- it appears that devs already implemented this
-    --if barrelOption and self.barrel.icon then
-        --barrelOption.iconTexture = self.barrel.icon
-    --end
 
     if barrelOption then
         local barrelMenu = context:getSubMenu(barrelOption.subOption)
@@ -291,45 +435,6 @@ function UB_BarrelContextMenu:new(player, context, ub_barrel)
                 end
             end
 
-            -- these options completely exist in vanilla - co check them
-            local addMenuOpts = {
-                addToBarrel=true,
-                containers=UB_Utils.GetPlayerFluidContainers(self.playerInv),
-                optionText=getText("ContextMenu_AddFluidFromItem"),
-                noToolPredicate=SandboxVars.UsefulBarrels.RequireFunnelForFill == true and hasFunnelNearby == false,
-                noToolTooltip=getText("Tooltip_UB_FunnelMissing", getItemName("Base.Funnel")),
-                noContainersNooltip=getText("Tooltip_UB_NoProperFluidInInventory"),
-                actionAllText=getText("ContextMenu_AddAll"),
-                actionOneText=getText("ContextMenu_AddOne"),
-
-                groundOptionText=getText("ContextMenu_UB_AddFluid_FromGround"),
-                groundContainers=UB_Utils.GetWorldFluidContainersNearby(
-                    self.barrel.square,
-                    UB_Const.WORLD_ITEMS_DISTANCE,
-                    function(worldInventoryObject) return UB_Utils.PredicateAnyFluid(worldInventoryObject) end
-                ),
-                noGroundContainersTooltip=getText("Tooltip_UB_NoProperFluidOnGround"),
-            }
-
-            local takeMenuOpts = {
-                addToBarrel=false,
-                containers=UB_Utils.GetPlayerFluidContainersWithFluid(self.playerInv, self.barrelFluid),
-                optionText=getText("ContextMenu_Fill"),
-                noToolPredicate=SandboxVars.UsefulBarrels.RequireHoseForTake == true and hasHoseNearby == false,
-                noToolTooltip=getText("Tooltip_UB_HoseMissing", getItemName("Base.RubberHose")),
-                noContainersNooltip=getText("Tooltip_UB_NoProperContainerInInventory"),
-                actionAllText=getText("ContextMenu_FillAll"),
-                actionOneText=getText("ContextMenu_FillOne"),
-
-                groundOptionText=getText("ContextMenu_UB_AddFluid_OnGround"),
-                groundContainers=UB_Utils.GetWorldFluidContainersNearby(
-                    self.barrel.square, 
-                    UB_Const.WORLD_ITEMS_DISTANCE,
-                    function(worldInventoryObject) return UB_Utils.PredicateFluid(worldInventoryObject, self.barrelFluid) or UB_Utils.PredicateHasFluidContainer(worldInventoryObject) end
-                ),
-                noGroundContainersTooltip=getText("Tooltip_UB_NoProperContainerOnGround"),
-            }
-
             -- add from ground menu
             --self:DoFluidMenu(barrelMenu, addMenuOpts, true)
             -- add to ground menu
@@ -339,7 +444,7 @@ function UB_BarrelContextMenu:new(player, context, ub_barrel)
             self:DoSiphonFromVehicleMenu(barrelMenu, hasHoseNearby)
 
             -- transfer water from map objects menu
-            --self:DoFillFromMapObjectsMenu(barrelMenu, hasHoseNearby)
+            self:DoFillFromMapObjectsMenu(barrelMenu, hasHoseNearby)
         end
     end
 end
