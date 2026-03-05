@@ -76,6 +76,7 @@ local function UB_OnGameBoot()
     local instance = ScriptManager.instance
     instance:getItem("Base.Funnel"):DoParam("Tags", "UB_Barrels:FUNNEL")
     instance:getItem("Base.RubberHose"):DoParam("Tags", "UB_Barrels:RUBBER_HOSE")
+    --instance:getItem("Base.BlowTorch"):DoParam("Tags", "UB_Barrels:BLOW_TORCH")
     --instance:getItem("Base.Funnel"):DoParam("Tags", string(ItemTag.get(ResourceLocation.of("UB_Barrels:FUNNEL"))))
     --instance:getItem("Base.RubberHose"):DoParam("Tags", string(ItemTag.get(ResourceLocation.of("UB_Barrels:RUBBER_HOSE"))))
 

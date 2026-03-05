@@ -19,6 +19,12 @@ UB_Const.VEHICLE_SCAN_DISTANCE = 3
 
 UB_Const.GENERATOR_SCAN_DISTANCE = 2
 
+UB_Const.BLOW_TORCH_USES = 2
+
+UB_Const.RAIN_CATCHER_FACTOR = 0.3
+
+UB_Const.MAP_OBJECTS_DISTANCE = 3
+
 UB_Const.FACING_N = "N"
 UB_Const.FACING_S = "S"
 
@@ -38,12 +44,12 @@ SPRITE_MAP["Base.MetalDrum"] = {
     [UB_Const.WATER_HALF] = "useful_barrels_1_15",
     [UB_Const.WATER_FULL] = "useful_barrels_1_16",
 }
-SPRITE_MAP["Base.MetalDrum"][UB_Const.N] = {
+SPRITE_MAP["Base.MetalDrum"][UB_Const.FACING_N] = {
     [UB_Const.DEFAULT] = "crafted_01_32",
     [UB_Const.LIDLESS] = "crafted_01_24",
     [UB_Const.LIDLESS_RUSTY] = "crafted_05_56"
 }
-SPRITE_MAP["Base.MetalDrum"][UB_Const.S] = {
+SPRITE_MAP["Base.MetalDrum"][UB_Const.FACING_S] = {
     [UB_Const.DEFAULT] = "crafted_01_32",
     [UB_Const.LIDLESS] = "crafted_01_24"
 }
@@ -53,12 +59,12 @@ SPRITE_MAP["Base.Mov_LightGreenBarrel"] = {
     [UB_Const.WATER_HALF] = "useful_barrels_1_12",
     [UB_Const.WATER_FULL] = "useful_barrels_1_13",
 }
-SPRITE_MAP["Base.Mov_LightGreenBarrel"][UB_Const.N] = {
+SPRITE_MAP["Base.Mov_LightGreenBarrel"][UB_Const.FACING_N] = {
     [UB_Const.DEFAULT] = "location_military_generic_01_6",
     [UB_Const.LIDLESS] = "useful_barrels_1_2",
     [UB_Const.LIDLESS_RUSTY] = "crafted_05_28"
 }
-SPRITE_MAP["Base.Mov_LightGreenBarrel"][UB_Const.S] = {
+SPRITE_MAP["Base.Mov_LightGreenBarrel"][UB_Const.FACING_S] = {
     [UB_Const.DEFAULT] = "location_military_generic_01_7",
     [UB_Const.LIDLESS] = "useful_barrels_1_3",
 }
@@ -68,12 +74,12 @@ SPRITE_MAP["Base.Mov_OrangeBarrel"] = {
     [UB_Const.WATER_HALF] = "useful_barrels_1_6",
     [UB_Const.WATER_FULL] = "useful_barrels_1_7",
 }
-SPRITE_MAP["Base.Mov_OrangeBarrel"][UB_Const.N] = {
+SPRITE_MAP["Base.Mov_OrangeBarrel"][UB_Const.FACING_N] = {
     [UB_Const.DEFAULT] = "industry_01_22",
     [UB_Const.LIDLESS] = "crafted_01_28",
     [UB_Const.LIDLESS_RUSTY] = "crafted_05_60"
 }
-SPRITE_MAP["Base.Mov_OrangeBarrel"][UB_Const.S] = {
+SPRITE_MAP["Base.Mov_OrangeBarrel"][UB_Const.FACING_S] = {
     [UB_Const.DEFAULT] = "industry_01_23",
     [UB_Const.LIDLESS] = "useful_barrels_1_4",
 }
@@ -83,12 +89,12 @@ SPRITE_MAP["Base.Mov_DarkGreenBarrel"] = {
     [UB_Const.WATER_HALF] = "useful_barrels_1_9",
     [UB_Const.WATER_FULL] = "useful_barrels_1_10",
 }
-SPRITE_MAP["Base.Mov_DarkGreenBarrel"][UB_Const.N] = {
+SPRITE_MAP["Base.Mov_DarkGreenBarrel"][UB_Const.FACING_N] = {
     [UB_Const.DEFAULT] = "location_military_generic_01_14",
     [UB_Const.LIDLESS] = "useful_barrels_1_0",
     [UB_Const.LIDLESS_RUSTY] = "crafted_05_65"
 }
-SPRITE_MAP["Base.Mov_DarkGreenBarrel"][UB_Const.S] = {
+SPRITE_MAP["Base.Mov_DarkGreenBarrel"][UB_Const.FACING_S] = {
     [UB_Const.DEFAULT] = "location_military_generic_01_15",
     [UB_Const.LIDLESS] = "useful_barrels_1_1",
 }

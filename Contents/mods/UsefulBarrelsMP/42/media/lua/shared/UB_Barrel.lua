@@ -67,6 +67,37 @@ function UB_Barrel.AddFluidContainer(ub_barrel)
     return true
 end
 
+function UB_Barrel:EnableRainFactor()
+    if self.isoObject:hasComponent(ComponentType.FluidContainer) then
+        local component = self.isoObject:getComponent(ComponentType.FluidContainer)
+        component:setRainCatcher(UB_Const.RAIN_CATCHER_FACTOR)
+    end
+end
+
+function UB_Barrel:CutLid()
+    local addFluidContainerSuccess = UB_Barrel.AddFluidContainer(self)
+    if not addFluidContainerSuccess then return false end
+
+    local newSprite = self:getSpriteType(UB_Const.LIDLESS)
+
+    if newSprite then
+        self:SetModData("UB_OriginalSprite", self:getSprite())
+        self:SetModData("UB_CurrentSprite", newSprite)
+        self:setSprite(newSprite)
+
+        self:EnableRainFactor()
+    else
+        print(string.format("Missing sprite %s for %s", UB_Const.LIDLESS), self:getSprite())
+        return false
+    end
+
+    self:SetModData("UB_CutLid", true)
+    
+    buildUtil.setHaveConstruction(self.square, true)
+
+    return true
+end
+
 function UB_Barrel:getSpriteType(type)
     if not UB_Const.SPRITE_MAP[self.baseName] then return end
     if not UB_Const.SPRITE_MAP[self.baseName][self.facing] then return nil end
@@ -74,8 +105,18 @@ function UB_Barrel:getSpriteType(type)
     return UB_Const.SPRITE_MAP[self.baseName][self.facing][type]
 end
 
+function UB_Barrel:getWaterType(type)
+    if not UB_Const.SPRITE_MAP[self.baseName] then return end
+    if not UB_Const.SPRITE_MAP[self.baseName][type] then return nil end
+    return UB_Const.SPRITE_MAP[self.baseName][type]
+end
+
 function UB_Barrel:getSprite()
     return self.isoObject:getSpriteName()
+end
+
+function UB_Barrel:setSprite(sprite)
+    self.isoObject:setSprite(sprite)
 end
 
 function UB_Barrel:OnPickup()

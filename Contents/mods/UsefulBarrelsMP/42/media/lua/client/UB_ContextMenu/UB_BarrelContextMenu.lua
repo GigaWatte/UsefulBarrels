@@ -366,10 +366,12 @@ function UB_BarrelContextMenu:DoFillFromMapObjectsMenu(context, hasHoseNearby)
     for _,sink in ipairs(objects) do
         self:CreateMapObjectOption(containerMenu, sink, hasHoseNearby)
     end
-
-    --for _,gasPump in ipairs(gasPumps) do
-    --    self:CreateGasPumpOption(containerMenu, gasPump)
-    --end
+    
+    if UB_Utils.isSinglePlayer() then
+        for _,gasPump in ipairs(gasPumps) do
+            self:CreateGasPumpOption(containerMenu, gasPump)
+        end
+    end
 
     local hc = getCore():getObjectHighlitedColor()
     --highlight the object on tile while the tooltip is showing

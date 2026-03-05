@@ -14,8 +14,16 @@ end
 
 function UB_Utils.PredicateNotBroken(item) return not item:isBroken() end
 
+function UB_Utils.ItemHasUses(item, uses)
+    return item:getCurrentUses() >= uses
+end
+
 function UB_Utils.PlayerGetItem(playerInv, itemTag)
     return playerInv:getFirstTagEvalRecurse(itemTag, UB_Utils.PredicateNotBroken)
+end
+
+function UB_Utils.PlayerGetBestItem(playerInv, itemTag, comparator)
+    return playerInv:getBestTypeEvalRecurse(itemTag, comparator)
 end
 
 function UB_Utils.DisableOptionAddTooltip(option, description, object)
@@ -343,6 +351,10 @@ function UB_Utils.CanCreateGeneratorMenu(square, playerObj)
     end
 
     return true
+end
+
+function UB_Utils.isSinglePlayer()
+    return not isClient() and not isServer()
 end
 
 return UB_Utils
