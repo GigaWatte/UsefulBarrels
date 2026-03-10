@@ -1,0 +1,10 @@
+{
+
+  "Tooltip_UB_WrenchMissing": "%1이(가) 개봉하는 데 필요함.",
+  "Tooltip_UB_NoProperFluidInInventory": "인벤토리에 연료가 없음.",
+  "Tooltip_UB_NoProperContainerInInventory": "배럴에 연료가 없음.",
+  "Tooltip_UB_NoProperFluidOnGround": "Nothing to add from ground",
+  "Tooltip_UB_NoProperContainerOnGround": "Nothing to fill on ground",
+  "Tooltip_UB_HoseMissing": "가스를 주입하려면 %1이(가) 필요합니다.<br>손이 닿는 곳에 두거나 인벤토리에 넣으세요.",
+  "Tooltip_UB_FunnelMissing": "가스를 추가하려면 %1이(가) 필요합니다.<br>손이 닿는 곳에 두거나 인벤토리에 넣으세요."
+}
