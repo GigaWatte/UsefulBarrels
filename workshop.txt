@@ -1,8 +1,9 @@
 version=1
 id=3436537035
-title=[B42] Useful Barrels
+title=[B42] Useful Barrels (Discontinued)
 description=[h1] Barrels can actually be more than just a sprite! [/h1]
 description=[b]B42 only! Now with MP support! [/b]
+description=[b]Important: Mod development is currently discontinued. I no longer have the time or motivation to continue working on it. You have my full permission to adopt it and use any of the code or assets. Feel free to contact me if you have any questions about how the mod works.[/b]
 description=
 description=[h2] Features available [/h2]
 description=[list]
@@ -93,6 +94,7 @@ description=    [*]A: It's quite hard to implement right now properly. I hope TI
 description=[/list]
 description=
 description=[h2] Credits [/h2]
+description=Thanks a lot to [url=https://steamcommunity.com/id/ThisIsSP4RTAN]SP4RTAN[/url] for updating the translations for the 42.15 game update.
 description=Thanks to [url=https://steamcommunity.com/profiles/76561199774161911]Mr_Ordinary_[/url] for UA translation.
 description=Thanks to [url=https://steamcommunity.com/profiles/76561198022328017]浪里个浪2346134[/url] for CN translation.
 description=Thanks to [url=https://steamcommunity.com/id/NopOYes]NopOYes[/url] for PTBR translation.
