@@ -1,3 +1,13 @@
+[ 01/08/2026 ]
+4.0.7.1:
+- Temporarily disabled lid cutting feature
+[ 30/07/2026 ]
+4.0.7:
+- Fixed tiledef issues causing the mod to not appear in mod list
+- Removed old version for 42.12
+[ 17/04/2026 ]
+4.0.6:
+- patched container info panel not working with the barrels (Thanks to SP4RTAN for the patch)
 [ 05/03/2026 ]
 4.0.5:
 - updated translations due to 42.15 update

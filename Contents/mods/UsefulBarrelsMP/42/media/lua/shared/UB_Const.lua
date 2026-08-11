@@ -47,7 +47,6 @@ SPRITE_MAP["Base.MetalDrum"] = {
 SPRITE_MAP["Base.MetalDrum"][UB_Const.FACING_N] = {
     [UB_Const.DEFAULT] = "crafted_01_32",
     [UB_Const.LIDLESS] = "crafted_01_24",
-    [UB_Const.LIDLESS_RUSTY] = "crafted_05_56"
 }
 SPRITE_MAP["Base.MetalDrum"][UB_Const.FACING_S] = {
     [UB_Const.DEFAULT] = "crafted_01_32",
@@ -62,7 +61,6 @@ SPRITE_MAP["Base.Mov_LightGreenBarrel"] = {
 SPRITE_MAP["Base.Mov_LightGreenBarrel"][UB_Const.FACING_N] = {
     [UB_Const.DEFAULT] = "location_military_generic_01_6",
     [UB_Const.LIDLESS] = "useful_barrels_1_2",
-    [UB_Const.LIDLESS_RUSTY] = "crafted_05_28"
 }
 SPRITE_MAP["Base.Mov_LightGreenBarrel"][UB_Const.FACING_S] = {
     [UB_Const.DEFAULT] = "location_military_generic_01_7",
@@ -77,7 +75,6 @@ SPRITE_MAP["Base.Mov_OrangeBarrel"] = {
 SPRITE_MAP["Base.Mov_OrangeBarrel"][UB_Const.FACING_N] = {
     [UB_Const.DEFAULT] = "industry_01_22",
     [UB_Const.LIDLESS] = "crafted_01_28",
-    [UB_Const.LIDLESS_RUSTY] = "crafted_05_60"
 }
 SPRITE_MAP["Base.Mov_OrangeBarrel"][UB_Const.FACING_S] = {
     [UB_Const.DEFAULT] = "industry_01_23",
@@ -92,7 +89,6 @@ SPRITE_MAP["Base.Mov_DarkGreenBarrel"] = {
 SPRITE_MAP["Base.Mov_DarkGreenBarrel"][UB_Const.FACING_N] = {
     [UB_Const.DEFAULT] = "location_military_generic_01_14",
     [UB_Const.LIDLESS] = "useful_barrels_1_0",
-    [UB_Const.LIDLESS_RUSTY] = "crafted_05_65"
 }
 SPRITE_MAP["Base.Mov_DarkGreenBarrel"][UB_Const.FACING_S] = {
     [UB_Const.DEFAULT] = "location_military_generic_01_15",

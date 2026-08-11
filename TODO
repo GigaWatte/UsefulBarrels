@@ -1,4 +1,51 @@
 
+drawTextBackground - check what it do
+https://albion.codeberg.page/PZ-JavaDocs/zombie/ui/UIElement.html#drawTextWithBackground(zombie.ui.UIFont,java.lang.String,double,double,double,double,double,double,double,double,double,double,double,double)
+
+% characters now need to be escaped in the translations (e.g. %% for a single % when resolved)
+
+
+camping_01_16 - well
+camping_01_64-67 - pump
+
+carpentry_02_52 - empty wooden barrel
+carpentry_02_53 - filled water wooden barrel
+
+carpentry_02_54 - empty wooden box with black tarp
+carpentry_02_55 - filled water wooden box with black tarp
+
+carpentry_02_120 - empty wooden box with orange tarp
+carpentry_02_121 - filled water wooden box with orange tarp
+
+carpentry_02_122 - empty wooden barrel with black tarp
+carpentry_02_123 - filled water wooden barrel with black tarp
+
+carpentry_02_124 - empty wooden barrel with orange tarp
+carpentry_02_125 - filled water wooden barrel with orange tarp
+
+carpentry_02_126 - wooden barrel with orange tarp closed lid
+carpentry_02_126 - water wooden barrel with orange tarp closed lid
+
+crafted_01_24-32 - different barrels (crafted_01_on) - some of them used as fireplace and water mask
+crafted_05_56-71 - different barrels (crafted_05_on) - some of them used as fireplace
+
+industry_01_22-23 orange barrel two sides - ok
+location_military_generic_06-07 - light green barrel two sides - ok
+location_military_generic_14-15 - dark green barrel two sides - ok
+
+object_snow_overlay_01_166-167 snow overlay for light green barrel
+object_snow_overlay_01_174-175 snow overlay for dark green barrel
+object_snow_overlay_04_256-247 snow overlay for dark green barrel
+
+check how to work with extended plumbing https://steamcommunity.com/sharedfiles/filedetails/?id=3779561845
+check how work with func gutters mod https://steamcommunity.com/sharedfiles/filedetails/?id=3439305933
+check how to work with water pipes https://steamcommunity.com/sharedfiles/filedetails/?id=3546314080
+check how work with pay and pump https://steamcommunity.com/sharedfiles/filedetails/?id=3194049112
+check various plumbing methods
+
+convert existing map barels into useful
+craft receipes of the grey barrel
+
 TODO check again if works correctly with pump with power/nopower
 
 TODO Rework plumbing to make it work again properly (as souce of water, not receiver)
