@@ -6,7 +6,7 @@ poster=poster.png
 pack=UB_tiles
 # why different ids?
 tiledef=UB_tiledefinitions.patch 8188
-tiledef=UB_tiledefinitions 8188
+tiledef=UB_tiledefinitions 8189
 icon=icon.png
 author=GigaWatte
 versionMin=42.13.1
