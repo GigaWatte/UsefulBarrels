@@ -245,7 +245,8 @@ local function isPuddleOrRiver(object)
     local props = object:getProperties()
     local hasWaterFlag = (props ~= nil) and props:has(IsoFlagType.water)
     local isInventoryItem = instanceof(object, "IsoWorldInventoryObject")
-    local isLakeOrRiver = not isInventoryItem and (props ~= nil) and luautils.stringStarts(object:getSprite():getName(), 'blends_natural_02')
+    local spriteName = object:getSprite() and object:getSprite():getName()
+    local isLakeOrRiver = not isInventoryItem and (props ~= nil) and spriteName and luautils.stringStarts(spriteName, 'blends_natural_02')
     local isPuddle = not hasWaterFlag and not isLakeOrRiver and (props ~= nil) and props:has(IsoFlagType.solidfloor)
     return isPuddle or isLakeOrRiver
 end

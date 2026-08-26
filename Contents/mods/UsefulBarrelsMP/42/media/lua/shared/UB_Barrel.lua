@@ -64,6 +64,8 @@ function UB_Barrel.AddFluidContainer(ub_barrel)
 
     buildUtil.setHaveConstruction(ub_barrel.square, true)
 
+    ub_barrel.isoObject:sync()
+
     return true
 end
 
@@ -94,6 +96,8 @@ function UB_Barrel:CutLid()
     self:SetModData("UB_CutLid", true)
     
     buildUtil.setHaveConstruction(self.square, true)
+    
+    self.isoObject:sync()
 
     return true
 end
@@ -117,6 +121,9 @@ end
 
 function UB_Barrel:setSprite(sprite)
     self.isoObject:setSprite(sprite)
+    self.isoObject:sync()
+    if isClient() then self.isoObject:transmitUpdatedSpriteToServer() end
+    if isServer() then self.isoObject:transmitUpdatedSpriteToClients(); end
 end
 
 function UB_Barrel:OnPickup()
@@ -138,6 +145,7 @@ function UB_Barrel:SetModData(key, value)
     local modData = self.isoObject:getModData()
     modData[key] = value
     self.isoObject:setModData(modData)
+    self.isoObject:transmitModData()
 end
 
 function UB_Barrel:GetTooltipText(font_size)

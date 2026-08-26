@@ -1,3 +1,9 @@
+[ 16/08/2026 ]
+4.0.9:
+- Fix possible runtime error in isPuddleOrRiver function
+[ 16/08/2026 ]
+4.0.8:
+- Re-enable lid cutting feature
 [ 01/08/2026 ]
 4.0.7.1:
 - Temporarily disabled lid cutting feature

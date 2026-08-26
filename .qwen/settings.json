@@ -1,0 +1,20 @@
+{
+  "context": {
+    "includeDirectories": [
+      "/home/gigawatte/Zomboid/Workshop/UsefulBarrels/Contents/mods/UsefulBarrelsMP",
+      "/home/gigawatte/.local/share/Steam/steamapps/common/ProjectZomboid/projectzomboid/media/",
+      "/home/gigawatte/.local/share/Steam/steamapps/workshop/content/108600/",
+      "/home/gigawatte/Downloads/ZomboidDecompiler/bin/output/source/zombie/"
+    ],
+    "loadFromIncludeDirectories": true
+  },
+  "includeTools": [
+    "ripgrep_search"
+  ],
+  "excludeTools": [
+    "edit",
+    "write_file",
+    "notebook_edit",
+    "patch"
+  ]
+}

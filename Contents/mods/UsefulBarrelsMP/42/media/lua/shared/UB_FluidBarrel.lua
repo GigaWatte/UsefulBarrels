@@ -181,10 +181,16 @@ function UB_FluidBarrel:setWaterType(type)
         color:getBlueFloat(),
         0.9
     )
+    self.isoObject:sync()
+    if isClient() then self.isoObject:transmitUpdatedSpriteToServer() end
+    if isServer() then self.isoObject:transmitUpdatedSpriteToClients(); end
 end
 
 function UB_FluidBarrel:removeWaterType()
     self.isoObject:setOverlaySprite("")
+    self.isoObject:sync()
+    if isClient() then self.isoObject:transmitUpdatedSpriteToServer() end
+    if isServer() then self.isoObject:transmitUpdatedSpriteToClients(); end
 end
 
 function UB_FluidBarrel:UpdateWaterLevel()

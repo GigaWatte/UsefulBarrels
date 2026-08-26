@@ -1,3 +1,50 @@
+Events.OnObjectAdded.Add(GutterServerManager.OnIsoObjectPlaced)
+
+Events.OnTileRemoved.Add(GutterServerManager.OnIsoObjectRemoved)
+
+
+options on Mods tab, not sandbox..
+
+description=[h2] WIP/Future plans [/h2]
+description=[list]
+description=    [*]Ability to add fluid from other world objects such as: sink, bath, toilet or even other Useful Barrel (MP)
+description=    [*]Cut the barrel lid and turn it into a rain collector (MP)
+description=    [*]Visually represent fluid lvl in the lidless barrel at 75%, 80% and 90% (MP)
+description=    [*]Compatibility with other mods (MP)
+description=    [*]Ability to add fluids from items that are lying on the ground (MP)
+description=    [*]Proper plumbing
+description=    [*]Turn existing lidless barrels into functional ones
+description=    [*]Polishing context options, translations
+description=    [*]Add some UI
+description=    [*]Connect the barrel to the generator with a hose and refuel it over time
+description=[/list]
+
+
+        @LuaMethod(name = "isServer", global = true)
+        public static boolean isServer() {
+            return GameServer.server;
+        }
+
+        @LuaMethod(name = "isServerSoftReset", global = true)
+        public static boolean isServerSoftReset() {
+            return GameServer.server && GameServer.softReset;
+        }
+
+        @LuaMethod(name = "isClient", global = true)
+        public static boolean isClient() {
+            return GameClient.client;
+        }
+
+        @LuaMethod(name = "isMultiplayer", global = true)
+        public static boolean isMultiplayer() {
+            return GameClient.client || GameServer.server;
+        }
+
+
+        getIsoEntitiesDebug
+
+MapObjects.OnNewWithSprite("crafted_04_120", NewButcherHook, PRIORITY)
+MapObjects.OnLoadWithSprite("crafted_04_120", LoadButcherHook, PRIORITY)
 
 drawTextBackground - check what it do
 https://albion.codeberg.page/PZ-JavaDocs/zombie/ui/UIElement.html#drawTextWithBackground(zombie.ui.UIFont,java.lang.String,double,double,double,double,double,double,double,double,double,double,double,double)

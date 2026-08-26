@@ -1,10 +1,9 @@
-name=[B42] Useful Barrels
-modversion=4.0.7.1
+name=Useful Barrels
+modversion=4.0.9
 id=UsefulBarrelsMP
-description=Barrels can actually be more than just a sprite! Now with multiplayer support!
+description=Barrels can actually be more than just a sprite!
 poster=poster.png
 pack=UB_tiles
-# why different ids?
 tiledef=UB_tiledefinitions.patch 8188
 tiledef=UB_tiledefinitions 8189
 icon=icon.png
