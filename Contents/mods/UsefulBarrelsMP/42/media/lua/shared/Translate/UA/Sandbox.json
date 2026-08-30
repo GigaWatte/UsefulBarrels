@@ -12,7 +12,7 @@
   "Sandbox_UsefulBarrelsRequireFunnelForFill": "Потрібна воронка",
   "Sandbox_UsefulBarrelsRequireFunnelForFill_tooltip": "Потрібна воронка для додавання рідини до бочки.",
   "Sandbox_UsefulBarrelsFunnelSpeedUpFillModifier": "Модифікатор пришвидшення воронки",
-  "Sandbox_UsefulBarrelsFunnelSpeedUpFillModifier_tooltip": "Пришвидшити наповнення каністри модифікатором, якщо поблизу є воронка. <Br> Приклад: Значення 1,25 означає 25% бонус або в 1,25 рази швидше операція. <br> працює незалежно від варіанту ",
+  "Sandbox_UsefulBarrelsFunnelSpeedUpFillModifier_tooltip": "Пришвидшити наповнення каністри модифікатором, якщо поблизу є воронка. <Br> Приклад: Значення 1,25 означає 25%% бонус або в 1,25 рази швидше операція. <br> працює незалежно від варіанту ",
   "Sandbox_UsefulBarrelsAllowAlcoholic": "Дозволити алкоголь",
   "Sandbox_UsefulBarrelsAllowAlcoholic_tooltip": "Алкоголь, пиво, вино ...",
   "Sandbox_UsefulBarrelsAllowHazardous": "Дозволити небезпечні",

@@ -12,7 +12,7 @@
   "Sandbox_UsefulBarrelsRequireFunnelForFill": "Krever trakt",
   "Sandbox_UsefulBarrelsRequireFunnelForFill_tooltip": "Det kreves en trakt for å tilsette gass til tønne.",
   "Sandbox_UsefulBarrelsFunnelSpeedUpFillModifier": "Speed ​​Up Modifier med en trakt",
-  "Sandbox_UsefulBarrelsFunnelSpeedUpFillModifier_tooltip": "Hastighetsbeholdere som fylles etter modifiserer hvis det er en trakt i nærheten. <Br> Eksempel: Verdi 1.25 betyr 25% bonus eller 1,25 ganger raskere drift. <Br> satt til 1 for å deaktivere hastighetsbonus. <br> fungerer uavhengig av alternativet 'Krev trakt'.",
+  "Sandbox_UsefulBarrelsFunnelSpeedUpFillModifier_tooltip": "Hastighetsbeholdere som fylles etter modifiserer hvis det er en trakt i nærheten. <Br> Eksempel: Verdi 1.25 betyr 25%% bonus eller 1,25 ganger raskere drift. <Br> satt til 1 for å deaktivere hastighetsbonus. <br> fungerer uavhengig av alternativet 'Krev trakt'.",
   "Sandbox_UsefulBarrelsAllowAlcoholic": "Tillat alkoholiker",
   "Sandbox_UsefulBarrelsAllowAlcoholic_tooltip": "Alkohol, øl, vin ...",
   "Sandbox_UsefulBarrelsAllowHazardous": "Tillat farlig",

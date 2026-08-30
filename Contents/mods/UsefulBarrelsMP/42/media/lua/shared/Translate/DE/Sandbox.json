@@ -10,7 +10,7 @@
   "Sandbox_UsefulBarrelsRequireFunnelForFill": "Trichter braucht's",
   "Sandbox_UsefulBarrelsRequireFunnelForFill_tooltip": "Wenn aktiviert, wird ein Trichter benötigt, um Treibstoff in das Fass zu füllen.",
   "Sandbox_UsefulBarrelsFunnelSpeedUpFillModifier": "Beschleunigung mit Trichter",
-  "Sandbox_UsefulBarrelsFunnelSpeedUpFillModifier_tooltip": "Der Trichter beschleunigt das Befüllen der Tonne mit Benzin um den Faktor X (1.25 = +25%, 2.0 = +100% etc.).<br>Wert 1 schaltet aus die Beschleunigung.<br> Unabhängig von 'Trichter braucht's'.",
+  "Sandbox_UsefulBarrelsFunnelSpeedUpFillModifier_tooltip": "Der Trichter beschleunigt das Befüllen der Tonne mit Benzin um den Faktor X (1.25 = +25%%, 2.0 = +100%% etc.).<br>Wert 1 schaltet aus die Beschleunigung.<br> Unabhängig von 'Trichter braucht's'.",
   "Sandbox_UsefulBarrelsAllowAlcoholic": "Alkoholisches erlauben",
   "Sandbox_UsefulBarrelsAllowAlcoholic_tooltip": "Alkohol, Bier, Wein...",
   "Sandbox_UsefulBarrelsAllowHazardous": "Vermessenheit erlauben",

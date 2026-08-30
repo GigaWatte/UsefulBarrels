@@ -12,7 +12,7 @@
   "Sandbox_UsefulBarrelsRequireFunnelForFill": "Requereix embut",
   "Sandbox_UsefulBarrelsRequireFunnelForFill_tooltip": "Es necessita un embut per afegir gas al barril.",
   "Sandbox_UsefulBarrelsFunnelSpeedUpFillModifier": "Accelereu el modificador per un embut",
-  "Sandbox_UsefulBarrelsFunnelSpeedUpFillModifier_tooltip": "Accelereu els canisters omplint per modificador si hi ha un embut a prop. <Br> Exemple: valor 1,25 significa un 25% de bonificació o 1.25 vegades més ràpida. <br> funciona independentment de l'opció ",
+  "Sandbox_UsefulBarrelsFunnelSpeedUpFillModifier_tooltip": "Accelereu els canisters omplint per modificador si hi ha un embut a prop. <Br> Exemple: valor 1,25 significa un 25%% de bonificació o 1.25 vegades més ràpida. <br> funciona independentment de l'opció ",
   "Sandbox_UsefulBarrelsAllowAlcoholic": "Permetre alcohòlic",
   "Sandbox_UsefulBarrelsAllowAlcoholic_tooltip": "Alcohol, cervesa, vi ...",
   "Sandbox_UsefulBarrelsAllowHazardous": "Permetre perillós",

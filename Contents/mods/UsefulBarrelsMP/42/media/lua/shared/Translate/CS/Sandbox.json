@@ -12,7 +12,7 @@
   "Sandbox_UsefulBarrelsRequireFunnelForFill": "Vyžadovat trychtýř",
   "Sandbox_UsefulBarrelsRequireFunnelForFill_tooltip": "K přidání plynu do hlavně je nutná nálevka.",
   "Sandbox_UsefulBarrelsFunnelSpeedUpFillModifier": "Urychlete modifikátor nálevkou",
-  "Sandbox_UsefulBarrelsFunnelSpeedUpFillModifier_tooltip": "Zrychlete kanystry plnění modifikátorem, pokud je poblíž trychtýř <Br> Příklad: hodnota 1.25 znamená 25% bonus nebo 1,25krát rychlejší provoz <Br> nastaveno na 1 pro deaktivaci bonusu rychlosti. <Br> funguje bez ohledu na možnost „vyžadovat trychtýř“.",
+  "Sandbox_UsefulBarrelsFunnelSpeedUpFillModifier_tooltip": "Zrychlete kanystry plnění modifikátorem, pokud je poblíž trychtýř <Br> Příklad: hodnota 1.25 znamená 25%% bonus nebo 1,25krát rychlejší provoz <Br> nastaveno na 1 pro deaktivaci bonusu rychlosti. <Br> funguje bez ohledu na možnost „vyžadovat trychtýř“.",
   "Sandbox_UsefulBarrelsAllowAlcoholic": "Povolit alkoholik",
   "Sandbox_UsefulBarrelsAllowAlcoholic_tooltip": "Alkohol, pivo, víno ...",
   "Sandbox_UsefulBarrelsAllowHazardous": "Povolit nebezpečné",

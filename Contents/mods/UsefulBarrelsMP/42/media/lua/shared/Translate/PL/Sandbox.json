@@ -12,7 +12,7 @@
   "Sandbox_UsefulBarrelsRequireFunnelForFill": "Wymagają lejka",
   "Sandbox_UsefulBarrelsRequireFunnelForFill_tooltip": "Do dodania gazu do lufy wymagane jest lejek.",
   "Sandbox_UsefulBarrelsFunnelSpeedUpFillModifier": "Przyspiesz modyfikator za pomocą lejka",
-  "Sandbox_UsefulBarrelsFunnelSpeedUpFillModifier_tooltip": "Speed ​​Up Canisters wypełniając modyfikatorem, jeśli w pobliżu znajduje się lejek. <Br> Przykład: Wartość 1.25 oznacza 25% bonus lub 1,25 razy szybszą obsługę. <Br> ustawiony na 1, aby wyłączyć bonus prędkości. <br> działa niezależnie od opcji „wymagaj lejka”.",
+  "Sandbox_UsefulBarrelsFunnelSpeedUpFillModifier_tooltip": "Speed ​​Up Canisters wypełniając modyfikatorem, jeśli w pobliżu znajduje się lejek. <Br> Przykład: Wartość 1.25 oznacza 25%% bonus lub 1,25 razy szybszą obsługę. <Br> ustawiony na 1, aby wyłączyć bonus prędkości. <br> działa niezależnie od opcji „wymagaj lejka”.",
   "Sandbox_UsefulBarrelsAllowAlcoholic": "Pozwól alkoholowi",
   "Sandbox_UsefulBarrelsAllowAlcoholic_tooltip": "Alkohol, piwo, wino ...",
   "Sandbox_UsefulBarrelsAllowHazardous": "Pozwól niebezpiecznemu",

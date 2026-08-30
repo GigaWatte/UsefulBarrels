@@ -266,7 +266,7 @@ function UB_BarrelContextMenu:CreateMapObjectOption(containerMenu, map_object, h
     end
     local sprite_name = map_object:getSpriteName()
 
-    if not sprite_name then
+    if not sprite_name or not name then
         -- this is strange actually, but sometimes produces nil
         return
     end

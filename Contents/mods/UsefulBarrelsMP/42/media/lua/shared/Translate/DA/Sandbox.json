@@ -12,7 +12,7 @@
   "Sandbox_UsefulBarrelsRequireFunnelForFill": "Kræver tragt",
   "Sandbox_UsefulBarrelsRequireFunnelForFill_tooltip": "Der kræves en tragt for at tilføje gas til tønde.",
   "Sandbox_UsefulBarrelsFunnelSpeedUpFillModifier": "Fremskynde modifikator med en tragt",
-  "Sandbox_UsefulBarrelsFunnelSpeedUpFillModifier_tooltip": "Fremskynd dåser udfyldes med modifikator, hvis der er en tragt i nærheden. <Br> Eksempel: Værdi 1,25 betyder 25% bonus eller 1,25 gange hurtigere drift. <Br> indstillet til 1 for at deaktivere hastighedsbonus. <br> fungerer uanset indstilling af 'Krævende tragt'.",
+  "Sandbox_UsefulBarrelsFunnelSpeedUpFillModifier_tooltip": "Fremskynd dåser udfyldes med modifikator, hvis der er en tragt i nærheden. <Br> Eksempel: Værdi 1,25 betyder 25%% bonus eller 1,25 gange hurtigere drift. <Br> indstillet til 1 for at deaktivere hastighedsbonus. <br> fungerer uanset indstilling af 'Krævende tragt'.",
   "Sandbox_UsefulBarrelsAllowAlcoholic": "Tillad alkoholiker",
   "Sandbox_UsefulBarrelsAllowAlcoholic_tooltip": "Alkohol, øl, vin ...",
   "Sandbox_UsefulBarrelsAllowHazardous": "Tillad farligt",

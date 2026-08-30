@@ -12,7 +12,7 @@
   "Sandbox_UsefulBarrelsRequireFunnelForFill": "ต้องการช่องทาง",
   "Sandbox_UsefulBarrelsRequireFunnelForFill_tooltip": "ต้องใช้ช่องทางเพื่อเพิ่มก๊าซลงในถัง",
   "Sandbox_UsefulBarrelsFunnelSpeedUpFillModifier": "เพิ่มความเร็วในการดัดแปลงด้วยช่องทาง",
-  "Sandbox_UsefulBarrelsFunnelSpeedUpFillModifier_tooltip": "Speed ​​Up Canisters เติมโดย modifier หากมีช่องทางใกล้เคียง <br> ตัวอย่าง: ค่า 1.25 หมายถึงโบนัส 25% หรือการทำงานที่เร็วขึ้น 1.25 เท่า <br> ตั้งค่าเป็น 1 เพื่อปิดการใช้งานโบนัสความเร็ว <br> ทำงานโดยไม่คำนึงถึงตัวเลือก 'ต้องการช่องทาง'",
+  "Sandbox_UsefulBarrelsFunnelSpeedUpFillModifier_tooltip": "Speed ​​Up Canisters เติมโดย modifier หากมีช่องทางใกล้เคียง <br> ตัวอย่าง: ค่า 1.25 หมายถึงโบนัส 25%% หรือการทำงานที่เร็วขึ้น 1.25 เท่า <br> ตั้งค่าเป็น 1 เพื่อปิดการใช้งานโบนัสความเร็ว <br> ทำงานโดยไม่คำนึงถึงตัวเลือก 'ต้องการช่องทาง'",
   "Sandbox_UsefulBarrelsAllowAlcoholic": "อนุญาตให้มีแอลกอฮอล์",
   "Sandbox_UsefulBarrelsAllowAlcoholic_tooltip": "แอลกอฮอล์เบียร์ไวน์ ...",
   "Sandbox_UsefulBarrelsAllowHazardous": "ปล่อยอันตราย",

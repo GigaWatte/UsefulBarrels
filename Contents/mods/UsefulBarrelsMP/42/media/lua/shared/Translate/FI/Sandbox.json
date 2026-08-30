@@ -12,7 +12,7 @@
   "Sandbox_UsefulBarrelsRequireFunnelForFill": "Vaatia suppiloa",
   "Sandbox_UsefulBarrelsRequireFunnelForFill_tooltip": "Kaasun lisäämiseksi tynnyriin tarvitaan suppilo.",
   "Sandbox_UsefulBarrelsFunnelSpeedUpFillModifier": "Nopeuttaa modifiointia suppilolla",
-  "Sandbox_UsefulBarrelsFunnelSpeedUpFillModifier_tooltip": "Nopeuta kanisterit, jotka täyttävät muokkaimen, jos lähellä on suppilo. <Br> Esimerkki: arvo 1.25 tarkoittaa 25% bonusta tai 1,25 kertaa nopeampaa toimintaa. <Br> asetettu arvoon 1 nopeusbonuksen käytöstä. <br> toimii riippumatta 'vaadittakaa' -vaihtoehdoista.",
+  "Sandbox_UsefulBarrelsFunnelSpeedUpFillModifier_tooltip": "Nopeuta kanisterit, jotka täyttävät muokkaimen, jos lähellä on suppilo. <Br> Esimerkki: arvo 1.25 tarkoittaa 25%% bonusta tai 1,25 kertaa nopeampaa toimintaa. <Br> asetettu arvoon 1 nopeusbonuksen käytöstä. <br> toimii riippumatta 'vaadittakaa' -vaihtoehdoista.",
   "Sandbox_UsefulBarrelsAllowAlcoholic": "Salli alkoholisti",
   "Sandbox_UsefulBarrelsAllowAlcoholic_tooltip": "Alkoholi, olut, viini ...",
   "Sandbox_UsefulBarrelsAllowHazardous": "Salli vaarallinen",

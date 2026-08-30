@@ -12,7 +12,7 @@
   "Sandbox_UsefulBarrelsRequireFunnelForFill": "깔때기 필요",
   "Sandbox_UsefulBarrelsRequireFunnelForFill_tooltip": "배럴에 가스를 추가하려면 깔때기가 필요함",
   "Sandbox_UsefulBarrelsFunnelSpeedUpFillModifier": "깔때기로 충전 속도 증가",
-  "Sandbox_UsefulBarrelsFunnelSpeedUpFillModifier_tooltip": "깔때기가 근처에 있으면 충전 속도가 가속됨<br>예: 값이 1.25이면 25% 보너스 또는 1.25배 더 빠름<br>속도 보너스를 끄려면 1로 설정<br>‘깔때기 필요’ 설정과는 무관하게 작동함",
+  "Sandbox_UsefulBarrelsFunnelSpeedUpFillModifier_tooltip": "깔때기가 근처에 있으면 충전 속도가 가속됨<br>예: 값이 1.25이면 25%% 보너스 또는 1.25배 더 빠름<br>속도 보너스를 끄려면 1로 설정<br>‘깔때기 필요’ 설정과는 무관하게 작동함",
   "Sandbox_UsefulBarrelsAllowAlcoholic": "알코올 허용",
   "Sandbox_UsefulBarrelsAllowAlcoholic_tooltip": "알코올, 맥주, 와인 등",
   "Sandbox_UsefulBarrelsAllowHazardous": "위험 물질 허용",

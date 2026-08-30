@@ -12,7 +12,7 @@
   "Sandbox_UsefulBarrelsRequireFunnelForFill": "Membutuhkan corong",
   "Sandbox_UsefulBarrelsRequireFunnelForFill_tooltip": "Corong diperlukan untuk menambahkan gas ke laras.",
   "Sandbox_UsefulBarrelsFunnelSpeedUpFillModifier": "Mempercepat pengubah dengan corong",
-  "Sandbox_UsefulBarrelsFunnelSpeedUpFillModifier_tooltip": "Mempercepat pengisian tabung dengan pengubah jika ada corong di dekatnya. <Br> Contoh: nilai 1.25 berarti bonus 25% atau 1,25 kali operasi lebih cepat. <Br> diatur ke 1 untuk menonaktifkan bonus kecepatan. <br> berfungsi terlepas dari opsi 'membutuhkan corong'.",
+  "Sandbox_UsefulBarrelsFunnelSpeedUpFillModifier_tooltip": "Mempercepat pengisian tabung dengan pengubah jika ada corong di dekatnya. <Br> Contoh: nilai 1.25 berarti bonus 25%% atau 1,25 kali operasi lebih cepat. <Br> diatur ke 1 untuk menonaktifkan bonus kecepatan. <br> berfungsi terlepas dari opsi 'membutuhkan corong'.",
   "Sandbox_UsefulBarrelsAllowAlcoholic": "Izinkan alkohol",
   "Sandbox_UsefulBarrelsAllowAlcoholic_tooltip": "Alkohol, bir, anggur ...",
   "Sandbox_UsefulBarrelsAllowHazardous": "Izinkan berbahaya",

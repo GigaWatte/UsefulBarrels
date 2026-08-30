@@ -12,7 +12,7 @@
   "Sandbox_UsefulBarrelsRequireFunnelForFill": "Requer funil",
   "Sandbox_UsefulBarrelsRequireFunnelForFill_tooltip": "É necessário um funil para adicionar gás ao barril.",
   "Sandbox_UsefulBarrelsFunnelSpeedUpFillModifier": "Acelere o modificador por um funil",
-  "Sandbox_UsefulBarrelsFunnelSpeedUpFillModifier_tooltip": "Acelere os reciçados de recheio por modificador se houver um funil próximo. <Br> Exemplo: Valor 1.25 significa 25% de bônus ou 1,25 vezes a operação mais rápida. <Br> definida como 1 para desativar o bônus de velocidade. <br> funciona independentemente da opção 'requer funil'.",
+  "Sandbox_UsefulBarrelsFunnelSpeedUpFillModifier_tooltip": "Acelere os reciçados de recheio por modificador se houver um funil próximo. <Br> Exemplo: Valor 1.25 significa 25%% de bônus ou 1,25 vezes a operação mais rápida. <Br> definida como 1 para desativar o bônus de velocidade. <br> funciona independentemente da opção 'requer funil'.",
   "Sandbox_UsefulBarrelsAllowAlcoholic": "Permitir alcoólatra",
   "Sandbox_UsefulBarrelsAllowAlcoholic_tooltip": "Álcool, cerveja, vinho ...",
   "Sandbox_UsefulBarrelsAllowHazardous": "Permitir perigosos",

@@ -12,7 +12,7 @@
   "Sandbox_UsefulBarrelsRequireFunnelForFill": "Funnel nodig",
   "Sandbox_UsefulBarrelsRequireFunnelForFill_tooltip": "Een trechter is vereist om gas toe te voegen aan vat.",
   "Sandbox_UsefulBarrelsFunnelSpeedUpFillModifier": "Versnelling van de modificator door een trechter",
-  "Sandbox_UsefulBarrelsFunnelSpeedUpFillModifier_tooltip": "Versnellingsbakers vullen door modifier als er een trechter in de buurt is. <Br> Voorbeeld: waarde 1.25 betekent 25% bonus of 1,25 keer snellere werking. <Br> ingesteld op 1 om snelheidsbonus uit te schakelen. <br> werkt ongeacht de optie 'Vereisen trechter'.",
+  "Sandbox_UsefulBarrelsFunnelSpeedUpFillModifier_tooltip": "Versnellingsbakers vullen door modifier als er een trechter in de buurt is. <Br> Voorbeeld: waarde 1.25 betekent 25%% bonus of 1,25 keer snellere werking. <Br> ingesteld op 1 om snelheidsbonus uit te schakelen. <br> werkt ongeacht de optie 'Vereisen trechter'.",
   "Sandbox_UsefulBarrelsAllowAlcoholic": "Sta alcoholist toe",
   "Sandbox_UsefulBarrelsAllowAlcoholic_tooltip": "Alcohol, bier, wijn ...",
   "Sandbox_UsefulBarrelsAllowHazardous": "Laat gevaarlijk toe",

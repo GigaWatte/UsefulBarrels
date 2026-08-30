@@ -12,7 +12,7 @@
   "Sandbox_UsefulBarrelsRequireFunnelForFill": "Tölcséret igényel",
   "Sandbox_UsefulBarrelsRequireFunnelForFill_tooltip": "Egy tölcsér szükséges, hogy gázt adjon a hordóhoz.",
   "Sandbox_UsefulBarrelsFunnelSpeedUpFillModifier": "Gyorsítsa fel a módosítóját egy tölcsérrel",
-  "Sandbox_UsefulBarrelsFunnelSpeedUpFillModifier_tooltip": "Gyorsítsa fel a tartályokat, ha a módosítóval tölti be, ha van egy tölcsér a közelben. <Br> Példa: Az 1.25 érték 25% bónuszt vagy 1,25 -szer gyorsabb működést jelent. <Br> A „Csatlakozás” opciójától függetlenül működik.",
+  "Sandbox_UsefulBarrelsFunnelSpeedUpFillModifier_tooltip": "Gyorsítsa fel a tartályokat, ha a módosítóval tölti be, ha van egy tölcsér a közelben. <Br> Példa: Az 1.25 érték 25%% bónuszt vagy 1,25 -szer gyorsabb működést jelent. <Br> A „Csatlakozás” opciójától függetlenül működik.",
   "Sandbox_UsefulBarrelsAllowAlcoholic": "Engedje meg az alkoholistát",
   "Sandbox_UsefulBarrelsAllowAlcoholic_tooltip": "Alkohol, sör, bor ...",
   "Sandbox_UsefulBarrelsAllowHazardous": "Engedje meg a veszélyeset",

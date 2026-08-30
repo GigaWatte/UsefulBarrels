@@ -12,7 +12,7 @@
   "Sandbox_UsefulBarrelsRequireFunnelForFill": "Require Funnel",
   "Sandbox_UsefulBarrelsRequireFunnelForFill_tooltip": "A Funnel is required to add Gas to barrel.",
   "Sandbox_UsefulBarrelsFunnelSpeedUpFillModifier": "Speed up modifier by a Funnel",
-  "Sandbox_UsefulBarrelsFunnelSpeedUpFillModifier_tooltip": "Speed up canisters filling by modifier if there is a Funnel nearby.<br>Example: value 1.25 means 25% bonus or 1.25 times faster operation.<br>Set to 1 to disable speed bonus. <br> Does not work if 'Require Funnel' disabled.",
+  "Sandbox_UsefulBarrelsFunnelSpeedUpFillModifier_tooltip": "Speed up canisters filling by modifier if there is a Funnel nearby.<br>Example: value 1.25 means 25%% bonus or 1.25 times faster operation.<br>Set to 1 to disable speed bonus. <br> Does not work if 'Require Funnel' disabled.",
   "Sandbox_UsefulBarrelsAllowAlcoholic": "Allow Alcoholic",
   "Sandbox_UsefulBarrelsAllowAlcoholic_tooltip": "Alcohol, Beer, Wine...",
   "Sandbox_UsefulBarrelsAllowHazardous": "Allow Hazardous",

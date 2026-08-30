@@ -10,7 +10,7 @@
   "Sandbox_UsefulBarrelsRequireFunnelForFill": "Embudo Requerido",
   "Sandbox_UsefulBarrelsRequireFunnelForFill_tooltip": "Se requiere un embudo para agregar gasolina al barril.",
   "Sandbox_UsefulBarrelsFunnelSpeedUpFillModifier": "Modificador de Velocidad con Embudo",
-  "Sandbox_UsefulBarrelsFunnelSpeedUpFillModifier_tooltip": "Si el embudo está cerca, aumenta la velocidad de llenado del barril según el modificador.<br>Ejemplo: Un valor de 1.25 significa un 25% de bonificación o 1.25 veces más rápido.<br>Establece en 1 para desactivar la bonificación de velocidad.<br>Funciona independientemente de la opción 'Embudo Requerido'.",
+  "Sandbox_UsefulBarrelsFunnelSpeedUpFillModifier_tooltip": "Si el embudo está cerca, aumenta la velocidad de llenado del barril según el modificador.<br>Ejemplo: Un valor de 1.25 significa un 25%% de bonificación o 1.25 veces más rápido.<br>Establece en 1 para desactivar la bonificación de velocidad.<br>Funciona independientemente de la opción 'Embudo Requerido'.",
   "Sandbox_UsefulBarrelsAllowAlcoholic": "Allow Alcoholic",
   "Sandbox_UsefulBarrelsAllowAlcoholic_tooltip": "Alcohol, Beer, Wine...",
   "Sandbox_UsefulBarrelsAllowHazardous": "Allow Hazardous",

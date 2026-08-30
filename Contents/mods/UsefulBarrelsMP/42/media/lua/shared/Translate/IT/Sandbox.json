@@ -12,7 +12,7 @@
   "Sandbox_UsefulBarrelsRequireFunnelForFill": "Richiede Imbuto",
   "Sandbox_UsefulBarrelsRequireFunnelForFill_tooltip": "Un Imbuto è necessario per aggiungere Carburante al barile.",
   "Sandbox_UsefulBarrelsFunnelSpeedUpFillModifier": "Modificatore di velocità con Imbuto",
-  "Sandbox_UsefulBarrelsFunnelSpeedUpFillModifier_tooltip": "Aumenta la velocità di riempimento delle taniche in base al modificatore se c'è un Imbuto nelle vicinanze.<br>Esempio: il valore 1.25 indica un bonus del 25% o un'operazione 1.25 volte più veloce.<br>Impostare a 1 per disabilitare il bonus.<br>Funziona indipendentemente dall'opzione 'Richiede Imbuto'.",
+  "Sandbox_UsefulBarrelsFunnelSpeedUpFillModifier_tooltip": "Aumenta la velocità di riempimento delle taniche in base al modificatore se c'è un Imbuto nelle vicinanze.<br>Esempio: il valore 1.25 indica un bonus del 25%% o un'operazione 1.25 volte più veloce.<br>Impostare a 1 per disabilitare il bonus.<br>Funziona indipendentemente dall'opzione 'Richiede Imbuto'.",
   "Sandbox_UsefulBarrelsAllowAlcoholic": "Consenti Alcolici",
   "Sandbox_UsefulBarrelsAllowAlcoholic_tooltip": "Alcol, Birra, Vino...",
   "Sandbox_UsefulBarrelsAllowHazardous": "Consenti Pericolosi",
